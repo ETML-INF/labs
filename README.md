@@ -1,4 +1,4 @@
-# ETML-INF labs
+# ETML-INF labs
 source : https://github.com/googlecodelabs/tools
 
 ## Setup/Run
