@@ -4,7 +4,7 @@ id: oss-os-install
 categories: oss
 environments: Web
 status: Draft
-feedback link: https://git.section-inf.ch/jmy/labs
+feedback link: https://git.section-inf.ch/jmy/labs/issues
 
 # Installation d'un système d'exploitation open source
 
