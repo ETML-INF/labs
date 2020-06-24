@@ -104,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="searchbar">
           <paper-input-container no-label-float>
             <paper-icon-button prefix icon="search"></paper-icon-button>
-            <label>Search</label>
+            <label>Rechercher</label>
             <input is="iron-input" bind-value="{{searchVal}}" on-keydown="onSearchKeyDown">
           </paper-input-container>
         </div>
@@ -141,14 +141,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="sortby">
           <paper-tabs selected="0" noink on-iron-activate="sortBy">
             <paper-tab>A-Z</paper-tab>
-            <paper-tab>Recent</paper-tab>
-            <paper-tab>Duration</paper-tab>
+            <paper-tab>Date</paper-tab>
+            <paper-tab>Dur&eacute;e</paper-tab>
           </paper-tabs>
         </div>
 
         {% if view.id == 'default' %}
         <paper-dropdown-menu
-          label="Choose an event"
+          label="Choisir un cours"
           class="dropdown-filter"
           no-label-float
           noink no-animations
@@ -171,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         {%- if showcats -%}
         <paper-dropdown-menu
-          label="Filter by category"
+          label="Filtrer par cat&eacute;gorie"
           class="dropdown-filter"
           no-label-float
           noink no-animations
@@ -226,34 +226,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </card-sorter>
 
       <div id="loading-placeholder" class="site-width">
-        Loading Codelabs, please wait...
+        Chargement des ateliers, veuillez patienter...
       </div>
     </main>
 
     <footer id="footer">
       <div class="footer-wrapper site-width">
         <div class="link-list">
-          <label>Connect</label>
+          <label>Versioning</label>
           <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
+            <li><a href="https://git.section-inf.ch/">Git</a></li>
           </ul>
         </div>
         <div class="link-list">
-          <label>Programs</label>
+          <label>LMS</label>
           <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
+            <li><a href="https://moodle.section-inf.ch/">Moodle</a></li>
           </ul>
         </div>
         <div class="link-list">
-          <label>Developer Consoles</label>
+          <label>Autre documentation</label>
           <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
+            <li><a href="https://enseignement.section-inf.ch/">Enseignement</a></li>
           </ul>
         </div>
         <div class="link-list">
-          <label>Explore</label>
+          <label>&Eacute;cole</label>
            <ul>
-            <li><a href="https://www.example.com/">Example</a></li>
+            <li><a href="https://www.etml.ch/">ETML</a></li>
           </ul>
         </div>
       </div>
@@ -262,9 +262,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="footerbar">
       <div class="site-width layout horizontal center justified">
         <span>
-          <a href="https://example.com">Terms</a>
-          &nbsp; | &nbsp;
-          <a href="https://example.com">Privacy</a>
+		  Tout droit réservé.
         </span>
       </div>
     </div>
