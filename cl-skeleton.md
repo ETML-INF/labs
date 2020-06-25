@@ -25,6 +25,10 @@ Attention seulement sur chrome et en anglais
 -  Ceci &#10003;
 -  Cela &#10003;
 
+### Code
+``` bash
+brew install go
+```
 
 ### Tableau (attention, header enlevé)
 <table>
