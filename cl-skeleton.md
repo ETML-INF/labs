@@ -14,13 +14,17 @@ analytics account: UA-170792591-1
 ## Aperçu 
 Duration: 1
 
-## what you'll learn
-- Créer une machine virtuelle
-- Télécharger et installer un système d'exploitation
-- Configurer le système en ligne de commande
-- Installer une couche graphique et l'utiliser
-- Obtenir des métriques système
-- Installer les logiciels additionnels
+### what you'll learn
+* &#9745; Créer une machine virtuelle
+* &#9745; Télécharger et installer un système d'exploitation
+* &#9745;Configurer le système en ligne de commande
+
+Attention seulement sur chrome et en anglais
+
+### Version multilingue
+-  Ceci &#10003;
+-  Cela &#10003;
+
 
 ### Tableau (attention, header enlevé)
 <table>
@@ -45,25 +49,14 @@ Survey
   <li>Everything</li>
 </ul>
 
-Survey
-: My sample survey
-#### What do you know?
-- nothing
-- something
-- everything
-
-
-<dl>
-	<dt style="background-color:#cfe2f3;">Survey</dt>
-<dd>
-  <li>Example item 1</li>
-  <li>Example item 2</li>
-</dd>
-</dl>
 
 ### Embed an iframe
-![https://codepen.io/tzoght/embed/yRNZaP](https://en.wikipedia.org/wiki/File:Example.jpg "Try Me Publisher")
-![https://docs.google.com/forms/d/e/1FAIpQLSffZSjvBirXpD5x6ohXTz8rkVQOaHFUlhEXhaUcGBpHTZa3nw/viewform?embedded=true](https://en.wikipedia.org/wiki/File:Example.jpg "Try Me Publisher")
+Fonctionne avec le MASTER
+![https://codepen.io/tzoght/embed/yRNZaP](codelabs/assets/linux.svg)
+
+Fonctionne avec la dernière release
+![https://docs.google.com/forms/d/e/1FAIpQLSffZSjvBirXpD5x6ohXTz8rkVQOaHFUlhEXhaUcGBpHTZa3nw/viewform?embedded=true](codelabs/assets/linux.svg)
+
 
 ### Lien
 Pour simplifier, une machine virtuelle sera créee avec le logiciel VirtualBox disponible pour Windows, MacOS et Linux à l'adresse suivante : [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
@@ -84,8 +77,7 @@ Negative
 video:
 <video id="Ji-PzvCyGQY"></video>
 
-Ne fonctionne pas
-![https://www.youtube.com/watch?v=R21EU8SKUM0]("emp")
+![https://www.youtube.com/watch?v=Ji-PzvCyGQY](codelabs/assets/linux.svg)
 
 //PAS MIeux qu'un lien
 [Download SDK](https://www.google.com)
