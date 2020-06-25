@@ -38,10 +38,13 @@ Survey
 Duration: 0:03:00
 
 ### Installation
-Pour simplifier, une machine virtuelle sera créee avec le logiciel VirtualBox disponible pour Windows, MacOS et Linux à l'adresse suivante : [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
+Au lieu de configurer un multiboot ou acheter un nouvel ordinateur, une **machine virtuelle** sera créee avec le logiciel VirtualBox disponible pour Windows, MacOS et Linux à l'adresse suivante : [Virtualbox](https://www.virtualbox.org/wiki/Downloads).
 
 Positive
 : Si ce logiciel est déjà installé sur l'ordinateur, on peut directement passer au point suivant.
+
+#### Écran d'accueil de virtualbox
+
 
 ### Démarrage et création
 
