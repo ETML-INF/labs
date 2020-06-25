@@ -3,9 +3,9 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-06-24T11:20:50+02:00",
+  "updated": "2020-06-25T14:11:46+02:00",
   "id": "oss-os-install",
-  "duration": 30,
+  "duration": 31,
   "title": "Installation d'un système d'exploitation open source",
   "summary": "Installer un OS opensource",
   "source": "oss-os-install.md",
@@ -14,11 +14,13 @@
     "draft"
   ],
   "category": [
-    "oss"
+    "system"
   ],
   "tags": [
+    "mem",
     "web"
   ],
-  "feedback": "https://git.section-inf.ch/jmy/labs",
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
   "url": "oss-os-install"
 }
