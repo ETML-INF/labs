@@ -220,7 +220,7 @@ Negative
 ## Récapitulatif
 Duration: 0:05:00
 
-&#9996;Félicitations&#9996;, l'installation d'Ubuntu est terminée est réussie.
+Félicitations, l'installation d'Ubuntu est terminée est réussie.
 Voici un questionnaire pour faciliter la mémorisation des éléments importants:
 
 ![https://docs.google.com/forms/d/e/1FAIpQLSc5RiVJBGGowXr66xmR056zLOBwVd9H5NGyd--eLEWHyLn45g/viewform?embedded=true](codelabs/assets/linux.svg)
