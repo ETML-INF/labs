@@ -85,7 +85,22 @@ L'adresse pour le téléchargement est la suivante : [https://ubuntu.com/downloa
 Positive
 : Pour accélerer le téléchargement, une image a été placée sur le réseau à l'endroit habituel.
 
-### Démarrage 'live'
+### Association du fichier image avec la machine virtuelle
+Pour démarrer sur l'image récupérée, il faut configurer la machine virtuelle dans Virtualbox:
+
+![Vbox-storage](assets/oss-os-install/vbox-storage.png)
+
+![Vbox-iso](assets/oss-os-install/vbox-iso.png)
+
+![Vbox-iso-inserted](assets/oss-os-install/vbox-iso-inserted.png)
+
+### Démarrage
+Ensuite la machine peut être démarrée :
+![Vbox-start](assets/oss-os-install/vbox-start.png)
+
+### Écran d'accueil
+Si tout va bien, voici l'écran présenté:
+![ubuntu-install-0](assets/oss-os-install/vbox-ui-0.png)
 
 ## Installation
 Duration: 0:15:00
