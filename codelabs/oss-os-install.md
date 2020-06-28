@@ -103,11 +103,125 @@ Si tout va bien, voici l'écran présenté:
 ![ubuntu-install-0](assets/oss-os-install/vbox-ui-0.png)
 
 ## Installation
-Duration: 0:15:00
+Duration: 0:20:00
 
-## Ajout du mode graphique
+### Saisies en mode texte
+L'installation se fait en mode *texte*, ainsi, les touches fléchées, ENTER, TAB et ESCAPE (retour en arrière) sont particulièrement utiles:
+
+![Ui Usefull Inputs](assets/oss-os-install/ui-usefull-inputs.png)
+
+### Langue
+Pour faciliter la compréhension du système, celui-ci une fois installé, sélectionner la langue française:
+
+![Ui 01 Lang](assets/oss-os-install/ui-01-lang.png)
+
+### Mises à jour
+Le programme d'installation peut inclure des mises à jour mais ceci sera fait après l'installation.
+L'option par défaut est donc conservée:
+
+![Ui 02 Noupdate](assets/oss-os-install/ui-02-noupdate.png)
+
+### Clavier
+Le clavier doit être configuré ainsi:
+
+![Ui 03 Input1](assets/oss-os-install/ui-03-input1.png)
+
+![Ui 04 Input2](assets/oss-os-install/ui-04-input2.png)
+
+![Ui 05 Input Review](assets/oss-os-install/ui-05-input-review.png)
+
+
+### Réseau
+Sans entrer dans les détails, le choix par défaut est conservé :
+
+![Ui 06 Net](assets/oss-os-install/ui-06-net.png)
+
+#### Proxy
+Il n'y a pas de proxy à configurer (utilisation de l'interfacée NAT de Virtualbox)
+![Ui 07 Net Proxy](assets/oss-os-install/ui-07-net-proxy.png)
+
+#### Miroir
+Pour accélerer l'installation, un miroir proche doit être sélectionné.
+Ce travail étant réalisé par le programme d'installation, l'option proposée est conservée:
+
+![Ui 08 Mirror](assets/oss-os-install/ui-08-mirror.png)
+
+### Disque
+Lors de la création de la machine virtuelle, un seul disque virtuel avait été créé et c'est celui-ci qu'il faut choisir:
+
+![Ui 09 Disk](assets/oss-os-install/ui-09-disk.png)
+
+#### Partitions
+Lors d'une installation professionnelle, un disque est compartimenté pour des raisons de **sécurité** et de **performance**.
+Pour une utilisation amateur, l'option par défaut est adaptée:
+
+![Ui 10 Disk Part](assets/oss-os-install/ui-10-disk-part.png)
+
+#### Récapitulatif
+Confirmer après la présentation du récapitulatif:
+
+![Ui 11 Disk Confirm](assets/oss-os-install/ui-11-disk-confirm.png)
+
+### Compte utilisateur
+Un système d'exploitation est la plupart du temps *multi-utilisateur*, ce qui veut dire qu'on peut configurer plusieurs comptes.
+Il s'agit maintenant de configurer le compte principal ainsi que le nom de la machine.
+Voici l'exemple à suivre et adapter:
+
+![Ui 12 User](assets/oss-os-install/ui-12-user.png)
+
+### Logiciels additionnels
+L'installateur propose d'ajouter automatiquement des élément additionnels communs.
+
+#### SSH
+Laisser l'option par défaut (NON installé) :
+
+![Ui 13 Ssh](assets/oss-os-install/ui-13-ssh.png)
+
+#### Autres
+Aucun logiciel additionnel ajouté:
+
+![Ui 14 Addons](assets/oss-os-install/ui-14-addons.png)
+
+### Mises à jour
+Le programme d'installation installe les mises à jour de sécurité critiques, il faut donc patienter.
+
+![Ui 15 Updates](assets/oss-os-install/ui-15-updates.png)
+
+Negative
+: Si Internet ne fonctionne pas, on peut forcer la fin de l'installation en appuyant sur ENTER
+
+### Redémarrage
+L'installation est terminée, il est temps de redémarrer:
+
+![Ui 16 Reboot](assets/oss-os-install/ui-16-reboot.png)
+
+
+### Éjection du cdrom virtuel
+Il se peut qu'une erreur se produise, dans ce cas, il faut juste appuyer sur ENTER:
+
+![Ui 17 Eject](assets/oss-os-install/ui-17-eject.png)
+
+### Premier login
+À la fin du démarrage, on devrait voir apparaître une invite de login:
+
+![Ui 18 Login](assets/oss-os-install/ui-18-login.png)
+
+Il se peut toutefois que celle-ci soit masquée au premier démarrage :
+
+![Ui 19 Login2](assets/oss-os-install/ui-19-login2.png)
+
+Indépendemment de ce qui est affiché, on peut entrer dans le système en introduisant le nom d'utilisateur suivi de ENTER suivi du mot de passe et à nouveau ENTER:
+
+![Ui 20 Login Success](assets/oss-os-install/ui-20-login-success.png)
+
+Negative
+: Il est tout à fait normal que les caractères du mot de passe ne soient pas affichés, c'est une manière d'augmenter la sécurité des mot de passe (au cas où quelqu'un serait en train d'espionner...)
+
+## Récapitulatif
 Duration: 0:05:00
 
-## Outils
-Duration: 0:5:00
+&#9996;Félicitations&#9996;, l'installation d'Ubuntu est terminée est réussie.
+Voici un questionnaire pour faciliter la mémorisation des éléments importants:
+
+![https://docs.google.com/forms/d/e/1FAIpQLSc5RiVJBGGowXr66xmR056zLOBwVd9H5NGyd--eLEWHyLn45g/viewform?embedded=true](codelabs/assets/linux.svg)
 
