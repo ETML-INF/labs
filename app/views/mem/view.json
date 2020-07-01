@@ -1,0 +1,10 @@
+{
+  "title": "MEM",
+  "description": "Cours en lien avec les métiers MEM",
+  "logoUrl": "/mem/logo-mem.png",
+  "tags": ["mem"],
+  "exclude": [
+    ".*-about$",
+    "^lang-.*"
+  ]
+}

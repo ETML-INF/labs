@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-06-28T16:57:33+02:00",
-  "id": "oss-os-install",
-  "duration": 34,
-  "title": "Installation d'un système d'exploitation open source",
+  "updated": "2020-06-25T14:01:36+02:00",
+  "id": "cl-skeleton",
+  "duration": 1,
+  "title": "Titre du tuto",
   "summary": "Installer un OS opensource",
-  "source": "oss-os-install.md",
+  "source": "cl-skeleton.md",
   "theme": "",
   "status": [
     "draft"
@@ -22,5 +22,5 @@
   ],
   "feedback": "https://git.section-inf.ch/jmy/labs/issues",
   "ga": "UA-170792591-1",
-  "url": "oss-os-install"
+  "url": "cl-skeleton"
 }
