@@ -1,0 +1,10 @@
+Hacking own password
+https://linuxconfig.org/ssh-password-testing-with-hydra-on-kali-linux
+
+Install autre bureau
+
+Autre disrib
+
+cedega ?
+
+htop...
