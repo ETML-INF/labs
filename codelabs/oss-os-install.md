@@ -226,10 +226,10 @@ exit
 Hormis les fonctions de virtualbox qui, pour rappel, simulent un ordinateur physique et donc l'utilisation des boutons sur un boîtier ou carrément de la prise électrique, pour éteindre Linux en mode console il faut:
 
 1. Se loguer (voir ci-dessus)
-2. Entrer la commande *poweroff*
+2. Entrer la commande *sudo poweroff* (et entrer son mot de passe si demandé)
 
 ``` bash
-poweroff
+sudo poweroff
 ```
 
 
