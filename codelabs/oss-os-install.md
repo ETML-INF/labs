@@ -4,7 +4,7 @@ id: oss-os-install
 categories: system
 tags: mem
 environments: Web
-status: Draft
+status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
