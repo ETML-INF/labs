@@ -217,6 +217,22 @@ Indépendemment de ce qui est affiché, on peut entrer dans le système en intro
 Negative
 : Il est tout à fait normal que les caractères du mot de passe ne soient pas affichés, c'est une manière d'augmenter la sécurité des mot de passe (au cas où quelqu'un serait en train d'espionner...)
 
+#### Logout
+Pour se déloguer:
+``` bash
+exit
+```
+#### Éteindre
+Hormis les fonctions de virtualbox qui, pour rappel, simulent un ordinateur physique et donc l'utilisation des boutons sur un boîtier ou carrément de la prise électrique, pour éteindre Linux en mode console il faut:
+
+1. Se loguer (voir ci-dessus)
+2. Entrer la commande *poweroff*
+
+``` bash
+poweroff
+```
+
+
 ## Récapitulatif
 Duration: 0:05:00
 
