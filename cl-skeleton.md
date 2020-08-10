@@ -4,7 +4,7 @@ id: cl-skeleton
 categories: system
 tags: mem
 environments: Web
-status: Draft
+status: Draft,Published,...???
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
