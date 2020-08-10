@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-10T12:52:58+02:00",
+  "id": "oss-os-manage",
+  "duration": 7,
+  "title": "Tuning d'un système d'exploitation open source",
+  "summary": "Tuner un OS opensource",
+  "source": "oss-os-manage.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "system"
+  ],
+  "tags": [
+    "mem",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oss-os-manage"
+}
