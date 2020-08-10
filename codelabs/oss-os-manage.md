@@ -41,7 +41,7 @@ Toutes les activités sont basées sur les opérations décrites [ici](https://l
 
 
 ## Utilisation des ressources système
-Duration: 0:05:00
+Duration: 0:08:00
 
 Un système d'exploitation est un peu comme un chef d'orchestre ayant pour musiciens des composants électroniques.
 
@@ -84,6 +84,8 @@ Voici la traduction des colonnes:
 1. COMMAND: nom du programme
 
 ## Aide sur une commande
+Duration: 0:10:00
+
 Voulez-vous en savoir plus sur le résultat de la commande *top* ou vous demandez-vous où peut-on trouver les informations décrites précédemment sans l'utilisation d'Internet ?
 
 Pour cela, il existe la commande *man* (manuel d'utilisation) :
@@ -108,5 +110,58 @@ Survey
   <li>US=espace unique et SY=espace système</li>
 </ul>
 
+## Configuration système
+Duration: 0:10:00
 
+Un système Linux est basé sur des **fichiers de configuration**. Ces fichiers contiennent des indications que le système d'exploitation (au travers de ses programmes) interprète. C'est un peu  comme un automobiliste qui regarde les panneaux de signalisation pour savoir à quelle vitesse rouler à l'exception près qu'un programme, lui, ne fait jamais d'excès de vitesse ;-)
+
+### Ajouter un message de bienvenue
+Pour commencer, nous allons ajouter un message au login. Pour cela, nous avons donc besoin de 2 éléments:
+
+1. Quel fichier de configuration ?
+1. Comment éditer un fichier en ligne de commande ?
+
+#### Bash
+Pour la première question, un indice utile est que le programme lancé au login (interpréteur de commande) se nomme *bash*. Comme tout programme, on peut donc lire son manuel:
+``` bash
+man bash
+```
+
+Negative
+: En cas de difficulté, un(e) camarade, votre professeur(e) ou Internet sauront vous aiguiller.
+
+#### Nano
+Il existe plusieurs éditeurs de fichier en ligne de commande et même si *vi* (visual editor) est le plus connu, *nano* a le mérite d'être plus facile à prendre en main et c'est donc celui qui va être utilisé.
+
+En lien avec la partie précédente, pour éditer un fichier la commande est la suivante:
+``` bash
+nano unFichierAEditer
+```
+
+En remplaçant *unFichierAEditer* par le fichier de configuration de login, on peut alors ajouter une ligne tout en bas du fichier (descendre avec la flèche en bas) pour saluer l'utilisateur:
+
+![NanoBashrc](assets/oss-os-manage/nanoBashrc.gif)
+
+Résumé des commandes à effectuer:
+
+1. Lancer l'éditeur (nano ...)
+1. Se déplacer à la fin du fichier (flèche en bas)
+1. Écrire la commande (echo "Bonjour Luke")
+1. Sauvegarder (ctrl-o)
+1. Quitter (ctrl-x)
+
+Pour vérifier si cela fonctionne, il suffit de se déloguer :
+``` bash
+exit
+```
+
+Puis de se reloguer:
+
+![LoginHello](assets/oss-os-manage/loginHello.png)
+
+
+#### Défi
+En s'inspirant de ce qui a été fait précédemment, votre mission est d'ajouter la date au moment du login:
+
+![LoginDate](assets/oss-os-manage/loginDate.gif)
 

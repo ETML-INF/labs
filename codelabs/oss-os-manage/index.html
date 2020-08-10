@@ -57,7 +57,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Utilisation des ressources système" duration="5">
+      <google-codelab-step label="Utilisation des ressources système" duration="8">
         <p>Un système d&#39;exploitation est un peu comme un chef d&#39;orchestre ayant pour musiciens des composants électroniques.</p>
 <p class="image-container"><img alt="Orchestrate" src="img/c07263daaa47cdc5.jpg"></p>
 <p>On peut observer son travail d&#39;orchestration avec la commande <em>top</em> (écrire <em>top</em> puis valider avec la touche <em>enter</em>)</p>
@@ -95,7 +95,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Aide sur une commande" duration="0">
+      <google-codelab-step label="Aide sur une commande" duration="10">
         <p>Voulez-vous en savoir plus sur le résultat de la commande <em>top</em> ou vous demandez-vous où peut-on trouver les informations décrites précédemment sans l&#39;utilisation d&#39;Internet ?</p>
 <p>Pour cela, il existe la commande <em>man</em> (manuel d&#39;utilisation) :</p>
 <pre><code>man top
@@ -116,6 +116,47 @@
 <paper-radio-button>US=espace unique et SY=espace système</paper-radio-button>
 </paper-radio-group>
 </google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configuration système" duration="10">
+        <p>Un système Linux est basé sur des <strong>fichiers de configuration</strong>. Ces fichiers contiennent des indications que le système d&#39;exploitation (au travers de ses programmes) interprète. C&#39;est un peu  comme un automobiliste qui regarde les panneaux de signalisation pour savoir à quelle vitesse rouler à l&#39;exception près qu&#39;un programme, lui, ne fait jamais d&#39;excès de vitesse ;-)</p>
+<h2 is-upgraded>Ajouter un message de bienvenue</h2>
+<p>Pour commencer, nous allons ajouter un message au login. Pour cela, nous avons donc besoin de 2 éléments:</p>
+<ol type="1">
+<li>Quel fichier de configuration ?</li>
+<li>Comment éditer un fichier en ligne de commande ?</li>
+</ol>
+<h3 is-upgraded>Bash</h3>
+<p>Pour la première question, un indice utile est que le programme lancé au login (interpréteur de commande) se nomme <em>bash</em>. Comme tout programme, on peut donc lire son manuel:</p>
+<pre><code>man bash
+</code></pre>
+<aside class="warning"><p>En cas de difficulté, un(e) camarade, votre professeur(e) ou Internet sauront vous aiguiller.</p>
+</aside>
+<h3 is-upgraded>Nano</h3>
+<p>Il existe plusieurs éditeurs de fichier en ligne de commande et même si <em>vi</em> (visual editor) est le plus connu, <em>nano</em> a le mérite d&#39;être plus facile à prendre en main et c&#39;est donc celui qui va être utilisé.</p>
+<p>En lien avec la partie précédente, pour éditer un fichier la commande est la suivante:</p>
+<pre><code>nano unFichierAEditer
+</code></pre>
+<p>En remplaçant <em>unFichierAEditer</em> par le fichier de configuration de login, on peut alors ajouter une ligne tout en bas du fichier (descendre avec la flèche en bas) pour saluer l&#39;utilisateur:</p>
+<p class="image-container"><img alt="NanoBashrc" src="img/5e2d074d69bfe4c8.gif"></p>
+<p>Résumé des commandes à effectuer:</p>
+<ol type="1">
+<li>Lancer l&#39;éditeur (nano ...)</li>
+<li>Se déplacer à la fin du fichier (flèche en bas)</li>
+<li>Écrire la commande (echo &#34;Bonjour Luke&#34;)</li>
+<li>Sauvegarder (ctrl-o)</li>
+<li>Quitter (ctrl-x)</li>
+</ol>
+<p>Pour vérifier si cela fonctionne, il suffit de se déloguer :</p>
+<pre><code>exit
+</code></pre>
+<p>Puis de se reloguer:</p>
+<p class="image-container"><img alt="LoginHello" src="img/12d259bca24a7dda.png"></p>
+<h3 is-upgraded>Défi</h3>
+<p>En s&#39;inspirant de ce qui a été fait précédemment, votre mission est d&#39;ajouter la date au moment du login:</p>
+<p class="image-container"><img alt="LoginDate" src="img/71b23f5213dde4c5.gif"></p>
 
 
       </google-codelab-step>
