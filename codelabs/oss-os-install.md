@@ -232,6 +232,8 @@ Hormis les fonctions de virtualbox qui, pour rappel, simulent un ordinateur phys
 sudo poweroff
 ```
 
+Negative
+: sudo veut dire 'super user do', soit 'le super utilisateur fait'. Autrement dit, cela indique à Linux d'éxécuter le programme en tant qu'administrateur (si celui-ci en a le droit). Ainsi, n'importe quel utilisateur ne peut pas déclencher l'extinction de l'OS (protection pour les serveurs). Ce 'préfixe' peut se mettre devant n'importe quelle commande et c'est au travers d'un fichier de configuration qu'on indique quels utilisateurs sont administrateurs...
 
 ## Récapitulatif
 Duration: 0:05:00
