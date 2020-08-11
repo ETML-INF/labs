@@ -41,13 +41,14 @@ Toutes les activités sont basées sur les opérations décrites [ici](https://l
 
 
 ## Utilisation des ressources système
-Duration: 0:08:00
+Duration: 0:15:00
 
 Un système d'exploitation est un peu comme un chef d'orchestre ayant pour musiciens des composants électroniques.
 
 ![Orchestrate](assets/orchestrate.jpg)
 
-On peut observer son travail d'orchestration avec la commande *top* (écrire *top* puis valider avec la touche *enter*)
+### CPU et RAM
+On peut observer le travail d'orchestration avec la commande *top* (écrire *top* puis valider avec la touche *enter*)
 ``` bash
 top
 ```
@@ -56,10 +57,10 @@ top
 Negative
 : Pour quitter la commande, il suffit d'appuyer sur la touche *q*
 
-### Décryptage du résultat
+#### Décryptage du résultat
 ![TopDetail](assets/oss-os-manage/topDetail.png)
 
-#### Partie 1 : Résumé
+##### Partie 1 : Résumé
 Cette partie comporte 3 points:
 
 1. Le nombre de processus : 98 programmes chargés dont 1 en cours d'éxécution et 97 qui dorment.
@@ -67,7 +68,7 @@ Cette partie comporte 3 points:
 1. L'utilisation de la RAM : 1987.8Mo disponible dont 148.3Mo utilisés et 1208.3Mo de libres.
 1. L'utilisation du SWAP : 2Go au total dont 0 utilisé.
 
-#### Partie 2 : Détail des processus
+##### Partie 2 : Détail des processus
 Le processus en haut de la liste est justement celui qui permet d'afficher les informations sur le processus.
 Voici la traduction des colonnes:
 
@@ -83,12 +84,40 @@ Voici la traduction des colonnes:
 1. %MEM: pourcentage d'utilisation de la mémoire
 1. COMMAND: nom du programme
 
+### Espace disque
+Quand il n'y a plus d'espace pour stocker des nouvelles données, un ordinateur peut se bloquer. Il est donc utile de pouvoir contrôler l'espace sur les disques (SSD ou HDD) et aussi observer combien d'espace est pris par un dossier.
+
+#### Lister les disques et leur partition
+Une commande pratique est la suivante:
+
+``` bash
+sudo df -h
+```
+
+![Dfh](assets/oss-os-manage/dfh.png)
+
+On voit que le disque de 20Go est rempli à 24%.
+
+#### Calculer la taille d'un dossier
+Pour savoir combien d'espace est utilisé par un utilisateur, il suffit de se loguer puis d'éxécuter la commande suivante:
+
+``` bash
+du -sh .
+```
+
+![Dush](assets/oss-os-manage/dush.png)
+
+Ici, seulement 48Ko sont utilisés. Pour vérifier que c'est correct, on peut ajouter un fichier d'environ 150Mo et vérifier:
+
+![Dush Grand](assets/oss-os-manage/dush-grand.png)
+
 ## Aide sur une commande
 Duration: 0:10:00
 
-Voulez-vous en savoir plus sur le résultat de la commande *top* ou vous demandez-vous où peut-on trouver les informations décrites précédemment sans l'utilisation d'Internet ?
+Voulez-vous en savoir plus sur le résultat de la commande *top*, *du*, *df*, *dd* ou vous aimeriez savoir où on peut trouver les informations décrites précédemment sans l'utilisation d'Internet ?
 
-Pour cela, il existe la commande *man* (manuel d'utilisation) :
+Pour cela, il existe la commande *man* (manuel d'utilisation). Par exemple, pour *top*, on peut écrire:
+
 ``` bash
 man top
 ```
@@ -110,7 +139,7 @@ Survey
   <li>US=espace unique et SY=espace système</li>
 </ul>
 
-## Configuration système
+## Pimpage du login
 Duration: 0:10:00
 
 Un système Linux est basé sur des **fichiers de configuration**. Ces fichiers contiennent des indications que le système d'exploitation (au travers de ses programmes) interprète. C'est un peu  comme un automobiliste qui regarde les panneaux de signalisation pour savoir à quelle vitesse rouler à l'exception près qu'un programme, lui, ne fait jamais d'excès de vitesse ;-)
@@ -165,3 +194,75 @@ En s'inspirant de ce qui a été fait précédemment, votre mission est d'ajoute
 
 ![LoginDate](assets/oss-os-manage/loginDate.gif)
 
+## Backup
+Duration: 00:05:00
+
+Il est souvent utile de sauvegarder certains fichiers ou dossiers pour les mettre en lieu sûr (clé USB ou cloud).
+Avant de pouvoir faire un backup, il faut pouvoir se ballader dans le système de fichier sans l'aide d'un explorateur traditionnel qu'on contrôle avec une souris.
+
+### Navigation dans le système de fichier
+
+Quand on se logue, on arrive dans le répertoire de l'utilisateur qui est habituellement */home/nomUtilisateur*.
+Pour savoir où on est dans la ligne de commande, on peut toujours utiliser *pwd* :
+
+![Pwd](assets/oss-os-manage/pwd.png)
+
+À partir de là, on peut, par exemple, lister les éléments présents dans ce répertoire:
+
+![Ls1](assets/oss-os-manage/ls1.png)
+
+#### Créer un répertoire
+Pour ajouter un dossier (ou répertoire) la commande est *mkdir*:
+
+![Mkdir](assets/oss-os-manage/mkdir.png)
+
+Pour 'ouvrir' le dossier, on utilise la commande *cd* et ensuite on peut vérifier que le dossier est bien vide avec la commande précédente de listing et aussi voir qu'on est dans un sous-dossier depuis la racine (/):
+
+![Cd1](assets/oss-os-manage/cd1.png)
+
+### Zipper un répertoire
+Un format traditionnel pour faire des backups de répertoires entiers est le *zip*.
+
+Pour sauvegarder le répertoire qui a été créé précédemment, la commande est la suivante:
+
+![Tar1](assets/oss-os-manage/tar1.png)
+
+Positive
+: Il suffirait ensuite d'uploader ce fichier sur le cloud [exemple](https://stackoverflow.com/questions/27873017/example-of-dropbox-api-put-using-curl-and-oauth-2-to-upload-a-file-to-dropbox) ou le copier vers une clé USB.
+
+Pour vérifier que cela fonctionne, supprimons le dossier et rechargeons-le depuis la sauvegarde:
+
+![Rm1](assets/oss-os-manage/rm1.png)
+
+![Restore1](assets/oss-os-manage/restore1.png)
+
+## Internet
+Duration: 00:05:00
+
+### Adresse IP
+ip addr show
+
+### Voisins
+ip neigh show
+
+### Routeur
+ip route
+
+### Etml
+ping etml.ch
+
+## Logiciels
+
+### Installés
+apt list --installed
+
+### Installer un logiciel
+apt-cache search ..
+
+### Mise à jour des logiciels
+Logon message + update + upgrade
+
+
+## Mode graphique
+
+apt-get install
