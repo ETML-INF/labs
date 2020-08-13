@@ -1,0 +1,169 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Comment hacker son propre mot de passe ?</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oss-os-security"
+                  title="Comment hacker son propre mot de passe ?"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Aperçu" duration="1">
+        <p class="image-container"><img alt="Tuxhack" src="img/e8372d0da0ea5826.gif"></p>
+<p>As-tu déjà entendu qu&#39;un mot de passe devait avoir une certaine complexité pour des raisons de sécurité ?<br>Et as-tu cru cette explication ?</p>
+<p>Aujourd&#39;hui, plutôt que de croire, tu vas voir de tes propres yeux si c&#39;est vrai ou pas en tentant de <strong>hacker</strong> ton propre mot de passe !</p>
+<h2 is-upgraded>Compétence visée</h2>
+<ul>
+<li>Mesurer la force d&#39;un mot de passe</li>
+</ul>
+<google-codelab-survey survey-id="oss-os-security-1">
+<h4>Fondamentalement, un(e) hacker(euse) est ?</h4>
+<paper-radio-group>
+<paper-radio-button>un(e) expert(e) en informatique</paper-radio-button>
+<paper-radio-button>similaire à darth vador</paper-radio-button>
+<paper-radio-button>une personne qui a été lobotomisée</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prérequis" duration="1">
+        <p class="image-container"><img alt="Tux Petit 125" src="img/7dc8a004a82ebe2a.png"></p>
+<h2 is-upgraded>Linux fonctionnel</h2>
+<p>Il faut avoir suivi l&#39;atelier <a href="https://labs.section-inf.ch/codelabs/oss-os-manage-1/index.html" target="_blank">Installer Linux</a> pour participer à ce laboratoire.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Explications" duration="5">
+        <p class="image-container"><img alt="Fingerprint" src="img/57d0625d3a6bc162.jpg"></p>
+<p>Comme la clé d&#39;une porte de maison, un système d&#39;exploitation requiert un login associé à un mot de passe pour que l&#39;utilisateur puisse l&#39;utiliser.<br>Ces informations doivent donc être stockées dans le système. De la même manière qu&#39;on pourrait imaginer une sorte de pâte à modeler qu&#39;on placerait dans la serrure d&#39;une porte pour capter l&#39;empreinte de la clé (comme le vol d&#39;une empreinte digitale), on peut obtenir des informations sur les comptes utilisateurs d&#39;un système qui sont stockés dans des fichiers de configuration.</p>
+<p class="image-container"><img alt="Hash" src="img/e97e0a4d6e06459f.jpg"></p>
+<p>Toutefois, les mot de passe ne sont pas stockés en clair dans les fichiers de configuration car cela serait trop facile à dérober. Ce qui est stocké, c&#39;est une empreinte générée à partir du mot de passe. C&#39;est un peu comme un code QR avec lequel on ne peut rien faire, par contre un smartphone peut le décoder.</p>
+<p>Ce laboratoire se déroulera donc en <strong>2 étapes</strong>:</p>
+<ol type="1">
+<li>Récupérer l&#39;empreinte du mot de passe</li>
+<li>Essayer différentes combinaisons</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prépration de l&#39;environnement" duration="5">
+        <h2 is-upgraded>Terminal</h2>
+<p>Pour commencer, il faut démarrer un terminal:</p>
+<p class="image-container"><img alt="Termemu" src="img/b9151545cf35bc4b.png"></p>
+<h2 is-upgraded>Ajouter un compte de test</h2>
+<p>Pour simuler un mot de passe faible, ajoutons un compte avec le mot de passe <em>12345</em>:</p>
+<pre><code>sudo adduser test
+</code></pre>
+<p class="image-container"><img alt="Adduser" src="img/bf56f59d33182aba.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récupération du mot de passe" duration="10">
+        <p class="image-container"><img alt="PasswordSteal" src="img/ae35bd3f32d72e43.jpg"></p>
+<h2 is-upgraded>Copie des fichiers de configuration</h2>
+<p>Les informations de compte sont stockés dans <em>/etc/passwd</em> et les empreintes de mot de passe dans <em>/etc/shadow</em> et on va donc commencer par copier ces informations dans des fichiers:</p>
+<pre><code>cat /etc/passwd &gt; comptes.txt
+sudo cat /etc/shadow &gt; motDePasses.txt
+</code></pre>
+<p class="image-container"><img alt="Copypass" src="img/f3698ab07266ad42.png"></p>
+<h3 is-upgraded>Tentative de hacking à la main</h3>
+<p>Puisque le fichier <em>/etc/shadow</em> contient les mot de passe, on peut simplement l&#39;ouvrir avec <em>nano</em> et y trouver le mot de passe non ?:</p>
+<pre><code>nano motDePasse.txt
+</code></pre>
+<p class="image-container"><img alt="Nanomdp" src="img/3c86eac6b6986f2.png"></p>
+<aside class="warning"><p>Pour rappel, c&#39;est la combinaison <em>ctrl+x</em> pour quitter <em>nano</em>.</p>
+</aside>
+<p>Comme décrit précédemment, ce n&#39;est pas le mot de passe <em>12345</em> qui est inscrit dans le fichier mais une empreinte illisible... On ne peut donc rien faire avec ça et il nous faut alors un programme qui va, à partir de mot de passe aléatoires, générer des empreintes et les comparer.</p>
+<aside class="special"><p>Cette manière de procéder (générer des empreintes et les comparer) est similaire pour le WiFi ou n&#39;importe quel compte sur Internet...</p>
+</aside>
+<h2 is-upgraded>Installation du programme de hacking</h2>
+<p>Vu que tu sais comment installer un programme avec <em>apt</em>, la seule indication est que ce dernier s&#39;apelle <em>john</em>.<br>Pour vérifier qu&#39;il a bien été installé, la commande <em>john</em> devrait retourner ceci:</p>
+<p class="image-container"><img alt="John" src="img/ff7e8b18a876bbaa.png"></p>
+<h2 is-upgraded>Conversion des fichiers pour john</h2>
+<p>Dans le paquet <em>john</em> se trouve un programme additionnel appelé <em>unshadow</em>. Celui-ci permet d&#39;adapter le format des empreintes de mot de passe à l&#39;utilitaire:</p>
+<pre><code>unshadow comptes.txt motDePasses.txt &gt; convertis.txt
+</code></pre>
+<p>En regardant le fichier <em>convertis.txt</em> tu verras qu&#39;il ressemble beaucoup aux originaux et c&#39;est surtout une question de formattage...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Hacking du mot de passe" duration="10">
+        <p class="image-container"><img alt="PasswordHack" src="img/8ddf85674f1b1228.png"></p>
+<h2 is-upgraded>Lancement de john</h2>
+<p>Maintenant qu&#39;on a le fichier compatible avec le programme de hacking, on va pouvoir commencer <strong>l&#39;audit de sécurité</strong> sur le compte de test :</p>
+<pre><code>john -user:test convertis.txt
+</code></pre>
+<aside class="special"><p>Pour afficher le mot de passe en cours de tentative, tu peux appuyer sur n&#39;importe quelle touche et sur <em>q</em> ou <em>ctrl-c</em> pour quitter prématurément.</p>
+</aside>
+<p>Si tout va bien, le résultat devrait ressembler à cela:</p>
+<p class="image-container"><img alt="Johncrackedtest" src="img/d940bcf1065a281d.png"></p>
+<h2 is-upgraded>Changement de mot de passe</h2>
+<p>Maintenant que la procédure est connue, il suffit de changer le mot de passe du compte de test (par exemple 11111) pour vérifier si john le trouve rapidement:</p>
+<pre><code>sudo passwd test
+</code></pre>
+<aside class="warning"><p>Attention, la commande <em>sudo</em> demande d&#39;abord ton mot de passe et ensuite le nouveau pour le compte de test</p>
+</aside>
+<p>Ensuite il faut refaire l&#39;export, la conversion et l&#39;audit:</p>
+<pre><code>sudo cat /etc/shadow &gt; motDePasses.txt
+unshadow comptes.txt motDePasses.txt &gt; convertis.txt
+john -user:test convertis.txt
+</code></pre>
+<p class="image-container"><img alt="John1111" src="img/cec08f0001ff5a1c.png"></p>
+<p>Et ainsi de suite avec n&#39;importe quel mot de passe que tu voudrais tester (celui que tu as utilisé pour tes comptes personnels par exemple)...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Alternative" duration="3">
+        <p class="image-container"><img alt="Alternative" src="img/eb217b74c7ec6af6.jpg"></p>
+<p>Comme alternative, si tu as confiance, tu peux utiliser un site comme par exemple <a href="https://www.uic.edu/apps/strong-password/" target="_blank">https://www.uic.edu/apps/strong-password/</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="3">
+        <p class="image-container"><img alt="Conclusion" src="img/8ceafe4c389bc57.jpg"></p>
+<p>Connaître les <strong>forces</strong> et les <strong>faiblesses</strong> d&#39;un système informatique est un élément essentiel pour pouvoir évaluer et protéger ce dernier. Ainsi les outils de hacking sont utilisés à des fins d&#39;audit et de manière officielle lorsque cela est nécessaire.</p>
+<p>Sans être encore spécialiste, tu es désormais sensibilisé(e) aux dangers d&#39;utiliser des mot de passe <em>faibles</em> et autonome pour <strong>mesurer</strong> la force d&#39;un mot de passe.</p>
+<p>Bien sûr, le programme <em>john</em> comporte plusieurs modes et options et s&#39;il n&#39;a pas trouvé ton mot de passe en quelques minutes, cela ne garantit pas qu&#39;il n&#39;est pas facilement crackable (sensible à une attaque par dictionnaire peut-être).</p>
+<h2 is-upgraded>Sources</h2>
+<p><a href="https://null-byte.wonderhowto.com/how-to/crack-shadow-hashes-after-getting-root-linux-system-0186386/" target="_blank">Crack shadow hashes</a></p>
+<p><a href="https://askubuntu.com/questions/180402/how-to-set-a-short-password-on-ubuntu" target="_blank">Ubuntu short password</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
