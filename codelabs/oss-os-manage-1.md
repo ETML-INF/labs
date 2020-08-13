@@ -181,6 +181,7 @@ Résumé des commandes à effectuer:
 1. Quitter (ctrl-x)
 
 Pour vérifier si cela fonctionne, il suffit de se déloguer :
+
 ``` bash
 exit
 ```
