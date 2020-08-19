@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-08-11T16:08:18+02:00",
-  "id": "oss-os-install",
-  "duration": 34,
-  "title": "Installation d'un système d'exploitation open source",
-  "summary": "Installer un OS opensource",
-  "source": "oss-os-install.md",
+  "updated": "2020-08-13T11:57:52+02:00",
+  "id": "oss-os-manage-1",
+  "duration": 60,
+  "title": "Tuning d'un système d'exploitation open source #1",
+  "summary": "Tuner un OS opensource - Partie 1",
+  "source": "oss-os-manage-1.md",
   "theme": "",
   "status": [
     "published"
@@ -22,5 +22,5 @@
   ],
   "feedback": "https://git.section-inf.ch/jmy/labs/issues",
   "ga": "UA-170792591-1",
-  "url": "oss-os-install"
+  "url": "oss-os-manage-1"
 }

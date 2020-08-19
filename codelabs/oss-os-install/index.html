@@ -154,6 +154,20 @@
 <p class="image-container"><img alt="Ui 20 Login Success" src="img/9826fd06ae97c464.png"></p>
 <aside class="warning"><p>Il est tout à fait normal que les caractères du mot de passe ne soient pas affichés, c&#39;est une manière d&#39;augmenter la sécurité des mot de passe (au cas où quelqu&#39;un serait en train d&#39;espionner...)</p>
 </aside>
+<h3 is-upgraded>Logout</h3>
+<p>Pour se déloguer:</p>
+<pre><code>exit
+</code></pre>
+<h3 is-upgraded>Éteindre</h3>
+<p>Hormis les fonctions de virtualbox qui, pour rappel, simulent un ordinateur physique et donc l&#39;utilisation des boutons sur un boîtier ou carrément de la prise électrique, pour éteindre Linux en mode console il faut:</p>
+<ol type="1">
+<li>Se loguer (voir ci-dessus)</li>
+<li>Entrer la commande <em>sudo poweroff</em> (et entrer son mot de passe si demandé)</li>
+</ol>
+<pre><code>sudo poweroff
+</code></pre>
+<aside class="warning"><p>sudo veut dire ‘super user do&#39;, soit ‘le super utilisateur fait&#39;. Autrement dit, cela indique à Linux d&#39;éxécuter le programme en tant qu&#39;administrateur (si celui-ci en a le droit). Ainsi, n&#39;importe quel utilisateur ne peut pas déclencher l&#39;extinction de l&#39;OS (protection pour les serveurs). Ce ‘préfixe&#39; peut se mettre devant n&#39;importe quelle commande et c&#39;est au travers d&#39;un fichier de configuration qu&#39;on indique quels utilisateurs sont administrateurs...</p>
+</aside>
 
 
       </google-codelab-step>

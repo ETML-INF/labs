@@ -4,7 +4,7 @@ id: oss-os-install
 categories: system
 tags: mem
 environments: Web
-status: Draft
+status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
@@ -216,6 +216,24 @@ Indépendemment de ce qui est affiché, on peut entrer dans le système en intro
 
 Negative
 : Il est tout à fait normal que les caractères du mot de passe ne soient pas affichés, c'est une manière d'augmenter la sécurité des mot de passe (au cas où quelqu'un serait en train d'espionner...)
+
+#### Logout
+Pour se déloguer:
+``` bash
+exit
+```
+#### Éteindre
+Hormis les fonctions de virtualbox qui, pour rappel, simulent un ordinateur physique et donc l'utilisation des boutons sur un boîtier ou carrément de la prise électrique, pour éteindre Linux en mode console il faut:
+
+1. Se loguer (voir ci-dessus)
+2. Entrer la commande *sudo poweroff* (et entrer son mot de passe si demandé)
+
+``` bash
+sudo poweroff
+```
+
+Negative
+: sudo veut dire 'super user do', soit 'le super utilisateur fait'. Autrement dit, cela indique à Linux d'éxécuter le programme en tant qu'administrateur (si celui-ci en a le droit). Ainsi, n'importe quel utilisateur ne peut pas déclencher l'extinction de l'OS (protection pour les serveurs). Ce 'préfixe' peut se mettre devant n'importe quelle commande et c'est au travers d'un fichier de configuration qu'on indique quels utilisateurs sont administrateurs...
 
 ## Récapitulatif
 Duration: 0:05:00
