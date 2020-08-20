@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-08-20T09:23:41+02:00",
+  "id": "cosmos-base-00-hello",
+  "duration": 3,
+  "title": "Bonjour Cosmos",
+  "summary": "Bonjour Cosmos",
+  "source": "cosmos-base-00-hello.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cosmos",
+    "programmation"
+  ],
+  "tags": [
+    "cosmos",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "cosmos-base-00-hello"
+}
