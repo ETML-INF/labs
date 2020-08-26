@@ -56,14 +56,14 @@
 <h3 is-upgraded><a href="https://github.com/jonathanMelly/cosmos/releases/latest/download/cosmos-osx-x64.zip" target="_blank">MacOS</a><img alt="Macos Logo" src="img/4ca530b73d3b7eb5.png"></h3>
 <h3 is-upgraded><a href="https://github.com/jonathanMelly/cosmos/releases/latest/download/cosmos-linux-x64.zip" target="_blank">Linux </a><img alt="Tux" src="img/2b34607751d58792.png"></h3>
 <h2 is-upgraded>Décompression</h2>
-<p>Une fois le fichier téléchargé, on peut de décompresser en double-cliquant dessus.</p>
+<p>Une fois le fichier téléchargé, on peut le décompresser en double-cliquant dessus.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Premier programme" duration="0">
+      <google-codelab-step label="Première interaction" duration="15">
         <h2 is-upgraded>Console</h2>
-<p>Il faut commencer par lancer une console :</p>
+<p>Commençons par lancer une console :</p>
 <ul>
 <li>Windows : Clic dans le menu démarrer =&gt; commande</li>
 <li>MacOS   : Clic sur spotlight =&gt; terminal</li>
@@ -79,14 +79,43 @@ cosmos.exe
 <pre><code>cd ~\Downloads\cosmos&lt;version&gt;
 ./cosmos
 </code></pre>
+<h2 is-upgraded>Mode interactif</h2>
+<p>Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :</p>
+<pre><code>Afficher &#34;Bonjour Cosmos !&#34;.
+</code></pre>
+<h2 is-upgraded>Premier programme</h2>
+<p>Un programme cosmos complet est divisé en 2 parties:</p>
+<ol type="1">
+<li>Une entête</li>
+<li>Le contenu du programme</li>
+</ol>
+<p>L&#39;entête est obligatoire. De la même manière qu&#39;un TAG de fichier MP3, elle contient des informations sur le programme (auteur, date, ...) qu&#39;on appelle <em>méta-données</em>.</p>
+<h3 is-upgraded>Génération d&#39;un squelette</h3>
+<p>Pour créer un squelette, on peut utiliser la commande suivante:</p>
+<pre><code>cosmos -n &lt;nomDuProgramme&gt;
+</code></pre>
+<aside class="special"><p>Pour faciliter la mémorisation, il existe un alias (synonyme) plus parlant à cette commande:</p>
+</aside>
+<pre><code>cosmos --nouveau &lt;nomDuProgramme&gt;
+</code></pre>
+<h3 is-upgraded>Ajout d&#39;une instruction</h3>
+<p>En ouvrant le fichier avec un éditeur de texte (notepad sur windows et textedit sur MacOS par exemple), on peut y ajouter une instruction:</p>
+<p>Il ne reste plus qu&#39;à lancer le programme:</p>
+<pre><code>cosmos HelloCosmos
+</code></pre>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Mode interactif" duration="0">
-        <p>Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :</p>
-<pre><code>Afficher &#34;Bonjour Cosmos !&#34;.
-</code></pre>
+      <google-codelab-step label="Cheatsheet" duration="2">
+        <p>Pour parler couramment en langage Cosmos, un dictionnaire est disponible sous forme de <em>cheatsheet</em> (traduit littéralement par <em>feuille de triche</em>) en cliquant ICI.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récapitulatif" duration="3">
+        <p>Pour terminer, un petit quizz facilitera la mémorisation à long terme des éléments pratiqués dans cet atelier.</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true"></iframe>
 
 
       </google-codelab-step>

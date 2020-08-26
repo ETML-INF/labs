@@ -51,10 +51,11 @@ Cliquez sur le lien ci-dessous correspondant à votre plateforme pour téléchar
 
 Une fois le fichier téléchargé, on peut le décompresser en double-cliquant dessus.
 
-## Premier programme
+## Première interaction
+Duration: 0:15:00
 
 ### Console
-Il faut commencer par lancer une console :
+Commençons par lancer une console :
 
 - Windows : Clic dans le menu démarrer => commande
 - MacOS   : Clic sur spotlight => terminal
@@ -75,22 +76,49 @@ cd ~\Downloads\cosmos<version>
 ./cosmos
 ```
 
-## Mode interactif
+### Mode interactif
 Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :
 
 ``` cosmos
 Afficher "Bonjour Cosmos !".
 ```
 
-## Un premier programme
+### Premier programme
 Un programme cosmos complet est divisé en 2 parties:
-1. Un entête
+1. Une entête
 1. Le contenu du programme
 
+L'entête est obligatoire. De la même manière qu'un TAG de fichier MP3, elle contient des informations sur le programme (auteur, date, ...) qu'on appelle *méta-données*.
+
+#### Génération d'un squelette
 Pour créer un squelette, on peut utiliser la commande suivante:
 ``` bash
-cosmos -n
+cosmos -n <nomDuProgramme>
 ```
 
+Positive
+: Pour faciliter la mémorisation, il existe un alias (synonyme) plus parlant à cette commande:
 
+``` bash
+cosmos --nouveau <nomDuProgramme>
+```
 
+#### Ajout d'une instruction
+En ouvrant le fichier avec un éditeur de texte (notepad sur windows et textedit sur MacOS par exemple), on peut y ajouter une instruction:
+
+Il ne reste plus qu'à lancer le programme:
+``` bash
+cosmos HelloCosmos
+```
+
+## Cheatsheet
+Duration: 0:02:00
+
+Pour parler couramment en langage Cosmos, un dictionnaire est disponible sous forme de *cheatsheet* (traduit littéralement par *feuille de triche*) en cliquant ICI.
+
+## Récapitulatif
+Duration: 0:03:00
+
+Pour terminer, un petit quizz facilitera la mémorisation à long terme des éléments pratiqués dans cet atelier.
+
+![https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true](codelabs/assets/linux.svg)
