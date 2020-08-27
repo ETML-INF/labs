@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-08-27T15:58:03+02:00",
+  "updated": "2020-08-27T16:36:07+02:00",
   "id": "cosmos-base-00-hello",
   "duration": 27,
   "title": "Bonjour Cosmos",
@@ -14,11 +14,10 @@
     "published"
   ],
   "category": [
-    "cosmos",
-    "programmation"
+    "dev"
   ],
   "tags": [
-    "cosmos",
+    "msig",
     "web"
   ],
   "feedback": "https://git.section-inf.ch/jmy/labs/issues",

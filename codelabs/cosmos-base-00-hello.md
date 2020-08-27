@@ -1,8 +1,8 @@
 author: Jonathan Melly
 summary: Bonjour Cosmos
 id: cosmos-base-00-hello
-categories: cosmos,programmation
-tags: cosmos
+categories: dev
+tags: msig
 environments: Web
 status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
