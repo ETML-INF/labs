@@ -201,3 +201,4 @@ $color-weave-green, 'weave.svg');
   $color-google-blue, 'web.svg');
   
 @include codelab-card(['system'], $color-google-blue , 'system.svg');
+@include codelab-card(['dev'], $color-google-blue , 'dev.png');
