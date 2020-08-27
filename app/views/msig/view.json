@@ -1,0 +1,10 @@
+{
+  "title": "MSIG",
+  "description": "Cours en lien avec la formation MSIG",
+  "logoUrl": "/msig/logo-msig.png",
+  "tags": ["msig"],
+  "exclude": [
+    ".*-about$",
+    "^lang-.*"
+  ]
+}
