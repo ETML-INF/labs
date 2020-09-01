@@ -3,8 +3,8 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-09-01T16:44:11+02:00",
-  "id": "cosmos-base-01-milion",
+  "updated": "2020-09-01T16:46:23+02:00",
+  "id": "cosmos-base-01-million",
   "duration": 68,
   "title": "Qui veut gagner les millions ?",
   "summary": "Qui veut gagner des millions",
@@ -22,5 +22,5 @@
   ],
   "feedback": "https://git.section-inf.ch/jmy/labs/issues",
   "ga": "UA-170792591-1",
-  "url": "cosmos-base-01-milion"
+  "url": "cosmos-base-01-million"
 }
