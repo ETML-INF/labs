@@ -1,0 +1,99 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qui veut gagner les millions ?</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="cosmos-base-01-milion"
+                  title="Qui veut gagner les millions ?"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Bienvenue" duration="1">
+        <p>Suite au <a href="https://labs.section-inf.ch/codelabs/cosmos-base-00-hello/index.html" target="_blank">précédent épisode</a>, il est temps d&#39;en découvrir un peu plus sur la programmation en reprenant un jeu de questions / réponses à l&#39;image de <em>Qui veut gagner des millions</em>.</p>
+<h2 is-upgraded>Objectifs</h2>
+<ul>
+<li>Interagir avec l&#39;utilisateur</li>
+<li>S&#39;adapter au comportement de l&#39;utilisateur</li>
+</ul>
+<google-codelab-survey survey-id="cosmos-base-01-milion-1">
+<h4>Si tu gagnais un million, que ferais-tu ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je les verserai intégralement à Greenpeace</paper-radio-button>
+<paper-radio-button>Je les flamberai en achats divers</paper-radio-button>
+<paper-radio-button>Ça demanderait réflexion...</paper-radio-button>
+<paper-radio-button>Autre</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Poser une question" duration="12">
+        <p>Pour commencer, on va poser une question au joueur.</p>
+<h2 is-upgraded>Créer un nouveau programme</h2>
+<p>Pour rappel, on créée un nouveau programme avec la commande suivante:</p>
+<p class="image-container"><img alt="Cosmos N Million" src="img/20bf71a972ea636f.png"></p>
+<aside class="special"><p>Une alternative plus concise est cosmos -n Million</p>
+</aside>
+<h2 is-upgraded>Afficher la question</h2>
+<p>Pour afficher une question, il suffit d&#39;éditer le fichier <em>Million.cosmos</em> et d&#39;y ajouter:</p>
+<p class="image-container"><img alt="Cosmos Q1" src="img/b5c4456385d0f882.png"></p>
+<p>Pour vérifier si cela fonctionne, on peut lancer le programme:</p>
+<p class="image-container"><img alt="Cosmos Q1 Res" src="img/c568c4c5764a4cc3.png"></p>
+<h2 is-upgraded>Ajouter les propositions</h2>
+<p>Dans le jeu original, on propose plusieurs possibilités et on pourrait s&#39;inspirer de la question pour ajouter le code suivant:</p>
+<p class="image-container"><img alt="Cosmos A1" src="img/e2faff7f6e4f1a3b.png"></p>
+<p>En testant le programme, on s&#39;aperçoit que le résultat n&#39;est pas satisfaisant:</p>
+<p class="image-container"><img alt="Cosmos A1 Res" src="img/43f4abcd1afa0cee.png"></p>
+<h3 is-upgraded>Retour de chariot</h3>
+<p>En fait, on doit indiquer à l&#39;ordinateur si on veut des retours à la ligne ou pas.<br>En l&#39;occurrence, on en veut plusieurs !<br>Pour indiquer un retour à la ligne, on utilise la notation <strong>\n</strong>, ce qui dans notre exemple donnerait:</p>
+<p class="image-container"><img alt="Cosmos Q1 N" src="img/b817dd68b068f024.png"></p>
+<p class="image-container"><img alt="Cosmos A1 Res2" src="img/3119a690f5b741d0.png"></p>
+<aside class="warning"><p>Sur Windows, le caractère de fin de ligne est plutôt <strong>\r\n</strong> mais le seul inconvénient à utiliser <strong>\n</strong> partout est qu&#39;il faut utiliser un éditeur plus évolué que <em>notepad.exe</em>, comme par exemple <em>notepad++</em> ou <em>visulstudio code</em>...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récupérer la réponse de l&#39;utilisateur" duration="0">
+        <p>Maintenant que la question est posée,</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récapitulatif" duration="3">
+        <p>Pour terminer, un petit quizz facilitera la mémorisation à long terme des éléments pratiqués dans cet atelier.</p>
+<p>lol</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

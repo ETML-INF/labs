@@ -20,7 +20,7 @@ Suite au [précédent épisode](https://labs.section-inf.ch/codelabs/cosmos-base
 ### Objectifs
 
 - Interagir avec l'utilisateur
-- Écrire un programme s'adaptant au comportement de l'utilisateur
+- S'adapter au comportement de l'utilisateur
 
 
 Survey
@@ -33,120 +33,59 @@ Survey
 </ul>
 
 ## Poser une question
-Duration: 0:03:00
+Duration: 0:12:00
 
-
+Pour commencer, on va poser une question au joueur.
 
 ### Créer un nouveau programme
 
 Pour rappel, on créée un nouveau programme avec la commande suivante:
-``` bash
-cosmos --nouveau Million
-```
 
 ![Cosmos N Million](assets/cosmos-base/cosmos-n-million.png)
+
+Positive
+: Une alternative plus concise est cosmos -n Million
 
 ### Afficher la question
 
 Pour afficher une question, il suffit d'éditer le fichier *Million.cosmos* et d'y ajouter:
 
-``` cosmos
-<TABULATION>Afficher "En quelle année est né le langage Cosmos ?" .
-```
+![Cosmos Q1](assets/cosmos-base/cosmos-q1.png)
 
-Une fois le fichier téléchargé, double-cliquez dessus.
+Pour vérifier si cela fonctionne, on peut lancer le programme:
 
-Pour Windows, après avoir double-cliqué sur le fichier, cliquez sur *Extraire tout* et corrigez le chemin d'extraction en retirant la dernière partie après le dernier caractère \\ (antislash):
+![Cosmos Q1 Res](assets/cosmos-base/cosmos-q1-res.png)
 
-![Cosmos Extract Win2](assets/cosmos-base/cosmos-extract-win.gif)
+### Ajouter les propositions
 
-## Première interaction
-Duration: 0:15:00
+Dans le jeu original, on propose plusieurs possibilités et on pourrait s'inspirer de la question pour ajouter le code suivant:
 
-### Console
-Commençons par lancer une console :
+![Cosmos A1](assets/cosmos-base/cosmos-a1.png)
 
-- Windows : Clic dans le menu démarrer => Invite de commandes
-- MacOS   : Clic sur spotlight => terminal
-- Linux   : Si vous utilisez Linux, vous savez comment faire ;-)
+En testant le programme, on s'aperçoit que le résultat n'est pas satisfaisant:
 
-### Avancer dans le cosmos
-Une fois la console lancée, il faut aller à l'endroit où est le dossier décompressé et lancer le programme:
+![Cosmos A1 Res](assets/cosmos-base/cosmos-a1-res.png)
 
-**Windows**
-``` bash
-cd Downloads\cosmos-win-x64
-cosmos.exe
-```
-![Cosmos Run1win](assets/cosmos-base/cosmos-run1win.png)
+#### Retour de chariot
 
-**MacOS / Linux**
-``` bash
-cd Downloads/cosmos-osx-x64
-./cosmos
-```
-![Cosmos Run1](assets/cosmos-base/cosmos-run1.png)
+En fait, on doit indiquer à l'ordinateur si on veut des retours à la ligne ou pas.
+En l'occurrence, on en veut plusieurs !
+Pour indiquer un retour à la ligne, on utilise la notation **\n**, ce qui dans notre exemple donnerait:
 
-### Mode interactif
-Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :
+![Cosmos Q1 N](assets/cosmos-base/cosmos-q1-n.png)
 
-``` cosmos
-Afficher "Bonjour Cosmos !".
-```
-![Cosmos Run2](assets/cosmos-base/cosmos-run2.png)
-
-Positive
-: Toute commande se valide avec la touche *ENTER*
+![Cosmos A1 Res2](assets/cosmos-base/cosmos-a1-res2.png)
 
 Negative
-: Pour quitter le mode interactif, écrivez *stop* et validez avec *ENTER*.
+: Sur Windows, le caractère de fin de ligne est plutôt **\r\n** mais le seul inconvénient à utiliser **\n** partout est qu'il faut utiliser un éditeur plus évolué que *notepad.exe*, comme par exemple *notepad++* ou *visulstudio code*...
 
-### Premier programme
-Un programme cosmos complet est divisé en 2 parties:
-1. Une entête
-1. Le contenu du programme
+## Récupérer la réponse de l'utilisateur
 
-L'entête est obligatoire. De la même manière qu'un TAG de fichier MP3, elle contient des informations sur le programme (auteur, date, ...) qu'on appelle *méta-données*.
-
-#### Génération d'un squelette
-Pour créer un squelette, on peut utiliser la commande suivante:
-``` bash
-cosmos -n <nomDuProgramme>
-```
-
-![Cosmos N](assets/cosmos-base/cosmos-n.png)
-
-Positive
-: Pour faciliter la mémorisation, il existe un alias (synonyme) plus parlant à cette commande:
-
-``` bash
-cosmos --nouveau <nomDuProgramme>
-```
-
-#### Ajout d'une instruction
-En ouvrant le fichier avec un éditeur de texte (notepad sur windows et textedit sur MacOS par exemple), on peut y ajouter une instruction:
-![Cosmos Textedit](assets/cosmos-base/cosmos-textedit.png)
-
-Il ne reste plus qu'à lancer le programme:
-``` bash
-cosmos HelloCosmos
-```
-
-![Cosmos Hello1](assets/cosmos-base/cosmos-hello1.png)
-
-Negative
-: Pour arrêter un programme qui est bloqué, on utilise la combinaison des touches *ctrl-c*.
-
-## Cheatsheet
-Duration: 0:05:00
-
-![Apprendre](assets/apprendre.png)
-
-Pour parler couramment en langage Cosmos, un dictionnaire est disponible sous forme de *cheatsheet* (traduit littéralement par *feuille de triche*) en cliquant [ICI](https://github.com/jonathanMelly/cosmos/raw/master/doc/cheatsheet.pdf).
+Maintenant que la question est posée, 
 
 ## Récapitulatif
 Duration: 0:03:00
 
 Pour terminer, un petit quizz facilitera la mémorisation à long terme des éléments pratiqués dans cet atelier.
 
-![https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true](codelabs/assets/linux.svg)
+lol![https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true](codelabs/assets/linux.svg)
