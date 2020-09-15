@@ -1,0 +1,124 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Animation</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="cosmos-base-02-animation"
+                  title="Animation"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Bienvenue" duration="1">
+        <p class="image-container"><img alt="02 Starwars" src="img/29c9de563b12bb40.gif"></p>
+<p>Une animation est une suite d&#39;image qui défile à un certain rythme...<br>Il suffit donc de montrer une information à l&#39;écran, puis de la changer et ainsi de suite pour créer<br>une animation...</p>
+<h2 is-upgraded>Objectifs</h2>
+<ul>
+<li>Voir la console comme un écran à 2 dimensions (x=colonne, y=ligne)</li>
+<li>Créer une animation</li>
+<li>Créer l&#39;illusion de contrôler un vaisseau avec le clavier</li>
+</ul>
+<google-codelab-survey survey-id="cosmos-base-02-animation-1">
+<h4>Le cerveau humain croit à une animation à une fréquence de</h4>
+<paper-radio-group>
+<paper-radio-button>1 image par seconde</paper-radio-button>
+<paper-radio-button>2 images par seconde</paper-radio-button>
+<paper-radio-button>25 images par seconde</paper-radio-button>
+<paper-radio-button>Il sait toujours que ce n&#39;est qu&#39;une illusion</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mouvements basiques" duration="15">
+        <h2 is-upgraded>Horizontal</h2>
+<p class="image-container"><img alt="02 Droite" src="img/1f9c2286eaf844a8.gif"></p>
+<p>Pour réaliser cette animation, il faut imaginer que la console ressemble à un quadrillage avec des coordonnées:</p>
+<p class="image-container"><img alt="02 Quadrillage" src="img/ab1344ba0f245f19.png"></p>
+<p>Ainsi, l&#39;animation correspond à faire bouger le texte sur la grille:</p>
+<p class="image-container"><img alt="02 Quadrillage Anim1" src="img/a5d225e212f6793d.png"></p>
+<h2 is-upgraded>Placer le curseur sur la grille</h2>
+<p>Pour placer le curseur à un endroit spécifique (avant d&#39;écrire), on utilise les instructions suivantes:</p>
+<pre><code>Placer le curseur à la colonne 5.
+Placer le curseur à la ligne 1.
+</code></pre>
+<p>Si le numéro dépend d&#39;une valeur stockée en mémoire, alors ça donne</p>
+<pre><code>//Créer une zone mémoire nommée #colonne avec la valeur 1.
+Placer le curseur à la colonne #colonne.
+</code></pre>
+<h2 is-upgraded>Animation</h2>
+<p>À présent, nous sommes en mesure d&#39;écrire une première version de l&#39;animation horizontale qui est une répétition de l&#39;élément suivant:</p>
+<pre><code>Placer le curseur à la colonne 1.
+Afficher &#34;==&gt;&#34;.
+Attendre 200ms.
+</code></pre>
+<p>Et voici le code:</p>
+<p class="image-container"><img alt="02 Animation1 Diff" src="img/1955c89f7534f77b.png"></p>
+<aside class="warning"><p>Il manque encore un petit détail pour que l&#39;animation ressemble à celle présentée au début... Ne penses-tu pas qu&#39;il faudrait effacer le premier caractère de l&#39;image précédente ?</p>
+</aside>
+<p>Une fois la correction faite, voici le résultat:<br><img alt="02 Animation 1b" src="img/1c73131c3c16a4e8.gif"></p>
+<h2 is-upgraded>Simplification du code</h2>
+<p>Le code actuel ressemble un peu à du copier/coller et cela est très ennuyeux lorsqu&#39;on doit faire des modifications (d&#39;ailleurs c&#39;est ce qui coûte cher en développement logiciel)...<br>Pour écrire du code <strong>durable</strong>, on a donc tout intérêt à opérer les modifications suivantes.</p>
+<h3 is-upgraded>Stocker le symbole qui avance en mémoire</h3>
+<p>Comme pour le délai, on va utiliser une zone mémoire pour y enregistrer et référencer le symbole qui avance et on va même en profiter pour proposer à l&#39;utilisateur de le choisir:</p>
+<p class="image-container"><img alt="02 Animation 1c" src="img/18c2390eb6b27abf.png"></p>
+<h3 is-upgraded>Répéter des instructions</h3>
+<p>Peut-être as-tu remarqué que le code est très similaire et c&#39;est un signe qu&#39;on peut l&#39;optimiser en utiliser une notion de <strong>répétition</strong>. D&#39;ailleurs cette notion est la base de la force de l&#39;informatique qui est capable de répéter des opérations de manière très rapide...</p>
+<p>Pour cela on utilise le mot clé <em>Répéter</em> :</p>
+<p class="image-container"><img alt="02 Boucle1" src="img/6982f84b347db7a1.png"></p>
+<aside class="special"><p>Étant donné que le numéro de colonne change à chaque <em>tour</em>, on doit le mettre dans une zone mémoire et l&#39;incrémenter sinon l&#39;animation ne fonctionnerait plus.</p>
+</aside>
+<p>Désormais, en changeant juste le nombre de répétitions, on peut choisir la durée de l&#39;animation !</p>
+<h3 is-upgraded>Cacher les décors</h3>
+<p>Sur les vidéos présentées, le curseur (partie clignotante avant le texte à écrire) a été masqué.<br>Pour faire cela, il suffit d&#39;ajouter la commande suivante:</p>
+<pre><code>Masquer le curseur.
+//Pour le réactiver: Afficher le curseur.
+</code></pre>
+<h3 is-upgraded>Dans la peau d&#39;un réalisateur</h3>
+<p>Sauras-tu adapter le programme pour que l&#39;utilisateur se prenne pour un réalisateur et puisse choisir le nombre de répétitions ?</p>
+<h2 is-upgraded>Défi vertical</h2>
+<p>En s&#39;inspirant de ce qui a été fait précédemment, il est temps de réaliser le programme suivant:</p>
+<p class="image-container"><img alt="02 Vertical1" src="img/a4bdde2e093f5390.gif"></p>
+<aside class="special"><p>Pour réinitialiser la console (repartir du point d&#39;origine 0:0), la commande suivante peut être utile:</p>
+</aside>
+<pre><code>clear
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <p>Cet atelier était riche en découvertes, surtout quand on débute en programmation.<br>Voici donc un quizz récapitulatif:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdS4Lba8WQbYRRttZOLCsR0tdGjQHRszhaiDvi9fp5LR4uq4g/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
