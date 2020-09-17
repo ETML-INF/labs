@@ -35,7 +35,7 @@ Survey
 </ul>
 
 ## Mouvements basiques
-Duration: 0:15:00
+Duration: 0:25:00
 
 ### Horizontal
 
@@ -95,14 +95,20 @@ Comme pour le délai, on va utiliser une zone mémoire pour y enregistrer et ré
 #### Répéter des instructions
 Peut-être as-tu remarqué que le code est très similaire et c'est un signe qu'on peut l'optimiser en utiliser une notion de **répétition**. D'ailleurs cette notion est la base de la force de l'informatique qui est capable de répéter des opérations de manière très rapide...
 
-Pour cela on utilise le mot clé *Répéter* :
+Pour cela on utilise le mot clé *Répéter* qui permet d'éxécuter les opérations à l'intérieur plusieurs fois.
+Le programme va donc évoluer selon les 3 étapes suivantes:
 
 ![02 Boucle1](assets/cosmos-base/02-boucle1.png)
+
+Et voici en grand le résultat, après modification:
+
+![02 Boucle2](assets/cosmos-base/02-boucle2.png)
 
 Positive
 : Étant donné que le numéro de colonne change à chaque *tour*, on doit le mettre dans une zone mémoire et l'incrémenter sinon l'animation ne fonctionnerait plus.
 
-Désormais, en changeant juste le nombre de répétitions, on peut choisir la durée de l'animation !
+Negative
+: Bonus: Désormais, en changeant juste le nombre de répétitions, on peut choisir la durée de l'animation !
 
 #### Cacher les décors
 Sur les vidéos présentées, le curseur (partie clignotante avant le texte à écrire) a été masqué.
@@ -128,10 +134,39 @@ Positive
 clear
 ```
 
-## Synthèse
-Duration: 0:03:00
+## Contrôler un mouvement depuis le clavier
+Duration: 0:18:00
+On va maintenant voir comment faire avancer notre symbole, non plus sur une fréquence fixe mais sur l'appui d'une touche.
 
-Cet atelier était riche en découvertes, surtout quand on débute en programmation.
-Voici donc un quizz récapitulatif:
+### Réagir à une touche
+On sait déjà comment récupérer une saisie utilisateur mais il peut être utile d'écouter le clavier et de réagir directement lors de l'appui sur une touche (sans devoir valider avec *Enter*).
 
-![https://docs.google.com/forms/d/e/1FAIpQLSdS4Lba8WQbYRRttZOLCsR0tdGjQHRszhaiDvi9fp5LR4uq4g/viewform?embedded=true](codelabs/assets/linux.svg)
+Pour cela, on peut utiliser l'instruction suivante:
+``` cosmos
+Attendre la prochaine touche et la stocker dans #touchePressee.
+```
+
+Ce qui dans un programme complet pourrait ressembler à :
+
+![02 Touche1](assets/cosmos-base/02-touche1.png)
+
+### Flèches directionnelles
+![ArrowKeys](assets/arrowKeys.png)
+Pour faire avancer un symbole en appuyant sur la touche *Flèche droite*, on peut combiner ce qui a été vu jusque là, soit:
+
+![02 Fleches](assets/cosmos-base/02-fleches.png)
+
+#### Défi à gauche
+![02 Arkanoid](assets/cosmos-base/02-arkanoid.png)
+Dans le jeu *arkanoid*, il faut déplacer à gauche ou à droite une capsule qui récupère une bille...
+
+Le défi est donc de s'inspirer du code présenté précédemment et de réagir à la flèche gauche pour arriver au résultat suivant:
+
+![02 Fleches2](assets/cosmos-base/02-fleches2.gif)
+
+## Bilan des compétences
+Duration: 0:05:00
+
+Il est temps de faire le point sur les compétences acquises:
+
+![https://docs.google.com/forms/d/e/1FAIpQLSd5mCuFiJMAM6zveTGhuBjK_4OGfUXYMFHx3BzIT_xrH0Ibcg/viewform?embedded=true](codelabs/assets/linux.svg)

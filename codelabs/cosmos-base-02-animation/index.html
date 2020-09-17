@@ -49,7 +49,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Mouvements basiques" duration="15">
+      <google-codelab-step label="Mouvements basiques" duration="25">
         <h2 is-upgraded>Horizontal</h2>
 <p class="image-container"><img alt="02 Droite" src="img/1f9c2286eaf844a8.gif"></p>
 <p>Pour réaliser cette animation, il faut imaginer que la console ressemble à un quadrillage avec des coordonnées:</p>
@@ -83,11 +83,14 @@ Attendre 200ms.
 <p class="image-container"><img alt="02 Animation 1c" src="img/18c2390eb6b27abf.png"></p>
 <h3 is-upgraded>Répéter des instructions</h3>
 <p>Peut-être as-tu remarqué que le code est très similaire et c&#39;est un signe qu&#39;on peut l&#39;optimiser en utiliser une notion de <strong>répétition</strong>. D&#39;ailleurs cette notion est la base de la force de l&#39;informatique qui est capable de répéter des opérations de manière très rapide...</p>
-<p>Pour cela on utilise le mot clé <em>Répéter</em> :</p>
-<p class="image-container"><img alt="02 Boucle1" src="img/6982f84b347db7a1.png"></p>
+<p>Pour cela on utilise le mot clé <em>Répéter</em> qui permet d&#39;éxécuter les opérations à l&#39;intérieur plusieurs fois.<br>Le programme va donc évoluer selon les 3 étapes suivantes:</p>
+<p class="image-container"><img alt="02 Boucle1" src="img/1048c4b51028ff86.png"></p>
+<p>Et voici en grand le résultat, après modification:</p>
+<p class="image-container"><img alt="02 Boucle2" src="img/6ff2655c41d259da.png"></p>
 <aside class="special"><p>Étant donné que le numéro de colonne change à chaque <em>tour</em>, on doit le mettre dans une zone mémoire et l&#39;incrémenter sinon l&#39;animation ne fonctionnerait plus.</p>
 </aside>
-<p>Désormais, en changeant juste le nombre de répétitions, on peut choisir la durée de l&#39;animation !</p>
+<aside class="warning"><p>Bonus: Désormais, en changeant juste le nombre de répétitions, on peut choisir la durée de l&#39;animation !</p>
+</aside>
 <h3 is-upgraded>Cacher les décors</h3>
 <p>Sur les vidéos présentées, le curseur (partie clignotante avant le texte à écrire) a été masqué.<br>Pour faire cela, il suffit d&#39;ajouter la commande suivante:</p>
 <pre><code>Masquer le curseur.
@@ -106,9 +109,28 @@ Attendre 200ms.
 
       </google-codelab-step>
     
-      <google-codelab-step label="Synthèse" duration="3">
-        <p>Cet atelier était riche en découvertes, surtout quand on débute en programmation.<br>Voici donc un quizz récapitulatif:</p>
-<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdS4Lba8WQbYRRttZOLCsR0tdGjQHRszhaiDvi9fp5LR4uq4g/viewform?embedded=true"></iframe>
+      <google-codelab-step label="Contrôler un mouvement depuis le clavier" duration="18">
+        <h2 is-upgraded>Réagir à une touche</h2>
+<p>On sait déjà comment récupérer une saisie utilisateur mais il peut être utile d&#39;écouter le clavier et de réagir directement lors de l&#39;appui sur une touche (sans devoir valider avec <em>Enter</em>).</p>
+<p>Pour cela, on peut utiliser l&#39;instruction suivante:</p>
+<pre><code>Attendre la prochaine touche et la stocker dans #touchePressee.
+</code></pre>
+<p>Ce qui dans un programme complet pourrait ressembler à :</p>
+<p class="image-container"><img alt="02 Touche1" src="img/d9a23a30e8a3d161.png"></p>
+<h2 is-upgraded>Flèches directionnelles</h2>
+<p><img alt="ArrowKeys" src="img/e17b834fced8f9ec.png"><br>Pour faire avancer un symbole en appuyant sur la touche <em>Flèche droite</em>, on peut combiner ce qui a été vu jusque là, soit:</p>
+<p class="image-container"><img alt="02 Fleches" src="img/acc4ee9e415d4b24.png"></p>
+<h3 is-upgraded>Défi à gauche</h3>
+<p><img alt="02 Arkanoid" src="img/55f47c49034b1e51.png"><br>Dans le jeu <em>arkanoid</em>, il faut déplacer à gauche ou à droite une capsule qui récupère une bille...</p>
+<p>Le défi est donc de s&#39;inspirer du code présenté précédemment et de réagir à la flèche gauche pour arriver au résultat suivant:</p>
+<p class="image-container"><img alt="02 Fleches2" src="img/5bc629a4a5410d67.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bilan des compétences" duration="5">
+        <p>Il est temps de faire le point sur les compétences acquises:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSd5mCuFiJMAM6zveTGhuBjK_4OGfUXYMFHx3BzIT_xrH0Ibcg/viewform?embedded=true"></iframe>
 
 
       </google-codelab-step>
