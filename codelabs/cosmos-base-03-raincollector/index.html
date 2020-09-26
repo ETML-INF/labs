@@ -1,0 +1,158 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Collecteur de pluie</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="cosmos-base-03-raincollector"
+                  title="Collecteur de pluie"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p class="image-container"><img alt="03 SingRain" src="img/7436915cd686be74.png"></p>
+<p>Prêt(e) à chanter sous la pluie ?</p>
+<p>Pour faire suite au précédent épisode (animation et réaction au clavier), cet atelier propose de créer un premier jeu interactif qui a pour but de collectionner les gouttes de pluie...</p>
+<h2 is-upgraded>Objectifs</h2>
+<ul>
+<li>Mettre en commun les compétences acquises pour créer un jeu interactif</li>
+</ul>
+<google-codelab-survey survey-id="cosmos-base-03-raincollector-1">
+<h4>Quelle est la meilleure utilité à récolter l’eau de pluie ?</h4>
+<paper-radio-group>
+<paper-radio-button>Réduire la densité hygromètrique de l&#39;atmosphère</paper-radio-button>
+<paper-radio-button>Agrémenter des coktails d&#39;eau déminéralisée</paper-radio-button>
+<paper-radio-button>Utiliser l&#39;acidité de cette eau pour dissoudre la rouille sur un métal</paper-radio-button>
+<paper-radio-button>Arroser le jardin et ainsi économiser l&#39;eau potable</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menu" duration="10">
+        <p>Le but est d&#39;avoir un menu au lancement du jeu qui permette de joueur ou quitter.</p>
+<h2 is-upgraded>Version statique</h2>
+<p>Commençons donc par afficher un menu avec 2 entrées :</p>
+<p class="image-container"><img alt="03 Menu1" src="img/ec9b01bcd9afc34d.png"></p>
+<p>Réalisé par le code ci-dessous:</p>
+<p class="image-container"><img alt="03 Menu2" src="img/4f3c4b27dfa8cb1.png"></p>
+<p><em>Cette version est purement visuelle et l&#39;utilisateur ne peut pas encore interagir. Toutefois c&#39;est déjà une bonne base qui présente une idée du résultat.</em></p>
+<h2 is-upgraded>Version réactive</h2>
+<p>On va maintenant adapter la version statique pour que l&#39;appui des flèches sur le clavier permette de choisir l&#39;option.</p>
+<h3 is-upgraded>Sélection</h3>
+<p>Pour réagir aux flèches du clavier, on commence par se souvenir que la console est un système de coordonnées à 2 dimensions et donc que le texte &#34;Jouer&#34; arrive à la ligne numéro 7:</p>
+<p class="image-container"><img alt="03 Menu3" src="img/940612fc2a8b24d9.png"></p>
+<p>Ceci est utile parce que si l&#39;utilisateur appuie sur la flèche en bas, on devra réécrire le texte &#34;Jouer&#34; sans le fond rouge. Et par contre, on devra réécrire le texte &#34;Quitter&#34; avec le fond rouge :</p>
+<p class="image-container"><img alt="03 Menu4" src="img/897372d48b5cc924.gif"></p>
+<p class="image-container"><img alt="03 Menu5" src="img/4846ac8493dbcaa6.png"></p>
+<h3 is-upgraded>Un peu de cosmétique</h3>
+<p>Pour s&#39;approprier intégralement la console, la commande suivante insérée au tout début du programme améliore le rendu:</p>
+<pre><code>Effacer l&#39;écran.
+</code></pre>
+<aside class="warning"><p>Attention, cela enlève la ligne de lancement du programme et donc peut décaler les numéros de ligne précédemment établis.<br>Cela veut dire que la ligne de la première option n&#39;est plus 7 mais 6...</p>
+</aside>
+<p>Pour résumer, on peut démarrer tout programme de jeu avec les commandes suivantes:</p>
+<pre><code>Effacer l&#39;écran.
+Masquer le curseur.
+</code></pre>
+<h3 is-upgraded>Validation</h3>
+<p>Pour l&#39;instant le programme quitte si on appuie sur <em>Enter</em>. On va donc réagir à cela on regardant quelle était la dernière option choisie:</p>
+<p class="image-container"><img alt="03 Menu6" src="img/4d8cdf8463bbb909.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Jeu" duration="1">
+        <p class="image-container"><img alt="03 Jeu6" src="img/61797ada437029ad.gif"></p>
+<p>On va maintenant se concentrer sur le jeu qui habituellement est une répétition d&#39;opérations:</p>
+<ol type="1">
+<li>Afficher les éléments graphiques</li>
+<li>Déplacer les éléments graphiques automatisés</li>
+<li>Déplacer les éléments graphiques selon les entrées utilisateur (le clavier)</li>
+<li>Mettre à jour les compteurs (score, vie, ...)</li>
+<li>Recommencer</li>
+</ol>
+<p>Cela veut dire que le code du jeu sera à l&#39;intérieur d&#39;une répétition avec comme condition d&#39;arrêt la fatigue de l&#39;utilisateur qui voudra arrêter.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Jeu - Quitter" duration="5">
+        <p>Pour faire simple, l&#39;appui sur la touche <em>Escape (Échap)</em> quittera donc le jeu et dans ce cas on affiche aussi le message d&#39;au revoir :</p>
+<p class="image-container"><img alt="03 Jeu1" src="img/f3b2713d2957629d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Jeu - Pluie" duration="10">
+        <p>On va maintenant faire tomber une goutte de pluie:</p>
+<p class="image-container"><img alt="03 Jeu2" src="img/11223477bacd5b57.gif"></p>
+<p>Pour réaliser cette animation, on reprend les élément vus jusque là, soit:</p>
+<ol type="1">
+<li>Afficher un caractère</li>
+<li>Attendre quelques millisecondes</li>
+<li>Effacer le caractère</li>
+<li>Afficher le caractère sur une position légèrement décalée</li>
+<li>Et on recommence...</li>
+</ol>
+<p>Ce qui donne:</p>
+<p class="image-container"><img alt="03 Jeu3" src="img/34f96a7f9a8e10e.png"></p>
+<aside class="special"><p>Un nouvel élément est présenté ici c&#39;est la génération d&#39;un nombre aléatoire. Ceci permet de faire varier la position horizontale de chaque nouvelle goutte.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Jeu - Collecteur" duration="25">
+        <p>Il faut maintenant ajouter le collecteur. Ce dernier ressemble beaucoup à ce qui a été fait précédemment en faisant bouger un caractère avec les touches fléchées:</p>
+<p class="image-container"><img alt="03 Jeu4" src="img/d34bdfba9fa46358.gif"></p>
+<p>Avec un code ressemblant à ceci:</p>
+<p class="image-container"><img alt="03 Jeu5" src="img/e423b2cd278df29.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Jeu - Score" duration="15">
+        <p>L&#39;intérêt du jeu encore relatif jusqu&#39;à présent va augmenter en comptabilisant et affichant les scores:</p>
+<p class="image-container"><img alt="03 Jeu6" src="img/61797ada437029ad.gif"></p>
+<p>correspondant aux modifications suivantes:</p>
+<p class="image-container"><img alt="03 Jeu7" src="img/2b3dfd10c3d2ae13.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bilan" duration="5">
+        <p>Il est temps de faire le point sur les compétences acquises:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfTO7zUgdr7vvQNhMxUUNGOhkeDqK2H0m2UwqbczEDuKSeAtg/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
