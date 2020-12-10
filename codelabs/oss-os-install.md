@@ -80,7 +80,7 @@ Negative
 Ce dernier est un noyau autour duquel gravite diverses distributions comme Ubuntu qui est lui-même dérivé de Debian...Vous trouverez plus d'informations [ici](https://fr.wikipedia.org/wiki/Liste_des_distributions_GNU/Linux).
 
 ### Téléchargement de l'image
-L'adresse pour le téléchargement est la suivante : [https://ubuntu.com/download/server](https://releases.ubuntu.com/18.04.5/ubuntu-18.04.5-live-server-amd64.iso)
+L'adresse pour le téléchargement est la suivante : [https://ubuntu.com/download/server](https://releases.ubuntu.com/20.10/ubuntu-20.10-live-server-amd64.iso)
 
 Positive
 : Pour accélerer le téléchargement, une image a été placée sur le réseau à l'endroit habituel (S:\linux\ubuntu\oss\server.iso).
