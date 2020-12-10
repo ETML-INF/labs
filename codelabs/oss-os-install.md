@@ -80,10 +80,10 @@ Negative
 Ce dernier est un noyau autour duquel gravite diverses distributions comme Ubuntu qui est lui-même dérivé de Debian...Vous trouverez plus d'informations [ici](https://fr.wikipedia.org/wiki/Liste_des_distributions_GNU/Linux).
 
 ### Téléchargement de l'image
-L'adresse pour le téléchargement est la suivante : [https://ubuntu.com/download/server](https://ubuntu.com/download/server)
+L'adresse pour le téléchargement est la suivante : [https://ubuntu.com/download/server](https://releases.ubuntu.com/18.04.5/ubuntu-18.04.5-live-server-amd64.iso)
 
 Positive
-: Pour accélerer le téléchargement, une image a été placée sur le réseau à l'endroit habituel.
+: Pour accélerer le téléchargement, une image a été placée sur le réseau à l'endroit habituel (S:\linux\ubuntu\oss\server.iso).
 
 ### Association du fichier image avec la machine virtuelle
 Pour démarrer sur l'image récupérée, il faut configurer la machine virtuelle dans Virtualbox:
