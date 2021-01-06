@@ -19,7 +19,7 @@ Duration: 1
 ### Compétences qui vont être acquises
 
 - Afficher les informations du réseau
-- Faire un backup
+- Gérer les logiciels
 - Installer une interface graphique
 
 Survey
