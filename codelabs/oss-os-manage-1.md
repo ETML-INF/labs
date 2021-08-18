@@ -36,6 +36,9 @@ Duration: 0:01:00
 ### Système d'exploitation
 Toutes les activités sont basées sur les opérations décrites [ici](https://labs.section-inf.ch/codelabs/oss-os-install/index.html).
 
+Positive
+: Si nécessaire, le résultat de ces activités est disponible dans la machine virtuelle téléchargeable [ici](https://drive.infomaniak.com/app/share/131184/2c97c140-75dd-471f-9b29-a3d4b01e655b)
+
 
 ## Utilisation des ressources système
 Duration: 0:15:00
@@ -168,7 +171,10 @@ En lien avec la partie précédente, pour éditer un fichier la commande est la 
 nano unFichierAEditer
 ```
 
-En remplaçant *unFichierAEditer* par le fichier de configuration de login, on peut alors ajouter une ligne tout en bas du fichier (descendre avec la flèche en bas) pour saluer l'utilisateur:
+Negative
+: Pour quitter l'éditeur, il faut presser sur CTRL-X
+
+En remplaçant *unFichierAEditer* par le fichier de configuration de login (.bashrc), on peut alors ajouter une ligne tout en bas du fichier (descendre avec la flèche en bas) pour saluer l'utilisateur:
 
 ![NanoBashrc](assets/oss-os-manage/nanoBashrc.gif)
 

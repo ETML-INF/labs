@@ -190,6 +190,9 @@ Le programme d'installation installe les mises à jour de sécurité critiques, 
 Negative
 : Si Internet ne fonctionne pas, on peut forcer la fin de l'installation en appuyant sur ENTER
 
+Positive
+: En cas de problème d'installation, une machine virtuelle équivalente est disponible [ici](https://drive.infomaniak.com/app/share/131184/2c97c140-75dd-471f-9b29-a3d4b01e655b)
+
 ### Redémarrage
 L'installation est terminée, il est temps de redémarrer:
 
