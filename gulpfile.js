@@ -13,7 +13,8 @@ const htmlmin = require('gulp-htmlmin');
 const merge = require('merge-stream');
 const postcss = require('gulp-html-postcss');
 const rename = require('gulp-rename');
-const sass = require('gulp-sass');
+//const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('node-sass'));
 const through = require('through2');
 const useref = require('gulp-useref');
 const vulcanize = require('gulp-vulcanize');
@@ -31,6 +32,9 @@ const childprocess = require('child_process');
 const claat = require('./tasks/helpers/claat');
 const del = require('del');
 const fs = require('fs-extra');
+
+const lnk = require('lnk');
+
 const gcs = require('./tasks/helpers/gcs');
 const glob = require('glob');
 const opts = require('./tasks/helpers/opts');
@@ -60,7 +64,7 @@ const BASE_URL = args.baseUrl || 'https://example.com';
 // CODELABS_DIR is the directory where the actual codelabs exist on disk.
 // Despite being a constant, this can be overridden with the --codelabs-dir
 // flag.
-const CODELABS_DIR = args.codelabsDir || 'codelabs';
+const CODELABS_DIR = /*path.join(__dirname,*/args.codelabsDir || 'codelabs'/*)*/;
 
 // CODELABS_ENVIRONMENT is the environment for which to build codelabs.
 const CODELABS_ENVIRONMENT = args.codelabsEnv || 'web';
@@ -114,7 +118,7 @@ gulp.task('clean', gulp.parallel(
 
 // build:codelabs copies the codelabs from the directory into build.
 gulp.task('build:codelabs', (done) => {
-  copyFilteredCodelabs('build');
+  copyFilteredCodelabs(/*path.join(__dirname,*/'build'/*)*/);
   done();
 });
 
@@ -513,11 +517,22 @@ const generateDirectoryIndex = () => {
 
       // Ensure directory exists
       fs.mkdirpSync(dstPathDir);
-
+	  
+	  
+		//.then(() => console.log('done linking '+source+'->index.html'));
+	
+		
       // Change into the directory and create a relative symlink
       chdir(dstPathDir, () => {
-        fs.ensureSymlinkSync(srcPathRel, 'index.html');
+		//console.log("symlink "+srcPathRel+"->index.html");
+        //fs.ensureSymlinkSync(srcPathRel, 'index.html');
+		
+		lnk.sync(srcPathRel,".",{rename:'index.html'});
+		/*
+		lnk.sync(srcPathRel, 'index.html')
+		.then(() => console.log('done linking '+source+'->index.html'));*/
       });
+	  
     }
     callback(null, file);
   });
@@ -848,7 +863,11 @@ const copyFilteredCodelabs = (dest) =>  {
   if (CODELABS_FILTER === '*' && VIEWS_FILTER === '*') {
     const source = path.join(CODELABS_DIR);
     const target = path.join(dest, CODELABS_NAMESPACE);
-    fs.ensureSymlinkSync(source, target, 'dir');
+	//console.log(__dirname); 
+	//console.log("link "+source+"->"+target);
+    //fs.ensureSymlinkSync(source, target, 'dir');
+	lnk.sync(source, dest,{rename:CODELABS_NAMESPACE});
+		//.then(() => console.log('done linking '+source+'->'+target));
     return
   }
 
@@ -859,6 +878,8 @@ const copyFilteredCodelabs = (dest) =>  {
     const source = path.join(CODELABS_DIR, codelab.id);
     const target = path.join(dest, CODELABS_NAMESPACE, codelab.id);
     fs.ensureSymlinkSync(source, target, 'dir');
+	/*lnk(source, target)
+		.then(() => console.log('done linking '+source+'->'+target));*/
   }
 };
 
