@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-04-09T13:35:49+02:00",
+  "id": "robot-01",
+  "duration": 21,
+  "title": "Programmation de robot",
+  "summary": "intro robot",
+  "source": "robot-01.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "robot"
+  ],
+  "tags": [
+    "msig",
+    "robot",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "robot-01"
+}
