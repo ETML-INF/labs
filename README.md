@@ -19,3 +19,5 @@ gulp serve
 go to http://localhost:12345/
 ```
 
+gulp dist pour générer
+

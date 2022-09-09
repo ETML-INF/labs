@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-09-09T17:47:49+02:00",
+  "id": "rclone-01",
+  "duration": 27,
+  "title": "Synchronisation avec Rclone",
+  "summary": "intro rclone",
+  "source": ".\\rclone-01.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "dev"
+  ],
+  "tags": [
+    "msig",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "rclone-01"
+}
