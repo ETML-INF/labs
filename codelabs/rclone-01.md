@@ -149,15 +149,64 @@ Sur l’interface WEB, afficher l’historique
 Et vérifier le contenu de la V2
 ![](assets/rclone/25-versions.png)
 
-## Synchronisation inverse
+## Synchronisation inverse / bidirectionnelle
 Duration: 0:02:00
 
-### Modifier le fichier sur l’interface WEB
-### Lancer la synchronisation
+Actuellement, seules les modifications de la source sont répliquées.
+
+Negative
+: Pire que ça, si on modifie quelque chose sur la destination, cela écrasera la source /!\\.
+
+### Option 1: bisync
+
+Afin d’activer le mode bidirectionnel qui synchronise source et destination avec les éléments les plus récents.
+Attention toutefois, car l’automatisation de la synchronisation bidirectionnelle n’est pas toujours possible... Rclone
+offre plusieurs options, mais voici le scénario optimiste :
+
+
+#### Lancer la 1ʳᵉ synchro
 ```shell
-	rclone sync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v --resync . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
-### Vérifier que le fichier local correspond à la dernière version
+
+#### Lancer les synchronisations subséquentes
+```shell
+	rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+```
+
+### Vérification
+#### Modifier le fichier sur l’interface WEB
+Afin de vérifier que la modification en ligne soit répercutée ensuite, faire une modification
+en ligne (ajouter un dossier ou modifier un fichier...)
+
+#### Lancer rclone
+```shell
+	rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+```
+
+#### Vérifier que le fichier local correspond à la dernière version
+Si tout va bien, la modification faite précédemment en ligne devrait être répercutée en local
+
+### Option 2 : Intervertir la source et la destination
+Une autre manière d’avoir une synchro inverse et d’intervertir la source et la destination.
+Cela demande de bien savoir où on en est avec la version la plus à jour...
+
+Même si l’option *bisync* est encore expérimentale, avec l’historique de version sur o365 et quelques options 
+supplémentaires (voir ci-après), on a probablement une meilleure solution.
+
+### Option 3 : Bisync avec protection
+L’option *backup-dir* permet d’indiquer un répertoire où stocker les fichiers supprimés ou modifiés.
+Puisque sur oneDrive, il y a l’historique, il suffit de stocker les opérations destructrices
+en local pour, si nécessaire les retrouver...
+
+```shell
+	rclone bisync -v --backup-dir=old-%date%-%time:~,5% . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+```
+
+Negative
+: Attention, le nom du dossier de backup est précis à la minute... il n’y aura donc qu’une sauvegarde maximum
+par minute avec cette syntaxe...
+
 
 ## Automatisation
 Duration: 0:03:00
@@ -196,13 +245,13 @@ Duration: 0:05:00
 Maintenant que la version de base fonctionne, on peut encore améliorer certains aspects comme
 
 ### Logs
-Modifier le script pour qu’il génère un log d’éxecution et le rsyncer pour qu’il soit sauvegardé aussi 
-L’opérateur '>' permet de rediriger la sortie d’un programme vers un fichier...
+Modifier le script pour qu’il génère un log d’éxecution et le *rcloner* pour qu’il soit sauvegardé aussi 
+L’option *--log-file=backup.log* permet d’enregistrer les détails d’exécution sur un fichier...
 
 ### Sécurité
 Pour l’instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.
-Ce fichier est stocké dans le profil et si le disque est chiffré il n’y a pas trop de risque. Néanmoins 
-rclone peut aussi chiffrer lui-même la configuration:
+Ce fichier est stocké dans le profil et si le disque est chiffré il n’y a pas trop de risque. Néanmoins, 
+*rclone* peut aussi chiffrer lui-même la configuration :
 
 [Chiffrer la configuration de rclone](https://rclone.org/docs/#configuration-encryption)
 

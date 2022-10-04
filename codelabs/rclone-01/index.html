@@ -112,12 +112,35 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Synchronisation inverse" duration="2">
-        <h2 is-upgraded>Modifier le fichier sur l&#39;interface WEB</h2>
-<h2 is-upgraded>Lancer la synchronisation</h2>
-<pre><code>    rclone sync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+      <google-codelab-step label="Synchronisation inverse / bidirectionnelle" duration="2">
+        <p>Actuellement, seules les modifications de la source sont répliquées.</p>
+<aside class="warning"><p>Pire que ça, si on modifie quelque chose sur la destination, cela écrasera la source /!\.</p>
+</aside>
+<h2 is-upgraded>Option 1: bisync</h2>
+<p>Afin d&#39;activer le mode bidirectionnel qui synchronise source et destination avec les éléments les plus récents.<br>Attention toutefois, car l&#39;automatisation de la synchronisation bidirectionnelle n&#39;est pas toujours possible... Rclone<br>offre plusieurs options, mais voici le scénario optimiste :</p>
+<h3 is-upgraded>Lancer la 1ʳᵉ synchro</h3>
+<pre><code>    rclone bisync -v --resync . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
-<h2 is-upgraded>Vérifier que le fichier local correspond à la dernière version</h2>
+<h3 is-upgraded>Lancer les synchronisations subséquentes</h3>
+<pre><code>    rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<h2 is-upgraded>Vérification</h2>
+<h3 is-upgraded>Modifier le fichier sur l&#39;interface WEB</h3>
+<p>Afin de vérifier que la modification en ligne soit répercutée ensuite, faire une modification<br>en ligne (ajouter un dossier ou modifier un fichier...)</p>
+<h3 is-upgraded>Lancer rclone</h3>
+<pre><code>    rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<h3 is-upgraded>Vérifier que le fichier local correspond à la dernière version</h3>
+<p>Si tout va bien, la modification faite précédemment en ligne devrait être répercutée en local</p>
+<h2 is-upgraded>Option 2 : Intervertir la source et la destination</h2>
+<p>Une autre manière d&#39;avoir une synchro inverse et d&#39;intervertir la source et la destination.<br>Cela demande de bien savoir où on en est avec la version la plus à jour...</p>
+<p>Même si l&#39;option <em>bisync</em> est encore expérimentale, avec l&#39;historique de version sur o365 et quelques options<br>supplémentaires (voir ci-après), on a probablement une meilleure solution.</p>
+<h2 is-upgraded>Option 3 : Bisync avec protection</h2>
+<p>L&#39;option <em>backup-dir</em> permet d&#39;indiquer un répertoire où stocker les fichiers supprimés ou modifiés.<br>Puisque sur oneDrive, il y a l&#39;historique, il suffit de stocker les opérations destructrices<br>en local pour, si nécessaire les retrouver...</p>
+<pre><code>    rclone bisync -v --backup-dir=old-%date%-%time:~,5% . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<aside class="warning"><p>Attention, le nom du dossier de backup est précis à la minute... il n&#39;y aura donc qu&#39;une sauvegarde maximum<br>par minute avec cette syntaxe...</p>
+</aside>
 
 
       </google-codelab-step>
@@ -144,9 +167,9 @@
         <p class="image-container"><img src="img\a8c3a79930a124f2.jpg"></p>
 <p>Maintenant que la version de base fonctionne, on peut encore améliorer certains aspects comme</p>
 <h2 is-upgraded>Logs</h2>
-<p>Modifier le script pour qu&#39;il génère un log d&#39;éxecution et le rsyncer pour qu&#39;il soit sauvegardé aussi<br>L&#39;opérateur ‘&gt;&#39; permet de rediriger la sortie d&#39;un programme vers un fichier...</p>
+<p>Modifier le script pour qu&#39;il génère un log d&#39;éxecution et le <em>rcloner</em> pour qu&#39;il soit sauvegardé aussi<br>L&#39;option <em>–log-file=backup.log</em> permet d&#39;enregistrer les détails d&#39;exécution sur un fichier...</p>
 <h2 is-upgraded>Sécurité</h2>
-<p>Pour l&#39;instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.<br>Ce fichier est stocké dans le profil et si le disque est chiffré il n&#39;y a pas trop de risque. Néanmoins<br>rclone peut aussi chiffrer lui-même la configuration:</p>
+<p>Pour l&#39;instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.<br>Ce fichier est stocké dans le profil et si le disque est chiffré il n&#39;y a pas trop de risque. Néanmoins,<br><em>rclone</em> peut aussi chiffrer lui-même la configuration :</p>
 <p><a href="https://rclone.org/docs/#configuration-encryption" target="_blank">Chiffrer la configuration de rclone</a></p>
 
 
