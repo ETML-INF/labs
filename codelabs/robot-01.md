@@ -28,7 +28,7 @@ Duration: 0:05:00
 
 ### Télécharger l’environnement
 
-Le programme est disponible [en cliquant ici](https://dev.mobsya.org/form-4/)
+Le programme est disponible [en cliquant ici](https://www.thymio.org/fr/produits/programmer-avec-thymio-suite/)
 
 ### Installation
 
