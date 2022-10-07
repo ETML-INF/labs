@@ -200,7 +200,7 @@ Puisque sur oneDrive, il y a l’historique, il suffit de stocker les opération
 en local pour, si nécessaire les retrouver...
 
 ```shell
-	rclone bisync -v --backup-dir=old-%date%-%time:~,5% ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v --backup-dir="old-%date%-%time:~,5%" ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 Negative
@@ -246,7 +246,13 @@ Maintenant que la version de base fonctionne, on peut encore améliorer certains
 
 ### Logs
 Modifier le script pour qu’il génère un log d’éxecution et le *rcloner* pour qu’il soit sauvegardé aussi 
-L’option *--log-file=backup.log* permet d’enregistrer les détails d’exécution sur un fichier...
+L’option 
+
+```shell
+	--log-file=backup.log
+```
+
+permet d’enregistrer les détails d’exécution sur un fichier...
 
 ### Sécurité
 Pour l’instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.

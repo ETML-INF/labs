@@ -137,7 +137,7 @@
 <p>Même si l&#39;option <em>bisync</em> est encore expérimentale, avec l&#39;historique de version sur o365 et quelques options<br>supplémentaires (voir ci-après), on a probablement une meilleure solution.</p>
 <h2 is-upgraded>Option 3 : Bisync avec protection</h2>
 <p>L&#39;option <em>backup-dir</em> permet d&#39;indiquer un répertoire où stocker les fichiers supprimés ou modifiés.<br>Puisque sur oneDrive, il y a l&#39;historique, il suffit de stocker les opérations destructrices<br>en local pour, si nécessaire les retrouver...</p>
-<pre><code>    rclone bisync -v --backup-dir=old-%date%-%time:~,5% ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    rclone bisync -v --backup-dir=&#34;old-%date%-%time:~,5%&#34; ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <aside class="warning"><p>Attention, le nom du dossier de backup est précis à la minute... il n&#39;y aura donc qu&#39;une sauvegarde maximum<br>par minute avec cette syntaxe...</p>
 </aside>
@@ -167,7 +167,10 @@
         <p class="image-container"><img src="img\a8c3a79930a124f2.jpg"></p>
 <p>Maintenant que la version de base fonctionne, on peut encore améliorer certains aspects comme</p>
 <h2 is-upgraded>Logs</h2>
-<p>Modifier le script pour qu&#39;il génère un log d&#39;éxecution et le <em>rcloner</em> pour qu&#39;il soit sauvegardé aussi<br>L&#39;option <em>–log-file=backup.log</em> permet d&#39;enregistrer les détails d&#39;exécution sur un fichier...</p>
+<p>Modifier le script pour qu&#39;il génère un log d&#39;éxecution et le <em>rcloner</em> pour qu&#39;il soit sauvegardé aussi<br>L&#39;option</p>
+<pre><code>    --log-file=backup.log
+</code></pre>
+<p>permet d&#39;enregistrer les détails d&#39;exécution sur un fichier...</p>
 <h2 is-upgraded>Sécurité</h2>
 <p>Pour l&#39;instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.<br>Ce fichier est stocké dans le profil et si le disque est chiffré il n&#39;y a pas trop de risque. Néanmoins,<br><em>rclone</em> peut aussi chiffrer lui-même la configuration :</p>
 <p><a href="https://rclone.org/docs/#configuration-encryption" target="_blank">Chiffrer la configuration de rclone</a></p>
