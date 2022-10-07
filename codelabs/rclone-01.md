@@ -166,12 +166,12 @@ offre plusieurs options, mais voici le scénario optimiste :
 
 #### Lancer la 1ʳᵉ synchro
 ```shell
-	rclone bisync -v --resync . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v --resync ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 #### Lancer les synchronisations subséquentes
 ```shell
-	rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 ### Vérification
@@ -181,7 +181,7 @@ en ligne (ajouter un dossier ou modifier un fichier...)
 
 #### Lancer rclone
 ```shell
-	rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 #### Vérifier que le fichier local correspond à la dernière version
@@ -200,7 +200,7 @@ Puisque sur oneDrive, il y a l’historique, il suffit de stocker les opération
 en local pour, si nécessaire les retrouver...
 
 ```shell
-	rclone bisync -v --backup-dir=old-%date%-%time:~,5% . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	rclone bisync -v --backup-dir=old-%date%-%time:~,5% ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 Negative
@@ -220,7 +220,7 @@ Par exemple un .bat (ou .ps1 pour powershell)
 Adapter la commande pour qu’elle puisse s’éxécuter depuis n’importe où
 
 ```shell
-	%USERPROFILE%\outils\rclone sync -v C:\Users\demo\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+	%USERPROFILE%\outils\rclone bisync -v C:\Users\demo\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 ```
 
 ![](assets/rclone/27-bat.png)

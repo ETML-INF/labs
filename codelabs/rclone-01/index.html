@@ -119,16 +119,16 @@
 <h2 is-upgraded>Option 1: bisync</h2>
 <p>Afin d&#39;activer le mode bidirectionnel qui synchronise source et destination avec les éléments les plus récents.<br>Attention toutefois, car l&#39;automatisation de la synchronisation bidirectionnelle n&#39;est pas toujours possible... Rclone<br>offre plusieurs options, mais voici le scénario optimiste :</p>
 <h3 is-upgraded>Lancer la 1ʳᵉ synchro</h3>
-<pre><code>    rclone bisync -v --resync . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    rclone bisync -v --resync ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <h3 is-upgraded>Lancer les synchronisations subséquentes</h3>
-<pre><code>    rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <h2 is-upgraded>Vérification</h2>
 <h3 is-upgraded>Modifier le fichier sur l&#39;interface WEB</h3>
 <p>Afin de vérifier que la modification en ligne soit répercutée ensuite, faire une modification<br>en ligne (ajouter un dossier ou modifier un fichier...)</p>
 <h3 is-upgraded>Lancer rclone</h3>
-<pre><code>    rclone bisync -v . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <h3 is-upgraded>Vérifier que le fichier local correspond à la dernière version</h3>
 <p>Si tout va bien, la modification faite précédemment en ligne devrait être répercutée en local</p>
@@ -137,7 +137,7 @@
 <p>Même si l&#39;option <em>bisync</em> est encore expérimentale, avec l&#39;historique de version sur o365 et quelques options<br>supplémentaires (voir ci-après), on a probablement une meilleure solution.</p>
 <h2 is-upgraded>Option 3 : Bisync avec protection</h2>
 <p>L&#39;option <em>backup-dir</em> permet d&#39;indiquer un répertoire où stocker les fichiers supprimés ou modifiés.<br>Puisque sur oneDrive, il y a l&#39;historique, il suffit de stocker les opérations destructrices<br>en local pour, si nécessaire les retrouver...</p>
-<pre><code>    rclone bisync -v --backup-dir=old-%date%-%time:~,5% . ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    rclone bisync -v --backup-dir=old-%date%-%time:~,5% ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <aside class="warning"><p>Attention, le nom du dossier de backup est précis à la minute... il n&#39;y aura donc qu&#39;une sauvegarde maximum<br>par minute avec cette syntaxe...</p>
 </aside>
@@ -150,7 +150,7 @@
 <h2 is-upgraded>Créer un script</h2>
 <p>Par exemple un .bat (ou .ps1 pour powershell)<br><img src="img\ed400d6be773331b.png"></p>
 <p>Adapter la commande pour qu&#39;elle puisse s&#39;éxécuter depuis n&#39;importe où</p>
-<pre><code>    %USERPROFILE%\outils\rclone sync -v C:\Users\demo\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+<pre><code>    %USERPROFILE%\outils\rclone bisync -v C:\Users\demo\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
 </code></pre>
 <p class="image-container"><img src="img\6bd4f2d11caf52ab.png"></p>
 <h2 is-upgraded>Lancer le script</h2>
