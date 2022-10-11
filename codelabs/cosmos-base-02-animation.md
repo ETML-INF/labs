@@ -130,6 +130,12 @@ En s'inspirant de ce qui a été fait précédemment, il est temps de réaliser 
 Positive
 : Pour réinitialiser la console (repartir du point d'origine 0:0), la commande suivante peut être utile:
 
+Windows
+``` bash
+cls
+```
+
+Linux/Macos
 ``` bash
 clear
 ```
@@ -169,4 +175,4 @@ Duration: 0:05:00
 
 Il est temps de faire le point sur les compétences acquises:
 
-![https://docs.google.com/forms/d/e/1FAIpQLSd5mCuFiJMAM6zveTGhuBjK_4OGfUXYMFHx3BzIT_xrH0Ibcg/viewform?embedded=true](codelabs/assets/linux.svg)
+![https://docs.google.com/forms/d/e/1FAIpQLSd5mCuFiJMAM6zveTGhuBjK_4OGfUXYMFHx3BzIT_xrH0Ibcg/viewform?embedded=true](assets/linux.svg)

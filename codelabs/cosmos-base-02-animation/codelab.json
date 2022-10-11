@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2020-09-17T15:17:57+02:00",
+  "updated": "2022-10-11T08:32:34+02:00",
   "id": "cosmos-base-02-animation",
   "duration": 49,
   "title": "Animation",
   "summary": "Animation",
-  "source": "cosmos-base-02-animation.md",
+  "source": ".\\cosmos-base-02-animation.md",
   "theme": "",
   "status": [
     "published"
