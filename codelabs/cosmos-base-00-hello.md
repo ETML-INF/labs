@@ -51,7 +51,8 @@ Cliquez sur le lien ci-dessous correspondant à votre plateforme pour téléchar
 
 Une fois le fichier téléchargé, double-cliquez dessus.
 
-Pour Windows, après avoir double-cliqué sur le fichier, cliquez sur *Extraire tout* et corrigez le chemin d'extraction en retirant la dernière partie après le dernier caractère \\ (antislash):
+Pour Windows, après avoir double-cliqué sur le fichier, cliquez sur *Extraire tout* et corrigez le chemin d'extraction en 
+retirant la dernière partie après le dernier caractère \\ (antislash):
 
 ![Cosmos Extract Win2](assets/cosmos-base/cosmos-extract-win.gif)
 
@@ -62,7 +63,7 @@ Duration: 0:15:00
 Commençons par lancer une console :
 
 - Windows : Clic dans le menu démarrer => Invite de commandes
-- MacOS   : Clic sur spotlight => terminal
+- MacOS  : Clic sur spotlight => terminal
 - Linux   : Si vous utilisez Linux, vous savez comment faire ;-)
 
 ### Avancer dans le cosmos
@@ -83,7 +84,7 @@ cd Downloads/cosmos-osx-x64
 ![Cosmos Run1](assets/cosmos-base/cosmos-run1.png)
 
 ### Mode interactif
-Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :
+Par défaut, cosmos se lance en mode interactif, on peut donc éxécuter des commandes simples :
 
 ``` cosmos
 Afficher "Bonjour Cosmos !".
@@ -97,7 +98,7 @@ Negative
 : Pour quitter le mode interactif, écrivez *stop* et validez avec *ENTER*.
 
 ### Premier programme
-Un programme cosmos complet est divisé en 2 parties:
+Un programme cosmos complet est divisé en 2 parties:
 1. Une entête
 1. Le contenu du programme
 
@@ -144,4 +145,4 @@ Duration: 0:03:00
 
 Pour terminer, un petit quizz facilitera la mémorisation à long terme des éléments pratiqués dans cet atelier.
 
-![https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true](codelabs/assets/linux.svg)
+![https://docs.google.com/forms/d/e/1FAIpQLSfsAHNKvVsGyf9ddx1_LPegiL5f4aEiTL8Z3H7bgbb1sjIDHg/viewform?embedded=true](iframe)
