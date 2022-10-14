@@ -238,6 +238,9 @@ Ajouter une tâche en pointant vers le fichier .bat et en choisissant les option
 ![](assets/rclone/29-taskplanner2.png)
 
 ### Masquer la fenêtre du terminal
+Voir [cet article](https://www.winhelponline.com/blog/run-bat-files-invisibly-without-displaying-command-prompt/)
+
+### Masquer la fenêtre du terminal (V2 expérimental)
 Si la tâche fonctionne bien (clic droit dessus, exécuter), il peut être intéressant de masquer la fenêtre
 pour ne pas être dérangé. Ceci se fait avec l’option suivante dans l’onglet **général** des propriétés
 de la tâche:
