@@ -1,7 +1,7 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
   "updated": "2021-01-06T12:25:42+01:00",
   "id": "oss-os-manage-2",

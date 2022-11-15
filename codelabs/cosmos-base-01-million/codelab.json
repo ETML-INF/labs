@@ -1,9 +1,9 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2020-09-01T16:46:23+02:00",
+  "updated": "2020-09-01T17:33:12+02:00",
   "id": "cosmos-base-01-million",
   "duration": 68,
   "title": "Qui veut gagner les millions ?",

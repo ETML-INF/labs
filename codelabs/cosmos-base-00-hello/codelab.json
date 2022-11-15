@@ -1,14 +1,14 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
   "updated": "2022-10-11T09:43:36+02:00",
   "id": "cosmos-base-00-hello",
   "duration": 27,
   "title": "Bonjour Cosmos",
   "summary": "Bonjour Cosmos",
-  "source": ".\\cosmos-base-00-hello.md",
+  "source": "cosmos-base-00-hello.md",
   "theme": "",
   "status": [
     "published"

@@ -1,14 +1,14 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
   "updated": "2022-10-04T09:23:01+02:00",
   "id": "robot-01",
   "duration": 21,
   "title": "Programmation de robot",
   "summary": "intro robot",
-  "source": ".\\robot-01.md",
+  "source": "robot-01.md",
   "theme": "",
   "status": [
     "published"

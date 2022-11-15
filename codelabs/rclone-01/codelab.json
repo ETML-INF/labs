@@ -1,14 +1,14 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
   "updated": "2022-10-14T08:00:34+02:00",
   "id": "rclone-01",
   "duration": 27,
   "title": "Synchronisation avec Rclone",
   "summary": "intro rclone",
-  "source": ".\\rclone-01.md",
+  "source": "rclone-01.md",
   "theme": "",
   "status": [
     "published"

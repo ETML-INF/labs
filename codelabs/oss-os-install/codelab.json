@@ -1,9 +1,9 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2021-08-18T17:52:17+02:00",
+  "updated": "2022-11-15T14:49:42+01:00",
   "id": "oss-os-install",
   "duration": 34,
   "title": "Installation d'un système d'exploitation open source",

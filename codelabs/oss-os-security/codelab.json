@@ -1,9 +1,9 @@
 {
   "environment": "web",
   "format": "html",
-  "prefix": "https://storage.googleapis.com",
+  "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2020-08-13T12:16:17+02:00",
+  "updated": "2020-08-19T10:51:34+02:00",
   "id": "oss-os-security",
   "duration": 38,
   "title": "Comment hacker son propre mot de passe ?",
