@@ -1,0 +1,10 @@
+{
+  "title": "ICT",
+  "description": "Cours en lien avec la formation ICT",
+  "logoUrl": "/ict/logo-ict.png",
+  "tags": ["ict"],
+  "exclude": [
+    ".*-about$",
+    "^lang-.*"
+  ]
+}
