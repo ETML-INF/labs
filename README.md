@@ -8,22 +8,23 @@ claatr version
 
 ```
 
-## Codelabs
+## Codelabs only
 Attention, la dernière release fonctionne avec les surveys et vidéo mais pas tous les iframe alors que la version sur le MASTER ne fonctionne pas pour les surveys
 ``` bash
 cd codelabs
-claat export *.md
+claat export --prefix "https://labs.section-inf.ch/elements" *.md
 claat serve
 ```
 
-
-
-## Setup/Run
+## Entire site
 ``` bash
 npm install
 gulp serve
 go to http://localhost:12345/
 ```
 
-gulp dist pour générer
+## Generate final site
+``` bash
+gulp dist
+```
 
