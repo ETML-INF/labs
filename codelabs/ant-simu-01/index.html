@@ -35,7 +35,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Mise en place" duration="5">
+      <google-codelab-step label="Mise en place" duration="3">
         <h2 is-upgraded>Télécharger l&#39;archive</h2>
 <p>Le programme est disponible <a href="https://github.com/ETML-INF/320-POO_2023/blob/main/assets/simulator.zip" target="_blank">à cette adresse</a></p>
 <p class="image-container"><img alt="bouton pour télécharger" src="img\62919514b82f1386.png"></p>
@@ -51,20 +51,48 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Modifier le comportement des fourmis" duration="5">
-        <h2 is-upgraded>Créer un projet C</h2>
+      <google-codelab-step label="Modifier le comportement des fourmis" duration="8">
+        <h2 is-upgraded>Créer un projet CSharp</h2>
 <p>Créer un projet .NET 4.7 de type <em>bibliothèque</em></p>
+<p class="image-container"><img alt="06-project.png" src="img\c603fa13563daf02.png"><img alt="07-fversion.png" src="img\d313fb1e566e8c7d.png"></p>
 <h2 is-upgraded>Ajouter une référence vers un DLL</h2>
-<h2 is-upgraded>Ajouter une implémentation</h2>
+<p class="image-container"><img alt="08-dll1.png" src="img\5836c03397f102cc.png"></p>
+<h3 is-upgraded>Sélectionner le DLL de l&#39;archive <em>simulator</em></h3>
+<pre><code>CustomStrategy.dll
+</code></pre>
+<p class="image-container"><img alt="09-dll2.png" src="img\a1d72cbc88f61b72.png"></p>
+<p class="image-container"><img alt="10-dll3.png" src="img\e65f4034468aad7c.png"></p>
+<h2 is-upgraded>Ajouter une implémentation automatique (valider l&#39;aide de l&#39;IDE)</h2>
+<p class="image-container"><img alt="11-implem1.png" src="img\72045b114c4f67eb.png"></p>
+<h2 is-upgraded>Remplacer le code auto-généré (à adapter selon votre cas)</h2>
+<p class="image-container"><img alt="19-code.png" src="img\2da4412769caf07e.png"></p>
+<h3 is-upgraded>Modifier la méthode <em>GetMessage</em></h3>
+<p class="image-container"><img alt="12-getmessage.png" src="img\346846f41cd73852.png"></p>
 <h2 is-upgraded>Générer le DLL</h2>
+<p class="image-container"><img alt="13-gendll.png" src="img\4fad814e8ac74ec7.png"></p>
 <h2 is-upgraded>Copier le DLL vers le simulateur</h2>
+<p class="image-container"><img alt="14-open.png" src="img\38b1679601ff80c9.png"><img alt="15+select.png" src="img\8f0be410cca4b1ec.png"><img alt="16-copy.png" src="img\2718da0e4dd460ed.png"></p>
 <h2 is-upgraded>Tester</h2>
+<h3 is-upgraded>Activer le log</h3>
+<p class="image-container"><img alt="17-log1.png" src="img\aeafbc81109ca7d9.png"></p>
+<h3 is-upgraded>Vérifier l&#39;affichage du message</h3>
+<p class="image-container"><img alt="18-message.png" src="img\a47edf43efebd44c.png"></p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Améliorations" duration="0">
+      <google-codelab-step label="Améliorations" duration="3">
         <h2 is-upgraded>Automatiser la copie après le build</h2>
+<p>Pour copier directement une nouvelle version, on peut, par exemple ajouter une option de build dans le fichier <em>.csproject</em></p>
+<h3 is-upgraded>Exemple à adapter</h3>
+<pre><code>&lt;Target Name=&#34;copy strategy&#34; AfterTargets=&#34;build&#34;&gt;
+        &lt;Message Text=&#34;Copy example to krohonde&#34; Importance=&#34;high&#34; /&gt;
+        &lt;Copy 
+        SourceFiles=&#34;$(OutputPath)\CustomStrategyZZZ.dll&#34; 
+        DestinationFolder=&#34;c:\temp\simulator\strategyZZZ&#34; 
+        SkipUnchangedFiles=&#34;true&#34; /&gt;
+    &lt;/Target&gt;
+</code></pre>
 
 
       </google-codelab-step>
