@@ -13,7 +13,15 @@ analytics account: UA-170792591-1
 ## Vue d’ensemble
 Duration: 0:01:00
 
-![thymio](assets/ant-simu-01/ant-01.png)
+![ant](assets/ant-simu-01/ant-01.png)
+
+Survey
+: Quelle est votre conception de la programmation orientée objet ?
+<ul>
+<li>C'est un peu comme la lampe d'Aladdin, ça ouvre des portes infinies</li>
+<li>C'est un truc pour les autistes qui aiment les mathématiques</li>
+<li>J'attends la fin de cet atelier pour me faire une idée d'après une expérience réelle</li>
+</ul>
 
 ### Environnement fourmilier simplifié
 Le simulateur offre un environnement dans lequel 3 fourmilières évoluent dans des conditions naturelles simplifiées elles aussi.
@@ -65,13 +73,18 @@ CustomStrategy.dll
 
 ![10-dll3.png](assets/ant-simu-01/10-dll3.png)
 
-### Ajouter une implémentation automatique (valider l’aide de l’IDE)
+### Ajouter une implémentation
+ 1. Créer une classe nommée XXXBlueQueen
+ 1. Ajouter un import : "using CustomStrategy"
+ 1. Faire hériter la nouvelle classe de QueenStrategy : "... : QueenStrategy" 
+ 1. Utiliser l’aide de l’IDE pour compléter la classe
 ![11-implem1.png](assets/ant-simu-01/11-implem1.png)
 
 ### Remplacer le code auto-généré (à adapter selon votre cas)
 ![19-code.png](assets/ant-simu-01/19-code.png)
 
-#### Modifier la méthode *GetMessage*
+#### Ajouter un override pour la méthode *GetMessage*
+Choisir le texte à afficher, par exemple "Hello Demo" :
 ![12-getmessage.png](assets/ant-simu-01/12-getmessage.png)
 
 ### Générer le DLL
@@ -82,13 +95,30 @@ CustomStrategy.dll
 ![15+select.png](assets/ant-simu-01/15-select.png)
 ![16-copy.png](assets/ant-simu-01/16-copy.png)
 
+### Retirer le dll example
+Ou le renommer pour qu’il soit ordré alphabétiquement après le nouveau plugin 
+(premier arrivé, premier servi...)
+
 ### Tester
 
 #### Activer le log
 ![17-log1.png](assets/ant-simu-01/17-log1.png)
 
 #### Vérifier l’affichage du message
+Le log devrait se trouver dans le répertoire *c:\temp*
+
+**Défilement automatique**
+Pour voir le log défiler, on peut faire un clic droit dans le répertoire
+où est le log (via l’explorateur de fichier) et sélectionner *git bash here*.
+
+Ensuite entrer la commande suivante dans la console qui est apparu:
+```shell
+tail -100f Krohonde.log
+```
 ![18-message.png](assets/ant-simu-01/18-message.png)
+
+Positive
+: les options "-100f" impliquent qu’on affiche les 100 dernières lignes du fichier (100) et qu’on défile automatiquement (f)
 
 ## Améliorations
 Duration: 0:03:00
@@ -106,3 +136,10 @@ Pour copier directement une nouvelle version, on peut, par exemple ajouter une o
 		SkipUnchangedFiles="true" />
     </Target>
 ```
+
+## Synthèse
+Duration: 0:02:00
+
+Bravo, il est temps de faire le point sur les éléments travaillés
+
+![https://docs.google.com/forms/d/e/1FAIpQLSfDlmUVAjTePaSqEOs0rAOJsxuExB-Ou_6OtvIZUKQuiTwPRA/viewform?embedded=true](codelabs/assets/linux.svg)
