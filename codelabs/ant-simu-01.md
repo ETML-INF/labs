@@ -31,7 +31,7 @@ Duration: 0:03:00
 
 ### Télécharger l’archive
 
-Le programme est disponible [à cette adresse](https://github.com/ETML-INF/320-POO_2023/blob/main/assets/simulator.zip)
+Le programme est disponible [à cette adresse](https://github.com/ETML-INF/320-POO_2023/blob/main/assets/01-02-simulator.zip)
 
 ![bouton pour télécharger](assets/ant-simu-01/ant-simu-02-download.png)
 
