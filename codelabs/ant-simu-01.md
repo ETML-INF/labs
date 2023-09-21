@@ -122,11 +122,14 @@ tail -100f Krohonde.log
 Positive
 : les options "-100f" impliquent qu’on affiche les 100 dernières lignes du fichier (100) et qu’on défile automatiquement (f)
 
-# Corriger le mouvement de la reine bleue
+## Corriger le mouvement de la reine bleue
 La reine bleue a un comportement étrange...
 
 Corriger cela en implémentant une meilleure version de la méthode suivante à disposition:
 ![Alt text](assets/ant-simu-01/direction2.png)
+
+### Tester
+Puis tester ce nouveau comportement, et ainsi de suite jusqu’à ce qu’elle reste dans sa zone...
 
 ## Améliorations
 Duration: 0:03:00
