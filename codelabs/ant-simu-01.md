@@ -31,7 +31,7 @@ Duration: 0:03:00
 
 ### Télécharger l’archive
 
-Le programme est disponible [à cette adresse](https://github.com/ETML-INF/320-POO_2023/blob/main/assets/01-02-simulator.zip)
+Le programme est disponible [à cette adresse](https://github.com/ETML-INF/320-POO_2023/blob/main/assets/04-00-simulator-net6.zip)
 
 ![bouton pour télécharger](assets/ant-simu-01/ant-simu-02-download.png)
 
@@ -57,25 +57,23 @@ Et l’écran suivant devrait apparaître:
 Duration: 0:08:00
 
 ### Créer un projet CSharp
-Créer un projet .NET 4.7 de type *bibliothèque*
+Créer un projet **.NET6** de type *bibliothèque*
 
-![06-project.png](assets/ant-simu-01/06-project.png)
-![07-fversion.png](assets/ant-simu-01/07-fversion.png)
+![06-project.png](assets/ant-simu-01/net6-lib1.png)
+![07-fversion.png](assets/ant-simu-01/net6-lib2.png)
 
 ### Ajouter une référence vers un DLL
 ![08-dll1.png](assets/ant-simu-01/08-dll1.png)
 
 #### Sélectionner le DLL de l’archive *simulator*
 ```text
-CustomStrategy.dll
+Krohonde.dll
 ```
-![09-dll2.png](assets/ant-simu-01/09-dll2.png)
-
-![10-dll3.png](assets/ant-simu-01/10-dll3.png)
+![09-dll2.png](assets/ant-simu-01/net6-addref2.png)
 
 ### Ajouter une implémentation
  1. Créer une classe nommée XXXBlueQueen
- 1. Ajouter un import : "using CustomStrategy"
+ 1. Ajouter un import : "using Krohonde.CustomStrategy"
  1. Faire hériter la nouvelle classe de QueenStrategy : "... : QueenStrategy" 
  1. Utiliser l’aide de l’IDE pour compléter la classe
 ![11-implem1.png](assets/ant-simu-01/11-implem1.png)
@@ -92,17 +90,21 @@ Choisir le texte à afficher, par exemple "Hello Demo" :
 
 ### Copier le DLL vers le simulateur
 ![14-open.png](assets/ant-simu-01/14-open.png)
-![15+select.png](assets/ant-simu-01/15-select.png)
-![16-copy.png](assets/ant-simu-01/16-copy.png)
 
-### Retirer le dll example
-Ou le renommer pour qu’il soit ordré alphabétiquement après le nouveau plugin 
-(premier arrivé, premier servi...)
+#### Créer le dossier "strategy"
+![Alt text](assets/ant-simu-01/strategy.png)
+
+
+#### Copier/Coller le dll dans le dossier "strategy"
+![Alt text](assets/ant-simu-01/strat-move.png)
 
 ### Tester
+Relancer le simulateur
 
 #### Activer le log
 ![17-log1.png](assets/ant-simu-01/17-log1.png)
+
+#### Changer la vitesse à min 1
 
 #### Vérifier l’affichage du message
 Le log devrait se trouver dans le répertoire *c:\temp*
@@ -120,6 +122,12 @@ tail -100f Krohonde.log
 Positive
 : les options "-100f" impliquent qu’on affiche les 100 dernières lignes du fichier (100) et qu’on défile automatiquement (f)
 
+# Corriger le mouvement de la reine bleue
+La reine bleue a un comportement étrange...
+
+Corriger cela en implémentant une meilleure version de la méthode suivante à disposition:
+![Alt text](assets/ant-simu-01/direction2.png)
+
 ## Améliorations
 Duration: 0:03:00
 
@@ -132,7 +140,7 @@ Pour copier directement une nouvelle version, on peut, par exemple ajouter une o
         <Message Text="Copy example to krohonde" Importance="high" />
         <Copy 
 		SourceFiles="$(OutputPath)\CustomStrategyZZZ.dll" 
-		DestinationFolder="c:\temp\simulator\strategyZZZ" 
+		DestinationFolder="c:\temp\simulator\strategy\strategyZZZ" 
 		SkipUnchangedFiles="true" />
     </Target>
 ```
