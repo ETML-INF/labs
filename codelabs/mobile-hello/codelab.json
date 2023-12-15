@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-12-15T14:59:25+01:00",
+  "id": "mobile-hello",
+  "duration": 18,
+  "title": "Première appli mobile MAUI",
+  "summary": "mobile app hello world",
+  "source": "mobile-hello.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-hello"
+}
