@@ -1,7 +1,7 @@
 author: Jonathan Melly
 summary: mobile app hello world
 id: mobile-hello
-categories: dev
+categories: android,dev
 tags: ict
 environments: Web
 status: Published
