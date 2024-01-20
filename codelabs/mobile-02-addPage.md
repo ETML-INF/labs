@@ -1,7 +1,7 @@
 author: Jonathan Melly
 summary: mobile app add page
 id: mobile-02-addPage
-categories: dev
+categories: android,dev
 tags: ict
 environments: Web
 status: Published
