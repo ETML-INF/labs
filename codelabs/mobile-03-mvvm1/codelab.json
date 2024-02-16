@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-02-13T07:36:02+01:00",
+  "id": "mobile-03-mvvm1",
+  "duration": 8,
+  "title": "MVVM",
+  "summary": "mobile app mvvm1",
+  "source": ".\\mobile-03-mvvm1.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "android",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-03-mvvm1"
+}
