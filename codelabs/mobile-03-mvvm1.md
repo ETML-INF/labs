@@ -94,6 +94,15 @@ On peut désormais adapter la vue pour qu’elle soit reliée au ViewModel ce qu
 
 ![mvvm1.gif](assets/mobile/screen/mvvm/mvvm1.gif)
 
+## Astuces
+Duration: 0:02:00
+
+### Lier le MVVM dans le XAML en 3 clics
+On peut utiliser la **fenêtre de propriété** pour ajouter la référence au ViewModel depuis le XAML sans devoir ajouter le namespace à la main:
+
+![https://www.youtube.com/watch?v=BxS6udAMsO8](codelabs/assets/linux.svg)
+
+
 ## Synthèse
 Duration: 0:1:00
 
