@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-02-23T15:45:33+01:00",
+  "id": "mobile-04-mvvm2",
+  "duration": 28,
+  "title": "MVVM2 : ListView",
+  "summary": "mobile app mvvm1",
+  "source": ".\\mobile-04-mvvm2.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "android",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-04-mvvm2"
+}
