@@ -1,5 +1,5 @@
 author: Jonathan Melly
-summary: mobile app mvvm1
+summary: mobile app mvvm2
 id: mobile-04-mvvm2
 categories: android,dev
 tags: ict
