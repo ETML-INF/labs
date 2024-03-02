@@ -37,7 +37,7 @@ Duration: 0:05:00
 Lancer l'installateur visualstudio (visualstudio installer) et ajouter si
 nécessaire le composant MAUI :
 
-![screen-2023-12-01 14_24_53-Visual Studio Installer.png](assets/mobile/screen/hello/screen-2023-12-01 14_24_53-Visual Studio Installer.png)
+![screen-2023-12-01 14_24_53-Visual Studio Installer.png](<assets/mobile/screen/hello/screen-2023-12-01 14_24_53-Visual Studio Installer.png>)
 
 Negative
 : Si l'option n'est pas disponible, il faut peut-être commencer par mettre à jour visualstudio...
@@ -48,12 +48,12 @@ Duration: 0:10:00
 ### Type de projet
 Lancer visualstudio et créer un projet MAUI
 
-![screen-2023-12-01 14_47_40-Microsoft Visual Studio.png](assets/mobile/screen/hello/screen-2023-12-01 14_47_40-Microsoft Visual Studio.png)
+![screen-2023-12-01 14_47_40-Microsoft Visual Studio.png](<assets/mobile/screen/hello/screen-2023-12-01 14_47_40-Microsoft Visual Studio.png>)
 
 ### Configuration du projet
 
 ![screen-2023-12-01 14_48_39-Microsoft Visual Studio.png](assets/mobile/screen/hello/screen-2023-12-01 14_48_39-Microsoft Visual Studio.png)
-![screen-2023-12-01 14_48_49-Microsoft Visual Studio.png](assets/mobile/screen/hello/screen-2023-12-01 14_48_49-Microsoft Visual Studio.png)
+![screen-2023-12-01 14_48_49-Microsoft Visual Studio.png](<assets/mobile/screen/hello/screen-2023-12-01 14_48_49-Microsoft Visual Studio.png>)
 
 ### Créer un émulateur Android
 Pour tester l'application, il faut un smartphone ou un émulateur. 
@@ -62,20 +62,36 @@ Dans tous les cas, un émulateur est bien pratique, voici comment le créer :
 Negative
 : Pour tester sur IOS, il faut impérativement avoir un device apple, même pour l'émulateur...
 
-![screen-2023-12-01 14_52_08-HelloMaui1 - Microsoft Visual Studio.png](assets/mobile/screen/hello/screen-2023-12-01 14_52_08-HelloMaui1 - Microsoft Visual Studio.png)
+Negative
+: Il faut être administrateur pour utiliser l’émulateur integré à VisualStudio
+
+#### Package "maison"
+
+Pour accélérer la mise en place, il existe un [zip](https://eduvaud.sharepoint.com/:f:/s/msteams_d0db31/Eq39Jwt6uYxLtMCBxOYfZ9ABoeGuE79ErVvY0SoYeHxa2g?e=STeXvT) qui contient juste ce qu’il faut pour démarrer un émulateur.
+Une fois décompressé, lancer le fichier *.bat*.
+
+#### Version integrée à VisualStudio
+
+![screen-2023-12-01 14_52_08-HelloMaui1 - Microsoft Visual Studio.png](<assets/mobile/screen/hello/screen-2023-12-01 14_52_08-HelloMaui1 - Microsoft Visual Studio.png>)
 
 Accepter la licence
-![screen-2023-12-01 14_52_33-.png](assets/mobile/screen/hello/screen-2023-12-01 14_52_33-.png)
+![screen-2023-12-01 14_52_33-.png](<assets/mobile/screen/hello/screen-2023-12-01 14_52_33-.png>)
 
 Choisir l'appareil par défaut
-![screen-2023-12-01 14_53_06-Gestionnaire d'appareils Android.png](assets/mobile/screen/hello/screen-2023-12-01 14_53_06-Gestionnaire d'appareils Android.png)
+![screen-2023-12-01 14_53_06-Gestionnaire d'appareils Android.png](<assets/mobile/screen/hello/screen-2023-12-01 14_53_06-Gestionnaire d'appareils Android.png>)
+
+#### Android studio
+
+On peut installer [android studio](https://developer.android.com/studio) sans être administrateur, par contre cela prendra du temps. 
+
+C’est d’ailleurs de cette base qu’a été créé le *package maison*...
 
 ## Lancer l'application
 Duration: 0:01:00
 
 Une fois l'émulateur créé, l'application example devrait se lancer :
 
-![screen-2023-12-01 15_15_25-Android Emulator - pixel_5_-_api_34_5554.png](assets/mobile/screen/hello/screen-2023-12-01 15_15_25-Android Emulator - pixel_5_-_api_34_5554.png)
+![screen-2023-12-01 15_15_25-Android Emulator - pixel_5_-_api_34_5554.png](<assets/mobile/screen/hello/screen-2023-12-01 15_15_25-Android Emulator - pixel_5_-_api_34_5554.png>)
 
 ## Synthèse
 Bravo, il est temps de faire le point sur les éléments travaillés
