@@ -1,0 +1,163 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>CRUD</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-05-crud1"
+                  title="CRUD"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p>Ce tutorial fait suite au tutorial <a href="https://labs.section-inf.ch/codelabs/mobile-04-mvvm2/index.html?index=..%2F..index" target="_blank">MVVM-ListView</a> et reprend l&#39;application des voeux en ajoutant la persistance et les actions (CR)<strong>UD</strong> manquantes...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Contexte théorique" duration="1">
+        <p class="image-container"><img alt="crud" src="img\1b04d300e38a0921.png"></p>
+<p>CRUD correspond à</p>
+<ul>
+<li><strong>C</strong>reate</li>
+<li><strong>R</strong>ead</li>
+<li><strong>U</strong>pdate</li>
+<li><strong>D</strong>elete</li>
+</ul>
+<p>Autrement dit, cela correspond aux fonctions de bases pour manipuler les données.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Librairies additionnelles" duration="6">
+        <h2 is-upgraded>Interaction avec la base de données</h2>
+<p class="image-container"><img alt="Alt text" src="img\7be87b27f243bd13.png"></p>
+<p><strong>CRUD</strong> implique le stockage des données. Dans l&#39;environnement .NET, le réflexe est d&#39;utiliser <em>EntityFramework</em> qui est un <em>ORM</em> (Object Relational Mapping) qui permet, pour les cas généraux, d&#39;utiliser une simple API plutôt que d&#39;écrire des requêtes SQL à la main...</p>
+<h2 is-upgraded>SGBD</h2>
+<p class="image-container"><img alt="Alt text" src="img\b09685090babe1a3.png"></p>
+<p><em>EntityFramework</em> fonctionne avec les backends standards et pour des raisons de simplification, <strong>SQLite</strong> sera utilisé dans ce tutorial.</p>
+<aside class="special"><p>Il est très facile de passer de SQLite à MariaDB avec EntityFramework, il suffit d&#39;ajouter le driver et changer le chaîne de connexion...</p>
+</aside>
+<p class="image-container"><img alt="Alt text" src="img\91346167b245fd12.png"></p>
+<h2 is-upgraded>Installation</h2>
+<p>Accéder au gestionnaire nuget :</p>
+<p class="image-container"><img alt="nuget" src="img\2a8b126c70fc2cb9.png"></p>
+<p>Installer le paquet</p>
+<pre><code>Microsoft.EntityFrameworkCore.Sqlite
+</code></pre>
+<p class="image-container"><img alt="Alt text" src="img\8305e96c506d6d66.png"></p>
+<p><em>Ce paquet installera aussi EntityFramework grâce au système de dépendances...</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adaptation du 
+modèle" duration="10">
+        <p>Pour que le modèle puisse être stocké en base de données avec EF (EntityFramework), il faut ajouter une propriété pour la clé primaire (Id) et déclarer le <em>DbContext</em></p>
+<h2 is-upgraded>Wish</h2>
+<p class="image-container"><img alt="Alt text" src="img\8c1cc70f7e763242.png"></p>
+<h2 is-upgraded>DbContext</h2>
+<p>Créer le fichier dans un nouveau dossier nommé <em>services</em></p>
+<p class="image-container"><img alt="Alt text" src="img\cdcf49197fc9e3b8.png"></p>
+<p>Dont voici le contenu:<br><img alt="Alt text" src="img\d9acc22b94b99d23.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adaptation du 
+ViewModel" duration="15">
+        <h2 is-upgraded><strong>C</strong>REATE</h2>
+<p>À la création d&#39;un voeu, on va l&#39;insérer en base de données en plus de mettre à jour la liste locale:</p>
+<p class="image-container"><img alt="Alt text" src="img\2bc360ddc06d9e19.png"></p>
+<aside class="special"><p>Grâce à EF, les modifications sont minimes pour interagir avec la base de données</p>
+</aside>
+<h2 is-upgraded><strong>R</strong>EAD</h2>
+<p>Étant donné qu&#39;on insère des données en base, il faut désormais charger ces données depuis la DB au lancement de la page:</p>
+<p class="image-container"><img alt="Alt text" src="img\a3628bf1622bcae8.png"></p>
+<h2 is-upgraded><strong>U</strong>PDATE</h2>
+<p>Comment faire pour mettre à jour un voeu ?</p>
+<p>On charge la version en base de données correspondante (utilisation implicite des Id[clé primaire]) et on la met à jour en demandant une synchronisation.</p>
+<aside class="warning"><p>Pour des raisons de simplification, le ViewModel fait directement appel à une fonction pour faire apparaître un <em>prompt</em>...</p>
+</aside>
+<p class="image-container"><img alt="Alt text" src="img\8db9a48217dbae8d.png"></p>
+<aside class="warning"><p>En ajoutant un appel direct à la vue (DisplayPrompt) dans le ViewModel, on risque de compliquer les tests automatiques mais pour l&#39;instant on tolère ce raccourci...</p>
+</aside>
+<h3 is-upgraded>Vue</h3>
+<p>Voici ce qu&#39;on verra en cliquant sur le crayon:</p>
+<p class="image-container"><img alt="Alt text" src="img\85b962cd3f5b1b25.png"></p>
+<h2 is-upgraded><strong>D</strong>ELETE</h2>
+<p>Il reste encore à gérer la suppression. À nouveau, grâce à EF qui reconnaît les Ids, cette étape est vraiment très simple:</p>
+<p class="image-container"><img alt="Alt text" src="img\41a2d56481c63eb8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adaptation de la 
+vue" duration="15">
+        <p>L&#39;édition et la suppression n&#39;ont pas encore de bouton associés dans la vue et il faut donc les ajouter.</p>
+<h2 is-upgraded><strong>U</strong>PDATE et <strong>D</strong>ELETE</h2>
+<p>On va avoir besoin d&#39;une référence sur le ViewModel pour lier les actions, il faut donc être certain d&#39;avoir un <em>x:Name</em> ici:</p>
+<p class="image-container"><img alt="Alt text" src="img\93360d918633ea30.png"></p>
+<p>Il subsiste actuellement un bogue avec les ListView lorsqu&#39;on ajoute des boutons à l&#39;intérieur, on va donc convertir la ListView en CollectionView qui a le mérite d&#39;être beaucoup plus flexible au niveau du design.<br>À part ça, on ajoute 2 boutons, 1 sous forme d&#39;icône et l&#39;autre sous forme textuelle ce qui donne le rendu suivant:</p>
+<p class="image-container"><img alt="Alt text" src="img\1469870be9cd6cb5.png"></p>
+<p>Et voici le XAML correspondant:</p>
+<p class="image-container"><img alt="Alt text" src="img\b8451f6e1832167d.png"></p>
+<h3 is-upgraded>Image MAUI</h3>
+<p>Pour intégrer des images dans MAUI, le plus simple est d&#39;utiliser un <strong>SVG</strong> à partir duquel le compilateur générera automatiquement les png de la bonne taille selon les devices cibles.</p>
+<p>Le plus simple est donc de glisser-déposer un SVG</p>
+<p class="image-container"><img alt="Alt text" src="img\11b9aaf12852bde9.svg"></p>
+<p>ici:</p>
+<p class="image-container"><img alt="Alt text" src="img\5264d190b02163f4.png"></p>
+<p>Et ensuite le référencer en tant que <em>image.png</em> (changer l&#39;extension).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Vue un peu plus &#34;smartphone&#34;" duration="15">
+        <p>Une version plus orientée smartphone pourrait ressembler à ça:</p>
+<p class="image-container"><img alt="Alt text" src="img\1541cf7a172473f8.gif"></p>
+<p>Pour cette partie c&#39;est à vous de jouer sachant qu&#39;un mot clé intéressant est <strong>SWIPE</strong> ;-)</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Suite à cet exercice, les compétences suivantes ont été travaillées:</p>
+<ul>
+<li>Installer EF pour SQLite</li>
+<li>Définir une entité de persistance (aka table de base de données)</li>
+<li>Charger des données avec EF</li>
+<li>Ajouter / Modifier / Éditer des données avec EF</li>
+<li>Utiliser une CollectionView avec des boutons d&#39;action</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
