@@ -66,12 +66,39 @@ Microsoft.EntityFrameworkCore.Sqlite
 ## Adaptation du **modèle**
 Duration: 0:10:00
 
+### Situation initiale
+Jusque là, le modèle s’était borné à un simple "String", certes pratique dans le cadre d’un exercice mais pas tout à fait réaliste.
+
+### Modèle basique
+Une manière de *convertir* un voeu représenté par du texte en une classe pourrait être quelque-chose comme ça:
+
+```csharp
+public class Wish
+{
+    /* Définition du voeu, par exemple 
+    "marcher sur la lune" */
+    public string? Definition {get;set;} 
+
+    /* Date à laquelle le voeu a été exaucé */
+    public DateTime AccomplishedDate{get;set;}
+}
+```
+
+Pour garder un projet en ordre, ce modèle trouvera sa place dans un dossier **Models** :
+
+![Alt text](assets/mobile/screen/crud/modelFolder.png)
+
+### Adaptation pour la base de données
+
 Pour que le modèle puisse être stocké en base de données avec EF (EntityFramework), il faut ajouter une propriété pour la clé primaire (Id) et déclarer le *DbContext*
 
-### Wish
+#### Id pour Wish
 ![Alt text](assets/mobile/screen/crud/wish.png)
 
-### DbContext
+Positive
+: En plus de l’Id, une méthode *ToString* particulière a été ajoutée afin de faciliter le debug...
+
+#### DbContext
 
 Créer le fichier dans un nouveau dossier nommé *services*
 

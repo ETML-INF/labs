@@ -71,10 +71,29 @@
     
       <google-codelab-step label="Adaptation du 
 modèle" duration="10">
-        <p>Pour que le modèle puisse être stocké en base de données avec EF (EntityFramework), il faut ajouter une propriété pour la clé primaire (Id) et déclarer le <em>DbContext</em></p>
-<h2 is-upgraded>Wish</h2>
+        <h2 is-upgraded>Situation initiale</h2>
+<p>Jusque là, le modèle s&#39;était borné à un simple &#34;String&#34;, certes pratique dans le cadre d&#39;un exercice mais pas tout à fait réaliste.</p>
+<h2 is-upgraded>Modèle basique</h2>
+<p>Une manière de <em>convertir</em> un voeu représenté par du texte en une classe pourrait être quelque-chose comme ça:</p>
+<pre><code>public class Wish
+{
+    /* Définition du voeu, par exemple 
+    &#34;marcher sur la lune&#34; */
+    public string? Definition {get;set;} 
+
+    /* Date à laquelle le voeu a été exaucé */
+    public DateTime AccomplishedDate{get;set;}
+}
+</code></pre>
+<p>Pour garder un projet en ordre, ce modèle trouvera sa place dans un dossier <strong>Models</strong> :</p>
+<p class="image-container"><img alt="Alt text" src="img\979d594707787d8d.png"></p>
+<h2 is-upgraded>Adaptation pour la base de données</h2>
+<p>Pour que le modèle puisse être stocké en base de données avec EF (EntityFramework), il faut ajouter une propriété pour la clé primaire (Id) et déclarer le <em>DbContext</em></p>
+<h3 is-upgraded>Id pour Wish</h3>
 <p class="image-container"><img alt="Alt text" src="img\8c1cc70f7e763242.png"></p>
-<h2 is-upgraded>DbContext</h2>
+<aside class="special"><p>En plus de l&#39;Id, une méthode <em>ToString</em> particulière a été ajoutée afin de faciliter le debug...</p>
+</aside>
+<h3 is-upgraded>DbContext</h3>
 <p>Créer le fichier dans un nouveau dossier nommé <em>services</em></p>
 <p class="image-container"><img alt="Alt text" src="img\cdcf49197fc9e3b8.png"></p>
 <p>Dont voici le contenu:<br><img alt="Alt text" src="img\d9acc22b94b99d23.png"></p>
