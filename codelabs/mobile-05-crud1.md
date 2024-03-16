@@ -128,13 +128,10 @@ Comment faire pour mettre à jour un voeu ?
 
 On charge la version en base de données correspondante (utilisation implicite des Id[clé primaire]) et on la met à jour en demandant une synchronisation.
 
-Negative
-: Pour des raisons de simplification, le ViewModel fait directement appel à une fonction pour faire apparaître un *prompt*...
-
 ![Alt text](assets/mobile/screen/crud/update.png)
 
 Negative
-: En ajoutant un appel direct à la vue (DisplayPrompt) dans le ViewModel, on risque de compliquer les tests automatiques mais pour l’instant on tolère ce raccourci...
+: En ajoutant un appel direct à la vue (DisplayPrompt) dans le ViewModel, on risque de compliquer les tests automatiques mais pour l’instant on tolère ce raccourci pour les raisons de simplification...
 
 #### Vue
 Voici ce qu’on verra en cliquant sur le crayon:
