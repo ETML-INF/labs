@@ -13,10 +13,12 @@ analytics account: UA-170792591-1
 ## Introduction
 Duration: 0:0:30
 
-Pour rendre une application interactive, rien de tel qu’un peu d’animation...
+![Alt text](assets/mobile/animation/phone-anim.gif)
+
+Pour rendre une application vivante, rien de tel qu’un peu d’animation...
 
 ### Contexte technique
-Duration: 0:0:30
+![Alt text](assets/mobile/animation/flutter-mvvm-ezgif.com-crop.gif)
 
 Ce tutorial part du principe que la notion MVVM avec MAUI est maîtrisée.
 
@@ -36,20 +38,21 @@ Duration: 0:01:00
 
 ![Alt text](assets/mobile/animation/qemu-system-x86_64_Mjcb4A6Ymn.gif)
 
-## Code
-Duration: 0:30:00
+## Code : Vue
+Duration: 0:5:00
 
-### Vue
+
 Exceptionnellement, il y aura un peu de code dans la partie XAML.CS car l’animation se passe uniquement au niveau de l’UI.
 
-Par contre, pour respecter MVVM, ce code sera appelé par le ViewModel du moment que la vue y a enregistré son action...
+Positive
+: Par contre, pour respecter MVVM, ce code sera appelé par le ViewModel du moment que la vue y a enregistré son action...
 
-#### XAML
+### XAML
 Hormis le lien avec le ViewModel, voici la partie XAML de la vue:
 
 ![Alt text](assets/mobile/animation/view.png)
 
-#### XAML.CS
+### XAML.CS
 
 Pour la partie XAML.CS, on procède ainsi
 
@@ -59,22 +62,24 @@ Pour la partie XAML.CS, on procède ainsi
 
 ![Alt text](assets/mobile/animation/view.cs.png)
 
-### ViewModel
+## Code : ViewModel
+Duration: 0:10:00
+
 En lien avec les bindings de la vue, il faut définir:
 
-#### Les propriétés
+### Les propriétés
 
 ![Alt text](assets/mobile/animation/vw-props.png)
 
-#### La méthode pour réagir au switch
+### La méthode pour réagir au switch
 
 ![Alt text](assets/mobile/animation/vm-switch.png)
 
-#### L’action et la méthode pour la rotation
+### L’action et la méthode pour la rotation
 
 ![Alt text](assets/mobile/animation/vm-rotate.png)
 
-#### L’action et la méthode pour le déplacement
+### L’action et la méthode pour le déplacement
 
 ![Alt text](assets/mobile/animation/vm-translate.png)
 
