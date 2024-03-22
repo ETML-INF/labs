@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2020-08-19T10:51:34+02:00",
+  "updated": "2024-03-20T09:18:11+01:00",
   "id": "oss-os-security",
   "duration": 38,
   "title": "Comment hacker son propre mot de passe ?",
   "summary": "Sécurité d’un OS",
-  "source": "oss-os-security.md",
+  "source": ".\\oss-os-security.md",
   "theme": "",
   "status": [
     "published"

@@ -135,6 +135,9 @@ Maintenant qu'on a le fichier compatible avec le programme de hacking, on va pou
 john -user:test convertis.txt
 ```
 
+Negative
+: Si le programme indique "no hashes found", une solution possible est d’ajouter le paramètre --format:crypt à la commande
+
 Positive
 : Pour afficher le mot de passe en cours de tentative, tu peux appuyer sur n'importe quelle touche et sur *q* ou *ctrl-c* pour quitter prématurément.
 

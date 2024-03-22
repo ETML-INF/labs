@@ -118,6 +118,8 @@ sudo cat /etc/shadow &gt; motDePasses.txt
 <p>Maintenant qu&#39;on a le fichier compatible avec le programme de hacking, on va pouvoir commencer <strong>l&#39;audit de sécurité</strong> sur le compte de test :</p>
 <pre><code>john -user:test convertis.txt
 </code></pre>
+<aside class="warning"><p>Si le programme indique &#34;no hashes found&#34;, une solution possible est d&#39;ajouter le paramètre –format:crypt à la commande</p>
+</aside>
 <aside class="special"><p>Pour afficher le mot de passe en cours de tentative, tu peux appuyer sur n&#39;importe quelle touche et sur <em>q</em> ou <em>ctrl-c</em> pour quitter prématurément.</p>
 </aside>
 <p>Si tout va bien, le résultat devrait ressembler à cela:</p>
