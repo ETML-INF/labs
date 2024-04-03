@@ -1,0 +1,109 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Capteurs</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-07-sensor"
+                  title="Capteurs"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\525517c3c3058ced.png"></p>
+<p>Comme nos 5 sens, les capteurs de téléphones peuvent donner des informations bien utiles pour certaines applications...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Accéléromètre" duration="15">
+        <p>Pour utiliser l&#39;accéléromètre, il faut l&#39;activer et assigner une fonction qui sera appelée en cas de changement des données du capteur (la fréquence d&#39;actualisation est adaptable...)</p>
+<h2 is-upgraded>Aperçu</h2>
+<p class="image-container"><img alt="Alt text" src="img\4b55c232b8275db9.gif"></p>
+<h2 is-upgraded>XAML</h2>
+<p class="image-container"><img alt="Alt text" src="img\afedc7f493d20a05.png"></p>
+<aside class="special"><p>Le seuil et l&#39;accélération présents dans l&#39;aperçu ne sont pas traités ici...</p>
+</aside>
+<h2 is-upgraded>ViewModel</h2>
+<p>Créer le ViewModel et le compléter selon les éléments ci-dessous.</p>
+<h3 is-upgraded>Propriétés</h3>
+<p class="image-container"><img alt="Alt text" src="img\f99c14c061809a83.png"></p>
+<h3 is-upgraded>Activation du capteur</h3>
+<p class="image-container"><img alt="Alt text" src="img\7f5de384ad60818a.png"></p>
+<h3 is-upgraded>Fonction observateur</h3>
+<p class="image-container"><img alt="Alt text" src="img\7b020a0c8b921d13.png"></p>
+<h2 is-upgraded>Simulateur</h2>
+<p>On peut stimuler l&#39;accéléromètre en utilisant les outils avancés du simulateur:</p>
+<p class="image-container"><img alt="Alt text" src="img\d7cb76e0bc8403f2.png"></p>
+<h3 is-upgraded>Virtual sensors</h3>
+<p class="image-container"><img alt="Alt text" src="img\73ed7ce3a2675b2d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gestion des secousses" duration="15">
+        <p>Pour réagir à des secousses, il est nécessaire de faire un peu de calcul et définir un seuil de tolérance...<br>Tout cela est possible, néanmoins, MAUI intègre cela nativement et on peut donc réutiliser ce qui a déjà été implémenté...</p>
+<h2 is-upgraded>XAML</h2>
+<p>On va profiter de ce scénario pour introduire la gestion d&#39;un élément de type <em>toggle</em> avec MVVM.</p>
+<p>Il est donc correct que le code suivant ne contienne pas de binding vers une méthode.</p>
+<p class="image-container"><img alt="Alt text" src="img\a6213bc81f779358.png"></p>
+<h2 is-upgraded>ViewModel</h2>
+<p>Voici l&#39;astuce pour lier le <em>toggle</em> avec une méthode :</p>
+<p class="image-container"><img alt="Alt text" src="img\ccce283ac81f27e2.png"></p>
+<aside class="special"><p>On utilise le mot clé <em>partial</em> afin de définir une partie du code généré par le MVVM toolkit et on peut donc se &#34;hooker&#34; sur l&#39;évènement déclenché au changement de la valeur de la propriété...</p>
+</aside>
+<h3 is-upgraded>Méthode d&#39;activation</h3>
+<p>Et voici la méthode sans annotation <em>RelayCommand</em> puisque cela passe par un autre flux...</p>
+<p class="image-container"><img alt="Alt text" src="img\123a2af7532ccd0a.png"></p>
+<h3 is-upgraded>Méthode observateur</h3>
+<p class="image-container"><img alt="Alt text" src="img\f1b38dd75d4be151.png"></p>
+<p>Le carré va donc changer de couleur lorsqu&#39;une secousse est détectée.</p>
+<h2 is-upgraded>Simulateur</h2>
+<p>Pour simuler une secousse avec l&#39;émulateur, le plus simple est d&#39;envoyer une commande:</p>
+<pre><code>adb emu sensor set acceleration 100:100:100 &amp;&amp; timeout 1 &gt; NUL &amp;&amp; adb emu sensor set acceleration 0:0:0
+</code></pre>
+<aside class="warning"><p>Avec l&#39;émulateur maison, ADB.EXE est dans le dossier sdk\platform-tools...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Suite à cet exercice, les compétences suivantes ont été travaillées:</p>
+<ul>
+<li>Activation d&#39;un capteur</li>
+<li>Définition d&#39;une méthode de traitement des données transmises par le capteur</li>
+<li>Utilisation d&#39;un composant <em>toggle</em> en respectant MVVM</li>
+<li>Détection des secousses d&#39;un téléphone</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
