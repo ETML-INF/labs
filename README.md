@@ -5,7 +5,6 @@ source : https://github.com/googlecodelabs/tools
 ```shell
 claat version
 1.0.4-2019-06-28T21:14:15Z-9ad41c6
-
 ```
 
 ## Codelabs only
@@ -17,6 +16,7 @@ claat serve
 ```
 
 ## Entire site
+Warning: With node compatible with node-sass (<=20)
 ``` bash
 npm install
 gulp serve
