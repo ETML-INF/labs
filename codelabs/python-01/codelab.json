@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-08-13T18:29:57+02:00",
+  "id": "python-01",
+  "duration": 8,
+  "title": "Découvrir Python par la pratique",
+  "summary": "python tuto",
+  "source": ".\\python-01.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "python-01"
+}

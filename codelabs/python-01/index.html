@@ -1,0 +1,91 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Découvrir Python par la pratique</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="python-01"
+                  title="Découvrir Python par la pratique"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\3b5593257c81fb8c.png"></p>
+<google-codelab-survey survey-id="python-01-1">
+<h4>Y’a-t-il des serpents en Suisse ?</h4>
+<paper-radio-group>
+<paper-radio-button>Quoi des serpents !!!!</paper-radio-button>
+<paper-radio-button>Ils sont morts avec les dinosaures</paper-radio-button>
+<paper-radio-button>Vipères, orvais et autres asticots vivent encore dans notre pays...</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place de l&#39;environnement" duration="5">
+        <p>Pour faciliter l&#39;utilisation de Python sur n&#39;importe quel système, un outil tiers (nomad) non invasif sera utilisé.</p>
+<h2 is-upgraded>Nomad</h2>
+<h3 is-upgraded>Enplacement</h3>
+<p>Créer ou choisir un dossier dans lequel sera installé les applications nomades, par exemple</p>
+<pre><code>%userprofile%\nomad
+</code></pre>
+<p>ou</p>
+<pre><code>c:\nomad
+</code></pre>
+<h3 is-upgraded>Installation</h3>
+<p>Lancer un shell à l&#39;endroit du répertoire choisi/créé ci-dessus et éxécuter la commande suivante:</p>
+<pre><code>powershell -Command Invoke-WebRequest -Uri https://github.com/jonathanMelly/nomad/raw/main/install.bat -OutFile %TEMP%\downloaded.bat &amp;&amp; %TEMP%\downloaded.bat
+</code></pre>
+<h2 is-upgraded>Python</h2>
+<p>Depuis la fenêtre de commande lancée après l&#39;installation de Nomad, éxécuter la commande suivante:</p>
+<pre><code>nomad install python3
+</code></pre>
+<aside class="special"><p>Valider avec &#34;Enter&#34; l&#39;installation</p>
+</aside>
+<h3 is-upgraded>Vérifier l&#39;installation</h3>
+<p>Lancer l&#39;éxécutable Python qui vient d&#39;être installé avec l&#39;argument <em>–version</em> :</p>
+<p class="image-container"><img alt="Alt text" src="img\393e3d46bbcf3a66.png"></p>
+<h2 is-upgraded>Isolation de python</h2>
+<p>Python supporte la notion <em>d&#39;environnement virtuel</em> ce qui permet de compartimenter les modules python pour chaque projet ce qui est une <strong>bonne pratique</strong>.</p>
+<p>Ce système va donc configuré afin d&#39;avoir un environnement virtuel pour la suite du tutoriel.</p>
+<h3 is-upgraded>Installer le plugin venv</h3>
+<h3 is-upgraded>Créer un venv</h3>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <p>Bravo, il est temps de faire le point sur les éléments travaillés</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfDlmUVAjTePaSqEOs0rAOJsxuExB-Ou_6OtvIZUKQuiTwPRA/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@ source : https://github.com/googlecodelabs/tools
 
 ## Version de claat
 ```shell
-claatr version
+claat version
 1.0.4-2019-06-28T21:14:15Z-9ad41c6
 
 ```
