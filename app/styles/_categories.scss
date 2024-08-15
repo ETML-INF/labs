@@ -200,7 +200,8 @@ $color-weave-green, 'weave.svg');
 @include codelab-card(['web'],
   $color-google-blue, 'web.svg');
   
-@include codelab-card(['system'], $color-google-blue , 'system.svg');
+@include codelab-card(['system'], $color-google-grey , 'system.svg');
 @include codelab-card(['dev'], $color-google-blue , 'dev.png');
-@include codelab-card(['robot'], $color-google-blue , 'robot.png');
-@include codelab-card(['python'], $color-google-blue , 'python.png');
+@include codelab-card(['robot'], $color-google-green , 'robot.png');
+@include codelab-card(['python'], $color-google-yellow , 'python.png');
+@include codelab-card(['ia'], $color-google-red , 'ia.png');
