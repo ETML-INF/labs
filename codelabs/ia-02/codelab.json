@@ -1,0 +1,28 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-08-18T22:36:27+02:00",
+  "id": "ia-02",
+  "duration": 26,
+  "title": "L'analyse d'images",
+  "summary": "ia tuto",
+  "source": ".\\ia-02.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ia",
+    "python",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "ia-02"
+}
