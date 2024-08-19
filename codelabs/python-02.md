@@ -10,6 +10,7 @@ analytics account: UA-170792591-1
 
 # Qui veut gagner des maillots
 
+![Alt text](assets/python/quiveut.png)
 
 ## Contexte
 Duration: 0:1:00
