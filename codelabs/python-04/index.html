@@ -1,0 +1,96 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>TicTacToe</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="python-04"
+                  title="TicTacToe"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Contexte" duration="1">
+        <p>À toi de jouer maintenant en te lançant dans un TicTacToe !</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Point de départ" duration="15">
+        <p>Commence par vérifier ta connaissance des règles du jeu puis gribouille un pseudo-code sur papier.</p>
+<p>Ensuite à toi de choisir si tu veux rester dans la console ou profiter de découvrir une manière de faire de l&#39;UI, par exemple en partant du code suivant.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Toga" duration="10">
+        <p>Toga permet de faire de l&#39;UI cross-platform...</p>
+<h2 is-upgraded>Librairie</h2>
+<pre><code>python -m pip install toga
+</code></pre>
+<h2 is-upgraded>HelloWorld</h2>
+<pre><code>import toga
+
+
+def button_handler(widget):
+    print(&#34;hello&#34;)
+
+
+def build(app):
+    box = toga.Box()
+
+    button = toga.Button(&#34;Hello world&#34;, on_press=button_handler)
+    button.style.padding = 50
+    button.style.flex = 1
+    box.add(button)
+
+    return box
+
+
+def main():
+    return toga.App(&#34;First App&#34;, &#34;org.beeware.toga.tutorial&#34;, startup=build)
+
+
+if __name__ == &#34;__main__&#34;:
+    main().main_loop()
+
+</code></pre>
+<p class="image-container"><img alt="Alt text" src="img\76286ec29d8e10bf.png"></p>
+<h2 is-upgraded>Référence</h2>
+<p><a href="https://toga.readthedocs.io/en/stable/tutorial/tutorial-0.html" target="_blank">Voici la référence pour Toga</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Demo" duration="1">
+        <p>Une fois le programme terminé, ne manque pas de faire une démo à la personne qui encadre....</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
