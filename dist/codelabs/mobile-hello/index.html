@@ -1,0 +1,104 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Première appli mobile MAUI</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-hello"
+                  title="Première appli mobile MAUI"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="2">
+        <p class="image-container"><img alt="overview" src="img\c4a191e1a1fa30b8.png"></p>
+<google-codelab-survey survey-id="mobile-hello-1">
+<h4>À votre avis, quel est l’avenir des applications mobile ?</h4>
+<paper-radio-group>
+<paper-radio-button>C&#39;est un peu comme la lampe d&#39;Aladdin, ça ouvre des portes infinies</paper-radio-button>
+<paper-radio-button>Il est très incertain</paper-radio-button>
+<paper-radio-button>J&#39;attends la fin de ce tuto pour me faire une meilleure idée</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+<h2 is-upgraded>MAUI, une baguette magique ?</h2>
+<p>Microsoft a développé une technologie de pointe avec MAUI (et Xamarin Forms) qui permet de développer<br>une application mobile en C#, avec visualstudio qui pourra ensuite être déployée sur toutes les plateformes<br>mobiles principales :</p>
+<p class="image-container"><img alt="overview" src="img\f9b09380acc81947.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place" duration="5">
+        <h2 is-upgraded>Ajouter les composants dans VisualStudio</h2>
+<p>Lancer l&#39;installateur visualstudio (visualstudio installer) et ajouter si<br>nécessaire le composant MAUI :</p>
+<p class="image-container"><img alt="screen-2023-12-01 14_24_53-Visual Studio Installer.png" src="img\55eed633f43540bc.png"></p>
+<aside class="warning"><p>Si l&#39;option n&#39;est pas disponible, il faut peut-être commencer par mettre à jour visualstudio...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Créer un projet" duration="10">
+        <h2 is-upgraded>Type de projet</h2>
+<p>Lancer visualstudio et créer un projet MAUI</p>
+<p class="image-container"><img alt="screen-2023-12-01 14_47_40-Microsoft Visual Studio.png" src="img\65a355f52e700f4d.png"></p>
+<h2 is-upgraded>Configuration du projet</h2>
+<p class="image-container"><img alt="screen-2023-12-01 14_48_39-Microsoft Visual Studio.png" src="img\38a4540c7669911e.png"><img alt="screen-2023-12-01 14_48_49-Microsoft Visual Studio.png" src="img\a014615be8f0691b.png"></p>
+<h2 is-upgraded>Créer un émulateur Android</h2>
+<p>Pour tester l&#39;application, il faut un smartphone ou un émulateur.<br>Dans tous les cas, un émulateur est bien pratique, voici comment le créer :</p>
+<aside class="warning"><p>Pour tester sur IOS, il faut impérativement avoir un device apple, même pour l&#39;émulateur...</p>
+</aside>
+<aside class="warning"><p>Il faut être administrateur pour utiliser l&#39;émulateur integré à VisualStudio</p>
+</aside>
+<h3 is-upgraded>Package &#34;maison&#34;</h3>
+<p>Pour accélérer la mise en place, il existe un <a href="https://eduvaud.sharepoint.com/:f:/s/msteams_d0db31/Eq39Jwt6uYxLtMCBxOYfZ9ABoeGuE79ErVvY0SoYeHxa2g?e=STeXvT" target="_blank">zip</a> qui contient juste ce qu&#39;il faut pour démarrer un émulateur.<br>Une fois décompressé, lancer le fichier <em>.bat</em>.</p>
+<h3 is-upgraded>Version integrée à VisualStudio</h3>
+<p class="image-container"><img alt="screen-2023-12-01 14_52_08-HelloMaui1 - Microsoft Visual Studio.png" src="img\c6b9275d6f87f290.png"></p>
+<p>Accepter la licence<br><img alt="screen-2023-12-01 14_52_33-.png" src="img\e1d207b724a3e93.png"></p>
+<p>Choisir l&#39;appareil par défaut<br><img alt="screen-2023-12-01 14_53_06-Gestionnaire d'appareils Android.png" src="img\97e0286c9e9c973.png"></p>
+<h3 is-upgraded>Android studio</h3>
+<p>On peut installer <a href="https://developer.android.com/studio" target="_blank">android studio</a> sans être administrateur, par contre cela prendra du temps.</p>
+<p>C&#39;est d&#39;ailleurs de cette base qu&#39;a été créé le <em>package maison</em>...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lancer l&#39;application" duration="1">
+        <p>Une fois l&#39;émulateur créé, l&#39;application example devrait se lancer :</p>
+<p class="image-container"><img alt="screen-2023-12-01 15_15_25-Android Emulator - pixel_5_-_api_34_5554.png" src="img\177d866df272cf05.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="0">
+        <p>Bravo, il est temps de faire le point sur les éléments travaillés</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfo-4f6bjINUxGCkSrL3lJNiHl7jiJ15hMa6bDSZoW55Fvq3A/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2023-09-21T15:02:01+02:00",
+  "id": "ant-simu-01",
+  "duration": 17,
+  "title": "Mise en place du simulateur de fourmi",
+  "summary": "ant simulator setup",
+  "source": ".\\ant-simu-01.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "ant-simu-01"
+}

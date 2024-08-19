@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-01-20T07:50:45+01:00",
+  "id": "mobile-02-addPage",
+  "duration": 5,
+  "title": "Ajouter des pages avec MAUI",
+  "summary": "mobile app add page",
+  "source": ".\\mobile-02-addPage.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "android",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-02-addPage"
+}

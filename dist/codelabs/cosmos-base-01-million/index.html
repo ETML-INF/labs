@@ -1,0 +1,172 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qui veut gagner les millions ?</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="cosmos-base-01-million"
+                  title="Qui veut gagner les millions ?"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Bienvenue" duration="1">
+        <p class="image-container"><img alt="Million" src="img\a9d18a1ef3ccacfb.png"></p>
+<p>Suite au <a href="https://labs.section-inf.ch/codelabs/cosmos-base-00-hello/index.html" target="_blank">précédent épisode</a>, il est temps d&#39;en découvrir un peu plus sur la programmation en reprenant un jeu de questions / réponses à l&#39;image de <em>Qui veut gagner des millions</em>.</p>
+<h2 is-upgraded>Objectifs</h2>
+<ul>
+<li>Interagir avec l&#39;utilisateur</li>
+<li>S&#39;adapter au comportement de l&#39;utilisateur</li>
+</ul>
+<google-codelab-survey survey-id="cosmos-base-01-million-1">
+<h4>Si tu gagnais un million, que ferais-tu ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je les verserai intégralement à Greenpeace</paper-radio-button>
+<paper-radio-button>Je les flamberai en achats divers</paper-radio-button>
+<paper-radio-button>Ça demanderait réflexion...</paper-radio-button>
+<paper-radio-button>Autre</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Poser une question" duration="15">
+        <p>Pour commencer, on va poser une question au joueur.</p>
+<h2 is-upgraded>Créer un nouveau programme</h2>
+<p>Pour rappel, on créée un nouveau programme avec la commande suivante:</p>
+<p class="image-container"><img alt="Cosmos N Million" src="img\20bf71a972ea636f.png"></p>
+<aside class="special"><p>Une alternative plus concise est<br><strong>cosmos -n Million</strong></p>
+</aside>
+<h2 is-upgraded>Afficher la question</h2>
+<p>Pour afficher une question, il suffit d&#39;éditer le fichier <em>Million.cosmos</em> et d&#39;y ajouter:</p>
+<p class="image-container"><img alt="Cosmos Q1" src="img\b5c4456385d0f882.png"></p>
+<p>Pour vérifier si cela fonctionne, on peut lancer le programme:</p>
+<p class="image-container"><img alt="Cosmos Q1 Res" src="img\c568c4c5764a4cc3.png"></p>
+<h2 is-upgraded>Ajouter les propositions</h2>
+<p>Dans le jeu original, on propose plusieurs possibilités et on pourrait s&#39;inspirer de la question pour ajouter le code suivant:</p>
+<p class="image-container"><img alt="Cosmos A1" src="img\e2faff7f6e4f1a3b.png"></p>
+<p>En testant le programme, on s&#39;aperçoit que le résultat n&#39;est pas satisfaisant:</p>
+<p class="image-container"><img alt="Cosmos A1 Res" src="img\43f4abcd1afa0cee.png"></p>
+<h3 is-upgraded>Retour de chariot</h3>
+<p>En fait, on doit indiquer à l&#39;ordinateur si on veut des retours à la ligne ou pas.<br>En l&#39;occurrence, on en veut plusieurs !<br>Pour indiquer un retour à la ligne, on utilise la notation <strong>\n</strong>, ce qui dans notre exemple donnerait:</p>
+<p class="image-container"><img alt="Cosmos Q1 N" src="img\b817dd68b068f024.png"></p>
+<p class="image-container"><img alt="Cosmos A1 Res2" src="img\3119a690f5b741d0.png"></p>
+<aside class="warning"><p>Sur Windows, le caractère de fin de ligne est plutôt <strong>\r\n</strong> mais le seul inconvénient à utiliser <strong>\n</strong> partout est qu&#39;il faut utiliser un éditeur plus évolué que <em>notepad.exe</em>, comme par exemple <em>notepad++</em> ou <em>visulstudio code</em>...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récupérer la réponse de l&#39;utilisateur" duration="15">
+        <p>Maintenant que la question est posée, l&#39;utilisateur va appuyer sur le clavier et on va devoir réagir.<br>S&#39;il répond juste, on affiche la question suivante et sinon on lui dit au revoir.</p>
+<h2 is-upgraded>Lecture du clavier</h2>
+<p>Avec le verbe <em>Afficher</em> on envoie une information à l&#39;utilisateur (OUTPUT).<br>Pour le clavier, c&#39;est l&#39;inverse, on reçoit une information de la part de l&#39;utilisateur (INPUT). Dans ce cas, les mots à utiliser sont:</p>
+<pre><code>    Récupérer la saisie et la stocker dans la zone mémoire nommée &lt;#zoneMemoire&gt;.
+</code></pre>
+<p>Ajoutons donc ceci au programme:</p>
+<p class="image-container"><img alt="Cosmos Q1 Input" src="img\4a72cc901247133b.png"></p>
+<p>Et en testant, on remarque que le programme se met en pause. En fait, il attend une saisie du clavier.<br>Il faut donc entrer un caractère et valider avec la touche <em>ENTER</em>, ce qui donne:</p>
+<p class="image-container"><img alt="Cosmos Q1 Input Err" src="img\7c12a58a24608446.png"></p>
+<p>On a 2 problèmes à résoudre:</p>
+<ol type="1">
+<li>Il faudrait indiquer à l&#39;utilisateur qu&#39;on attend sa réponse</li>
+<li>Le message d&#39;erreur indique que l&#39;espace mémoire n&#39;existe pas =&gt; on doit le créer</li>
+</ol>
+<h3 is-upgraded>Aide à l&#39;utilisateur</h3>
+<p>En réutilisant ce qu&#39;on connaît déjà, on va juste afficher du texte pour que l&#39;utilisateur comprenne ce qu&#39;il doit faire:</p>
+<p class="image-container"><img alt="Cosmos Q1 UserHelp" src="img\66b1a2472f6c12f0.png"></p>
+<h3 is-upgraded>Gestion de la mémoire</h3>
+<p class="image-container"><img alt="Tiroir" src="img\b50bbbf2252651e4.png"></p>
+<p>Un ordinateur est un peu comme un bureau avec des tiroirs, ça veut dire qu&#39;on peut y ranger des informations et les retrouver, du moment qu&#39;on se rappelle dans quel tiroir on l&#39;a mis (bien sûr, on pourrait essayer chaque tiroir mais imaginez-vous une commode avec plus de 4 milliards de tiroirs ;-)).</p>
+<p>Bref, pour <em>créer un tiroir</em> et lui donner une <em>étiquette</em> pour le retrouver, on écrit:</p>
+<p class="image-container"><img alt="Cosmos Allouer" src="img\f31372c8857a685.png"></p>
+<h3 is-upgraded>Test</h3>
+<p>Le programme devrait maintenant fonctionner:</p>
+<p class="image-container"><img alt="Cosmos Q1 Test" src="img\a14fd80602e988c9.png"></p>
+<aside class="warning"><p>Si le programme ne fonctionne pas, peut-être que le fichier source n&#39;a pas été sauvegardé...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Réagir à la réponse" duration="10">
+        <p class="image-container"><img alt="Cosmos Q1 React" src="img\355c439e0f54f3d9.png"></p>
+<p>Maintenant que l&#39;utilisateur a donné sa réponse, on va lui dire s&#39;il peut continuer ou s&#39;il doit déjà s&#39;arrêter.<br>Pour cela, on va utiliser la syntaxe d&#39;une <strong>condition</strong> :</p>
+<p class="image-container"><img alt="Cosmos Q1 React Code" src="img\7fcdfddc36dd74b0.png"></p>
+<p>Avec comme résultat pour une mauvaise réponse :</p>
+<p class="image-container"><img alt="Cosmos Q1 Final1" src="img\4d9a0d0d372237e8.png"></p>
+<p>Et pour une bonne réponse:</p>
+<p class="image-container"><img alt="Cosmos Q1 Final2" src="img\808acd9782468078.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deuxième question" duration="5">
+        <p>Maintenant que la recette est connue pour une question, il suffit de répéter pour les suivantes.<br>Voici donc un extrait pour une deuxième question à partir duquel s&#39;inspirer pour préparer 10 questions:</p>
+<p class="image-container"><img alt="Cosmos Q2" src="img\f289ab9ce213fe30.png"></p>
+<aside class="warning"><p>Il n&#39;est pas nécessaire de recréer l&#39;espace mémoire <strong>#reponse</strong>, il existe pour toute la durée du programme...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Commentaires" duration="2">
+        <p>Dans certains extraits de code source, il y avait des lignes précédées par les caractères <strong>//</strong>.<br>Ceci indique à l&#39;ordinateur d&#39;ignorer cette ligne et est utilisé pour aider la personne qui programme à se retrouver dans le code.</p>
+<p>L&#39;invitation est donc d&#39;en ajouter pour faciliter la lecture ou expliquer un élément particulier:</p>
+<p class="image-container"><img alt="Cosmos Comment1" src="img\a6d68b11d423d4ec.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Évolution" duration="2">
+        <p>Certains éléments se répètent plusieurs fois et au cas où on voudrait les changer plus tard, il est utile de les regrouper :</p>
+<p class="image-container"><img alt="Cosmos Q2 Identique" src="img\646191fed840174c.png"></p>
+<p>Ainsi, on va utiliser la mémoire pour stocker des éléments réutilisables :</p>
+<p class="image-container"><img alt="Cosmos Q2 Evo2" src="img\57ecc7f642be90a1.png"></p>
+<p>Comme ça, si on voulait modifier ce message qui se répète partout, il suffit de le faire à un seul endroit:</p>
+<p class="image-container"><img alt="Cosmos Q2 Evo Example" src="img\d4e5eaf7f2285f26.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Questions suivantes" duration="15">
+        <p class="image-container"><img alt="Next Steps" src="img\2cd0cfbb5098fc05.png"></p>
+<p>En partant de la solution actuelle, il est temps d&#39;ajouter encore 8 questions pour arriver au million.<br>Bon courage ;-)</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <p>Cet atelier était riche en découvertes, surtout quand on débute en programmation.<br>Voici donc un quizz récapitulatif:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdS4Lba8WQbYRRttZOLCsR0tdGjQHRszhaiDvi9fp5LR4uq4g/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

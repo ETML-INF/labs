@@ -1,0 +1,160 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qualité</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-08-test"
+                  title="Qualité"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\56f8712f71c6891c.png"></p>
+<p>La qualité d&#39;un logiciel passe par les tests et idéalement ceux-ci sont automatisés car réaliser les tests à la main est fastidieux et <strong>coûteux</strong>.</p>
+<aside class="warning"><p>Il ne faut toutefois pas négliger les tests manuels dans un environnement mobile où même les émulateurs (que l&#39;ont peut piloter par le code) pourraient montrer des disparités avec les vrais appareils.</p>
+</aside>
+<p>La portée de ce tutorial se concentre sur la mise en place de <em>tests unitaires</em> et les tests d&#39;intégration ne seront donc pas abordé ici.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Structure du projet MAUI" duration="15">
+        <p>Pour pouvoir facilement tester un projet MAUI, il faut commencer par le <em>découper</em> en 2 parties sinon lorsqu&#39;on veut tester du code, il y aura des problèmes d&#39;initialisation...</p>
+<p>On aura donc les 2 projets suivants:</p>
+<ol type="1">
+<li>L&#39;application en tant que telle (MauiAPP)</li>
+<li>Le reste</li>
+</ol>
+<aside class="special"><p>À ceux deux projets sera ajouté un 3ème, le projet de test !</p>
+</aside>
+<h2 is-upgraded>Ajout d&#39;un projet de type &#34;librairie&#34;</h2>
+<p><strong>Ajouter un projet</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\1a0bdddb6b1a3aed.png"></p>
+<p><strong>Choisir le bon type</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\4cf50ccd30cd54ca.png"></p>
+<p><strong>À la fin, un nouveau projet fait partie de la solution:</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\8f714dda96ec39cc.png"></p>
+<h2 is-upgraded>Ajout de la référence à partir du projet principal</h2>
+<p>Maintenant que la solution comporte 2 projets, il faut référencer la librairie à partir du projet principal:</p>
+<p><strong>Attention: modifier le PROJET PRINCIPAL (pas la lib)</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\161270f7cea9ad43.png"></p>
+<p><strong>Ajouter la lib comme référence</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\41ff8dc7bc7a6d59.png"></p>
+<p><strong>Optionnellement, optimiser la compilation de la lib</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\dcea0e758c01deee.gif"></p>
+<h2 is-upgraded>Déplacement des classes</h2>
+<p>À partir de là, les éléments peuvent être migrés:</p>
+<p><strong>Ajouter le dossier ViewModels</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\d98001cb0b23dce.png"></p>
+<p class="image-container"><img alt="Alt text" src="img\c13f1979ac062faf.png"></p>
+<p><strong>Déplacer une classe VM</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\f0f5f373a16be88d.gif"></p>
+<aside class="warning"><p>Attention, VisualStudio fait une copie du fichier</p>
+</aside>
+<p><strong>OOps, petit problème</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\a812da32a1bfb82f.png"></p>
+<p><strong>Ajout du toolkit pour le projet lib</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\1787019a7f99c7d1.png"></p>
+<p><strong>Suppression de l&#39;original</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\28189f820253d4a8.gif"></p>
+<p><strong>Déplacement d&#39;un XAML</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\bca8b0bbb78edb25.gif"></p>
+<p><strong>Suppresion du XAML original</strong></p>
+<p>À toi de jouer ;-)</p>
+<h2 is-upgraded>Mise à jour du XMLNS</h2>
+<p>Il reste une petite adaptation à faire car actuellement le <strong>shell</strong> est défini dans le projet principal alors que la page <em>MVVM1</em> a été déplacée dans le projet de librairie.</p>
+<p>Il faut donc ajuster cela:</p>
+<p><strong>Ajouter un namespace pour la lib</strong><img alt="Alt text" src="img\cb4759480e993282.png"></p>
+<p><strong>L&#39;utiliser</strong><img alt="Alt text" src="img\2cee0a6cec5fdadb.png"></p>
+<aside class="special"><p>Idéalement, on changera aussi les namespaces du projet librairie, par exemple <em>HelloMauiLib</em> au lieu de celui récupéré du projet initial, soit <em>HelloMaui1</em>...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place du projet de test" duration="5">
+        <p>Tout est désormais prêt pour tester le ViewModel déplacé dans le projet de librairie.</p>
+<h2 is-upgraded>Génération automatique</h2>
+<p>VisualStudio propose un assistant pour créer un test unitaire, voici donc comment l&#39;utiliser:</p>
+<p><strong>Identifier la méthode à tester</strong></p>
+<p>Faire un clic droit sur la méthode<br><img alt="Alt text" src="img\d2789ab40ca44c57.png"></p>
+<p><strong>Oops</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\5123f270c2c96638.png"></p>
+<p><strong>Correction et deuxième essai</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\6ae0f31a1bd0e55.png"></p>
+<p><strong>Paramètres</strong></p>
+<p>Les paramètres proposés peuvent être laissés tels quels<br><img alt="Alt text" src="img\adbf66039b97ead1.png"></p>
+<p><strong>Vérification du projet généré</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\fc42aeb97f259327.png"></p>
+<h2 is-upgraded>Correction du projet auto-généré</h2>
+<p>Une erreur s&#39;est glissée lors de la création automatique du projet, en effet, le premier build de l&#39;application est pour Android et cela ne fonctionne pas pour tester le code C# pur.</p>
+<p>Il faut donc corriger le <em>TargetFramework</em> du fichier <em>.csproject</em> du projet de test, par exemple en faisant un double-clic sur le projet :</p>
+<p class="image-container"><img alt="Alt text" src="img\6aca21aab48112b2.png"></p>
+<p><strong>Et en corrigeant ainsi</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\2333c14aab3df0c1.gif"></p>
+<aside class="warning"><p>Attention, l&#39;important est que la version corresponde avec celle du projet <em>librairie</em> pour la partie windows...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mon premier test unitaire" duration="5">
+        <p>On peut maintenant enfin coder la validation de la méthode</p>
+<h2 is-upgraded><strong>A</strong>rrange <strong>A</strong>ct <strong>A</strong>ssert</h2>
+<p>Pour rappel, un test suit une structure AAA, voici donc comment cela se reflète dans le code:</p>
+<p class="image-container"><img alt="Alt text" src="img\a668aa959551287d.png"></p>
+<h2 is-upgraded>Lancer le test</h2>
+<p>Il y a plusieurs manières:</p>
+<p><strong>Clic droit sur la méthode de test</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\57f6a77767d2a3b3.png"></p>
+<p><strong>Menu Test</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\82697059be15d513.png"></p>
+<p><strong>Ligne de commande</strong></p>
+<pre><code>dotnet test
+</code></pre>
+<p class="image-container"><img alt="Alt text" src="img\6525580c56da361.png"></p>
+<h2 is-upgraded>Résultat</h2>
+<p class="image-container"><img alt="Alt text" src="img\46e621e22b333a36.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Suite à cet exercice, les compétences suivantes ont été travaillées:</p>
+<ul>
+<li>Split d&#39;un projet MAUI en un projet principal et une librairie</li>
+<li>Déplacer des éléments d&#39;un projet à l&#39;autre</li>
+<li>Créer un test pour une méthode d&#39;un ViewModel</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

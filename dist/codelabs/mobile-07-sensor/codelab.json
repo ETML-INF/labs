@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-04-03T18:09:33+02:00",
+  "id": "mobile-07-sensor",
+  "duration": 32,
+  "title": "Capteurs",
+  "summary": "mobile app sensors",
+  "source": ".\\mobile-07-sensor.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "android",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-07-sensor"
+}

@@ -1,0 +1,109 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>MVVM</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-03-mvvm1"
+                  title="MVVM"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Contexte théorique" duration="1">
+        <p class="image-container"><img alt="mvvm" src="img\e4bd8750499e56b4.png"></p>
+<p>Le pattern MVVM implique une séparation entre</p>
+<ul>
+<li>les éléments graphiques (View)</li>
+<li>le pilotage des éléments graphiques (ViewModel)</li>
+<li>les données (Model)</li>
+</ul>
+<p>Pour réaliser ce pattern, on utilisera naturellement la POO avec au moins une classe pour chaque élément.<br>En plus de la partie C#, la vue aura une composante XAML.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Toolkit" duration="1">
+        <h2 is-upgraded>Choix</h2>
+<p>MVVM peut s&#39;implémenter sans autre dépendance, toutefois il existe un kit de développement (toolkit)<br>fourni par Microsoft qui facilite la mise en place de MVVM en réduisant le code à écrire.</p>
+<h2 is-upgraded>Installation</h2>
+<p>Accéder au gestionnaire nuget :</p>
+<p class="image-container"><img alt="nuget" src="img\2a8b126c70fc2cb9.png"></p>
+<p>Ajouter le paquet &#34;mvvm toolkit&#34;</p>
+<p class="image-container"><img alt="nuget toolkit" src="img\57efbe2bf6fb91e7.png"></p>
+<p><em>Lorsque le paquet n&#39;est pas installé, le bouton se nomme &#34;installer&#34;</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place d&#39;un compteur" duration="5">
+        <p>Pour illustrer MVVM qui a pour but de modéliser l&#39;interaction entre les éléments graphiques<br>et des données de manière bidirectionnelle, un simple compteur va être réalisé :</p>
+<p class="image-container"><img alt="counter" src="img\bbd95702798167a1.png"></p>
+<h2 is-upgraded>Ajouter la vue initiale</h2>
+<p>La vue initiale contient juste un label et un bouton :</p>
+<p class="image-container"><img alt="view" src="img\c0920c70bbfb2c9c.png"></p>
+<p>En démarrant l&#39;application, on devrait donc avoir une vue qui ressemble à ceci :</p>
+<p class="image-container"><img alt="mvvm-view1-run.png" src="img\316eb98935ac0aea.png"></p>
+<aside class="warning"><p>À ce stade, l&#39;application ne répond pas aux actions de l&#39;utilisateur et c&#39;est normal !</p>
+</aside>
+<h2 is-upgraded>Définition du modèle</h2>
+<p>Afin de simplifier les choses, le modèle de cet exemple sera un simple <strong>int</strong>, soit<br>une valeur stockée temporairement dans la RAM. Ce type étant natif en C#, il n&#39;y à<br>donc rien à faire.</p>
+<h2 is-upgraded>ViewModel</h2>
+<p>Il est temps d&#39;ajouter la logique de présentation avec le premier <strong>ViewModel</strong>.<br>Afin d&#39;avoir une structure organisée, il est fortement recommandé de créer un dossier<br><em>ViewModels</em>.</p>
+<h3 is-upgraded>Dossier</h3>
+<p>Créer un dossier<br><img alt="viewmodel folder" src="img\3f17ef9afc4c351a.png"></p>
+<p>Le renommer en <em>ViewModels</em><img alt="viewmodel folder" src="img\6266ab867967c707.png"></p>
+<aside class="special"><p>En cas d&#39;oubli, cette manipulation peut toujours être faite a posteriori, mais attention aux éventuelles références...</p>
+</aside>
+<h3 is-upgraded>Fichier</h3>
+<p>Le composant <em>ViewModel</em> est une classe C# qui contient du code et utilise les annotations fournies<br>par le toolkit :</p>
+<p class="image-container"><img alt="viewmodel folder" src="img\cb90a51299467959.png"></p>
+<h2 is-upgraded>Connecter la vue au ViewModel</h2>
+<p>On peut désormais adapter la vue pour qu&#39;elle soit reliée au ViewModel ce qui la rendra interactive :</p>
+<p class="image-container"><img alt="mvvm-view2.png" src="img\9a80fbef34bbbe14.png"></p>
+<p class="image-container"><img alt="mvvm1.gif" src="img\67b2185ac26e509e.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Astuces" duration="2">
+        <h2 is-upgraded>Lier le MVVM dans le XAML en 3 clics</h2>
+<p>On peut utiliser la <strong>fenêtre de propriété</strong> pour ajouter la référence au ViewModel depuis le XAML sans devoir ajouter le namespace à la main:</p>
+<iframe class="youtube-video" src="https://www.youtube.com/embed/q7BpyvwusaU?rel=0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Que faut-il retenir de cette entrée en matière MVVM ?</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdRZeTJvvmz_Vhpa0wiN6kDSvLg4bRzMC9xCLevin7ppzCZuQ/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

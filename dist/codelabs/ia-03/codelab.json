@@ -1,0 +1,28 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-08-19T14:26:14+02:00",
+  "id": "ia-03",
+  "duration": 57,
+  "title": "Détection de danger",
+  "summary": "ia tuto",
+  "source": ".\\ia-03.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ia",
+    "python",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "ia-03"
+}

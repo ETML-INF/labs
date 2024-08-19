@@ -1,0 +1,194 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Synchronisation avec Rclone</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="rclone-01"
+                  title="Synchronisation avec Rclone"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="1">
+        <p class="image-container"><img alt="thymio" src="img\82a3a3721ecf162b.svg"></p>
+<h2 is-upgraded>Successeur de rsync</h2>
+<p>Rclone permet de synchroniser des sources et destinations de fichiers diverses. Par exemple, il permet de synchroniser<br>un dossier local avec un stockage sur OneDrive.</p>
+<p>Pour plus d&#39;informations, voici l&#39;adresse officielle: <a href="https://rclone.org/" target="_blank">https://rclone.org/</a></p>
+<aside class="special"><p>Rclone est écrit en GO et est disponible pour tous les OS.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Installation" duration="5">
+        <h2 is-upgraded>Télécharger l&#39;environnement</h2>
+<p>Le programme est disponible <a href="https://rclone.org/downloads/" target="_blank">en cliquant ici</a></p>
+<p>Veuillez vous référer à votre système d&#39;exploitation pour choisir la bonne version.</p>
+<p class="image-container"><img alt="download" src="img\f2974d29a1f5d17d.png"></p>
+<h2 is-upgraded>Installation</h2>
+<p>Dézipper l&#39;archive</p>
+<p class="image-container"><img alt="unzip" src="img\4654a22e3966bdbb.png"></p>
+<p>Créer un dossier nommé ‘outils&#39; dans votre profil et y glisser rclone.exe</p>
+<p class="image-container"><img alt="exe" src="img\1caf0c40c716cea1.png"><img alt="move-exe" src="img\c79afe4362623648.png"></p>
+<h2 is-upgraded>Vérifier que tout fonctionne</h2>
+<p>Lancer un terminal<br><img alt="terminal" src="img\ddefad5ac615ac0b.png"></p>
+<p>Se déplacer dans le répertoire ‘outils&#39;<br><img src="img\617c7a8931c3b781.png"></p>
+<p>Lancer rclone pour voir sa version</p>
+<pre><code>    rclone --version
+</code></pre>
+<p class="image-container"><img src="img\20c8ca5ecd2eacd4.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configuration avec OneDrive" duration="5">
+        <p>Lancer la configuration de rclone</p>
+<pre><code>    rclone config
+</code></pre>
+<p class="image-container"><img src="img\ead13b0c7d1e7f2d.png"></p>
+<p>Créer un nouveau ‘remote&#39; et le nommer</p>
+<p class="image-container"><img src="img\b310750f12448ec5.png"></p>
+<p>Trouver dans la liste le numéro correspondant à onedrive et le saisir dans l&#39;invite</p>
+<p class="image-container"><img src="img\e156d941893d78c2.png"></p>
+<p>Laisser vide client_id et client_secret et choisir Microsoft Cloud Global</p>
+<p class="image-container"><img src="img\38c5fc4bb6c4dc5.png"></p>
+<p>Ne pas éditer la configuration par défaut</p>
+<p class="image-container"><img src="img\a88eb1cfca762674.png"></p>
+<p>Utiliser la configuration automatique (<strong>y</strong> et non pas <em>yes</em> comme dans la capture)<br><img src="img\9479021becbad9ae.png"></p>
+<p>Remplir les champs dans la fenêtre de navigation ouverte</p>
+<p class="image-container"><img src="img\26532b02dc1e0fff.png"></p>
+<p>Attendre l&#39;affichage de ‘Success&#39;<br><img src="img\8cc190baaa093588.png"></p>
+<p>Choisir OneDrive personal<br><img src="img\82bed8e5a0ea3aee.png"></p>
+<p>Sélectionner le drive avec l&#39;id proposé (<strong>1</strong>)<br><img src="img\6ed0341c04ec7887.png"></p>
+<p>Valider<br><img src="img\eef50eaa4a37c7b5.png"></p>
+<p>Revalider<br><img src="img\70f715dc366fa92d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synchronisation" duration="3">
+        <h2 is-upgraded>Créer un fichier dans un répertoire dans vos documents et le remplir avec du texte, exemple:</h2>
+<p class="image-container"><img src="img\396a6a1ddb2c4dc4.png"></p>
+<h2 is-upgraded>Lancer la synchronisation en ligne de commande</h2>
+<pre><code>    rclone sync ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<p class="image-container"><img src="img\20bcfd0191c614f6.png"></p>
+<h2 is-upgraded>Vérifier que le fichier a bien été uploadé avec son contenu</h2>
+<p class="image-container"><img src="img\7cb1da9a2d624303.png"><img src="img\d8506ca98782b03d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Historique des versions" duration="3">
+        <h2 is-upgraded>Modifier le fichier créé précédemment</h2>
+<p>Ajouter du contenu, par exemple ‘Version 2&#39; dans le fichier et le sauvegarder en local</p>
+<h2 is-upgraded>Relancer la synchronisation (cette fois en mode verbeux)</h2>
+<p>En mode verbeux, rsync donne des informations sur ce qu&#39;il fait:</p>
+<pre><code>    rclone sync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<p class="image-container"><img src="img\ea996e9a10710692.png"></p>
+<h2 is-upgraded>Vérifier l&#39;historique</h2>
+<p>Sur l&#39;interface WEB, afficher l&#39;historique<br><img src="img\107952f65ffb89d9.png"></p>
+<p>Et vérifier le contenu de la V2<br><img src="img\f7d7c86ff805da68.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synchronisation inverse / bidirectionnelle" duration="2">
+        <p>Actuellement, seules les modifications de la source sont répliquées.</p>
+<aside class="warning"><p>Pire que ça, si on modifie quelque chose sur la destination, cela écrasera la source /!\.</p>
+</aside>
+<h2 is-upgraded>Option 1: bisync</h2>
+<p>Afin d&#39;activer le mode bidirectionnel qui synchronise source et destination avec les éléments les plus récents.<br>Attention toutefois, car l&#39;automatisation de la synchronisation bidirectionnelle n&#39;est pas toujours possible... Rclone<br>offre plusieurs options, mais voici le scénario optimiste :</p>
+<h3 is-upgraded>Lancer la 1ʳᵉ synchro</h3>
+<pre><code>    rclone bisync -v --resync ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<h3 is-upgraded>Lancer les synchronisations subséquentes</h3>
+<pre><code>    rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<h2 is-upgraded>Vérification</h2>
+<h3 is-upgraded>Modifier le fichier sur l&#39;interface WEB</h3>
+<p>Afin de vérifier que la modification en ligne soit répercutée ensuite, faire une modification<br>en ligne (ajouter un dossier ou modifier un fichier...)</p>
+<h3 is-upgraded>Lancer rclone</h3>
+<pre><code>    rclone bisync -v ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<h3 is-upgraded>Vérifier que le fichier local correspond à la dernière version</h3>
+<p>Si tout va bien, la modification faite précédemment en ligne devrait être répercutée en local</p>
+<h2 is-upgraded>Option 2 : Intervertir la source et la destination</h2>
+<p>Une autre manière d&#39;avoir une synchro inverse et d&#39;intervertir la source et la destination.<br>Cela demande de bien savoir où on en est avec la version la plus à jour...</p>
+<p>Même si l&#39;option <em>bisync</em> est encore expérimentale, avec l&#39;historique de version sur o365 et quelques options<br>supplémentaires (voir ci-après), on a probablement une meilleure solution.</p>
+<h2 is-upgraded>Option 3 : Bisync avec protection</h2>
+<p>L&#39;option <em>backup-dir</em> permet d&#39;indiquer un répertoire où stocker les fichiers supprimés ou modifiés.<br>Puisque sur oneDrive, il y a l&#39;historique, il suffit de stocker les opérations destructrices<br>en local pour, si nécessaire les retrouver...</p>
+<pre><code>    rclone bisync -v --backup-dir=&#34;old-%date%-%time:~,5%&#34; ..\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<aside class="warning"><p>Attention, le nom du dossier de backup est précis à la minute... il n&#39;y aura donc qu&#39;une sauvegarde maximum<br>par minute avec cette syntaxe...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Automatisation" duration="3">
+        <p>Plutôt que de faire cela à la main, il est possible de scripter la sauvegarde:</p>
+<h2 is-upgraded>Créer un script</h2>
+<p>Par exemple un .bat (ou .ps1 pour powershell)<br><img src="img\ed400d6be773331b.png"></p>
+<p>Adapter la commande pour qu&#39;elle puisse s&#39;éxécuter depuis n&#39;importe où</p>
+<pre><code>    %USERPROFILE%\outils\rclone bisync -v C:\Users\demo\Documents\programmation oneDriveEduvaud:sauvegardes\programmation
+</code></pre>
+<p class="image-container"><img src="img\6bd4f2d11caf52ab.png"></p>
+<h2 is-upgraded>Lancer le script</h2>
+<p>Double-cliquer sur le fichier .bat et vérifier qu&#39;il fonctionne (éventuellement ajouter ‘pause&#39; à la fin du fichier)</p>
+<h2 is-upgraded>Ajouter une tâche planifiée</h2>
+<p>Lancer le planificateur de tâche</p>
+<p class="image-container"><img src="img\6cc757f4bc3eb1b5.png"></p>
+<p>Ajouter une tâche en pointant vers le fichier .bat et en choisissant les options de lancement<br>(toutes les 15 minutes, avant extinction, ...)<br><img src="img\29a49e10d48ba1ef.png"></p>
+<h2 is-upgraded>Masquer la fenêtre du terminal</h2>
+<p>Voir <a href="https://www.winhelponline.com/blog/run-bat-files-invisibly-without-displaying-command-prompt/" target="_blank">cet article</a></p>
+<h2 is-upgraded>Masquer la fenêtre du terminal (V2 expérimental)</h2>
+<p>Si la tâche fonctionne bien (clic droit dessus, exécuter), il peut être intéressant de masquer la fenêtre<br>pour ne pas être dérangé. Ceci se fait avec l&#39;option suivante dans l&#39;onglet <strong>général</strong> des propriétés<br>de la tâche:</p>
+<p class="image-container"><img src="img\868cfd6a78a1a1fb.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pimpages" duration="5">
+        <p class="image-container"><img src="img\a8c3a79930a124f2.jpg"></p>
+<p>Maintenant que la version de base fonctionne, on peut encore améliorer certains aspects comme</p>
+<h2 is-upgraded>Logs</h2>
+<p>Modifier le script pour qu&#39;il génère un log d&#39;éxecution et le <em>rcloner</em> pour qu&#39;il soit sauvegardé aussi<br>L&#39;option</p>
+<pre><code>    --log-file=backup.log
+</code></pre>
+<p>permet d&#39;enregistrer les détails d&#39;exécution sur un fichier...</p>
+<h2 is-upgraded>Sécurité</h2>
+<p>Pour l&#39;instant, la clé de connexion à OneDrive est stockée en claire dans le fichier de configuration.<br>Ce fichier est stocké dans le profil et si le disque est chiffré il n&#39;y a pas trop de risque. Néanmoins,<br><em>rclone</em> peut aussi chiffrer lui-même la configuration :</p>
+<p><a href="https://rclone.org/docs/#configuration-encryption" target="_blank">Chiffrer la configuration de rclone</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

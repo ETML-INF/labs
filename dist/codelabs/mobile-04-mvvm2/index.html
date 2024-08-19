@@ -1,0 +1,174 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>MVVM2 : ListView</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-04-mvvm2"
+                  title="MVVM2 : ListView"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Rappel" duration="1">
+        <h2 is-upgraded>Listes</h2>
+<p>En C#, pour grouper plusieurs éléments dans un même conteneur, on peut utiliser une liste. Par exemple, voici une liste contenant 5 éléments:</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>0</p>
+</td><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p>3</p>
+</td><td colspan="1" rowspan="1"><p>4</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>&#34;bob&#34;</p>
+</td><td colspan="1" rowspan="1"><p>&#34;max&#34;</p>
+</td><td colspan="1" rowspan="1"><p>&#34;lisa&#34;</p>
+</td><td colspan="1" rowspan="1"><p>&#34;ania&#34;</p>
+</td><td colspan="1" rowspan="1"><p>&#34;roger&#34;</p>
+</td></tr>
+</table>
+<p>Le code correspondant est:</p>
+<pre><code>List&lt;string&gt; names = new(&#34;bob&#34;,&#34;max&#34;,&#34;lisa&#34;,&#34;ania&#34;,&#34;roger&#34;);
+</code></pre>
+<aside class="special"><p>L&#39;avantage d&#39;une liste comparé à un tableau, c&#39;est qu&#39;on peut facilement ajouter/supprimer des éléments car elle est dynamique.</p>
+</aside>
+<h2 is-upgraded>Prérequis</h2>
+<p>Ce tutorial part du principe que <a href="https://labs.section-inf.ch/codelabs/mobile-03-mvvm1/index.html?index=..%2F..index" target="_blank">celui-ci</a> a été réalisé et compris notamment en ce qui concerne l&#39;utilisation du <a href="https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm-community-toolkit-features" target="_blank">MVVM toolkit</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Objectif" duration="1">
+        <p>Le but de ce tutorial est de créer une &#34;wishlist&#34;, un peu comme si on avait une lampe d&#39;Aladdin :</p>
+<p class="image-container"><img alt="Alt text" src="img\71909f1ed1e985e0.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Réalisation" duration="15">
+        <h2 is-upgraded>Vue initiale</h2>
+<p>Créer un projet si nécessaire, puis ajouter un fichier XAML comme suit:</p>
+<p class="image-container"><img alt="Alt text" src="img\d3f7ea2566f37386.png"></p>
+<p>À part le composant <em>ListView</em> en fin de fichier, les éléments présentés ne sont pas nouveaux hormis le champ de saisie qui a un attribut <em>x:Name</em></p>
+<p class="image-container"><img alt="Alt text" src="img\e83b2c23cf192662.png"></p>
+<p>nécessaire à passer son contenu en paramètre de la commande qui ajoute un voeu:</p>
+<p class="image-container"><img alt="Alt text" src="img\4f7eda8e860811c4.png"></p>
+<h2 is-upgraded>ViewModel</h2>
+<p>Créer ensuite le <em>ViewModel</em> associé.</p>
+<p>En suivant le XAML précédent, on comprend qu&#39;il faut un attribut pour la liste des voeux :</p>
+<p class="image-container"><img alt="Alt text" src="img\f0b8c2e55b2360a.png"></p>
+<p>ainsi qu&#39;une méthode pour l&#39;ajout:</p>
+<p class="image-container"><img alt="Alt text" src="img\82820593737fae84.png"></p>
+<h3 is-upgraded>Liste</h3>
+<p>Selon ce qui a été rappelé, on serait tenté de déclarer l&#39;attribut suivant:</p>
+<pre><code>List&lt;string&gt; wishes = new(){&#34;marcher sur la lune&#34;,&#34;...&#34;};
+</code></pre>
+<p>Et de lui ajouter l&#39;annotation MVVM:</p>
+<pre><code>[Observable Property]
+List&lt;string&gt; wishes = new(){&#34;marcher sur la lune&#34;,&#34;...&#34;};
+</code></pre>
+<p>Malheureusement ce n&#39;est pas aussi simple, mais presque.<br>En effet, s&#39;agissant d&#39;une liste, on s&#39;intéresse aux modifications <strong>à l&#39;intérieur</strong> de la liste et non pas forcément de la liste toute entière.<br>Ainsi il faut utiliser un nouveau type de liste qui déclenche les notifications MVVM et qui se nomme <em>ObservableCollection</em>:</p>
+<pre><code>private  ObservableCollection&lt;string&gt; wishes = new() { &#34;décrocher la lune&#34;,&#34;voler dans les airs&#34;};
+</code></pre>
+<h3 is-upgraded>Commande</h3>
+<p>Concernant la commande, rien de particulier, on fait comme précédemment en commençant par créer une méthode:</p>
+<pre><code>private void AddWish(string wish)
+{
+    Wishes.Add(wish);
+}
+</code></pre>
+<p>puis en ajoutant l&#39;annotation MVVM correspondante:</p>
+<pre><code>[RelayCommand]
+private void AddWish(string wish)
+{
+    Wishes.Add(wish);
+}
+</code></pre>
+<h3 is-upgraded>Tout ensemble</h3>
+<p class="image-container"><img alt="Alt text" src="img\cd1ebc3c136aef11.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Améliorations (fine tuning)" duration="10">
+        <h2 is-upgraded>État des lieux</h2>
+<p>À ce stade l&#39;application devrait être fonctionnelle et mérite quelques ajustements que l&#39;on retrouve régulièrement dans les applications.</p>
+<h2 is-upgraded>Activation conditionnelle du bouton</h2>
+<p>Tant que rien n&#39;est écrit dans le champ texte, le bouton <em>Ajouter</em> devrait être désactivé. Avec le MVVM toolkit et un peu de XAML, on peut réaliser ceci de manière élégante.</p>
+<h3 is-upgraded>ViewModel</h3>
+<pre><code>[ObservableProperty]
+[NotifyCanExecuteChangedFor(nameof(AddWishCommand))]
+private string wishEntry = &#34;&#34;;
+
+[RelayCommand(CanExecute = nameof(AddWishCanExecute))]
+private void AddWish(string wish)
+{
+    Wishes.Add(wish);
+}
+
+private bool AddWishCanExecute()
+{
+    return !string.IsNullOrEmpty(WishEntry);
+}
+</code></pre>
+<h3 is-upgraded>XAML</h3>
+<p>La seule modification à effectuer est de rajouter le binding entre le champ texte et la propriété qui permet de savoir si du texte est rempli:</p>
+<p class="image-container"><img alt="Alt text" src="img\27342e2652441037.png"></p>
+<p>À partir de là, tant que le champ texte n&#39;est pas rempli, le bouton devrait être désactivé !</p>
+<h2 is-upgraded>Vider le champ texte</h2>
+<p>Il serait agréable que le champ texte se réinitialise après avoir ajouté une entrée.<br>Maintenant que le champ texte est lié (binding) au ViewModel, il suffit de changer sa valeur:</p>
+<pre><code>[RelayCommand(CanExecute = nameof(AddWishCanExecute))]
+private void AddWish(string wish)
+{
+    Wishes.Add(wish);
+
+    //Vidange du champ texte automatique
+    wishEntry=&#34;&#34;;
+}
+</code></pre>
+<aside class="warning"><p>Pourtant cela ne fonctionne pas, n&#39;est-ce pas ? Mais pourquoi alors ?</p>
+</aside>
+<h3 is-upgraded>Attribut VS Propriété</h3>
+<p>Le Toolkit MVVM transforme automatiquement un attribut <em>private string attr</em> en une propriété (ajout de getter/setter) parce qu&#39;il ajoute les mécanismes de notification MVVM... De ce fait, pour profiter des <em>ajouts</em>, on doit obligatoirement passer par les accesseurs. Ainsi un <em>w</em> minuscule aura une grande différence de fonctionnement d&#39;un <strong>W</strong> majuscule:</p>
+<pre><code>/*MAJUSCULE-&gt;Propriété-&gt;MVVM*/W/*/!\*/ishEntry=&#34;&#34;;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="1">
+        <h2 is-upgraded>Lier simplicité et efficacité</h2>
+<p>MVVM avec le toolkit permet de faire beaucoup avec peu, pour autant qu&#39;on soit concentré et qu&#39;on comprenne comment ça fonctionne.</p>
+<p>Les deux tutoriaux réalisés décrivent la base du fonctionnement avec MVVM et le toolkit à partir de laquelle on peut développer de plus vastes applications. Il s&#39;agit alors de reproduire les bons réflexes acquis...</p>
+<p>Enfin, en cas de difficulté, revenir à ces 2 exercices devraient aider à identifier / résoudre le problème.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

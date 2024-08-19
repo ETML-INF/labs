@@ -1,0 +1,145 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>L&#39;analyse d&#39;images</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="ia-02"
+                  title="L&#39;analyse d&#39;images"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="5">
+        <p>Nous arrivons à la fin de notre tour d&#39;horizon de l&#39;intelligence artificielle en nous concentrant maintenant sur la reconnaissance d&#39;images. Bien que les systèmes de reconnaissance d&#39;images soient généralement performants, ils présentent certaines limites.</p>
+<p>Les images contiennent souvent une grande quantité d&#39;informations. Il est donc essentiel, dans un premier temps, de déterminer la pertinence de chaque objet dans l&#39;image. Il est également crucial de comprendre comment le système identifie le début et la fin de chaque objet. Cela aide à appréhender les défis que le système doit surmonter pour fournir des résultats précis.</p>
+<p>De plus, comme le système ne peut pas toujours donner une réponse définitive, il propose généralement trois réponses possibles avec une probabilité associée à chacune. Cette probabilité varie de 0 à 1, où 1 indique une certitude de 100 %.</p>
+<google-codelab-survey survey-id="ia-02-1">
+<h4>Quelle est votre première réaction en entendant parler de la reconnaissance d’images ?</h4>
+<paper-radio-group>
+<paper-radio-button>C&#39;est impressionnant, mais complexe. - Admiration pour les capacités technologiques mêlée à une reconnaissance de la complexité du domaine.</paper-radio-button>
+<paper-radio-button>Ça a un énorme potentiel ! - Enthousiasme pour les nombreuses applications possibles, de la médecine à la sécurité.</paper-radio-button>
+<paper-radio-button>Les systèmes ne sont pas encore parfaits. - Réalisme face aux défis et aux limites actuelles de la reconnaissance d&#39;images.</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup" duration="1">
+        <h2 is-upgraded>VENV</h2>
+<p>Pour que cela fonctionne il va falloir créer un environnement virtuel:</p>
+<p><strong>Créer un environnement virtuel dans le dossier virtualenv1</strong></p>
+<pre><code>\apps\python3\python.exe -m pip install virtualenv
+\apps\python3\python.exe -m venv virtualenv1
+</code></pre>
+<p><strong>Activer l&#39;environnement pour la commande actuelle</strong></p>
+<pre><code>cd virtualenv1
+Scripts\activate.bat
+</code></pre>
+<h2 is-upgraded>Youpiie</h2>
+<p>À partir de là, <em>python</em> est &#34;dans le path&#34;, cela veut dire que depuis cette ligne de commande, on peut simplement appeler python ainsi:</p>
+<pre><code>python
+</code></pre>
+<h2 is-upgraded>ZIP</h2>
+<p><a href="https://eduvaud.sharepoint.com/:u:/s/msteams_d0db31/EXzBITLp2AdAhyhdaxd9qZMBqfqmT90Qb1OPAr-sVO2vyw?e=XNlAqN" target="_blank">Télécharger l&#39;archive suivante</a></p>
+<h2 is-upgraded>Commandes</h2>
+<p>Maintenant que nous avons couvert ces aspects, tu peux procéder à l&#39;installation des dépendances en utilisant le fichier <code>requirements.txt</code>. Charge ce fichier comme d&#39;habitude avec la commande suivante :</p>
+<pre><code>python -m pip install -r requirements.txt
+</code></pre>
+<p>Notre programme utilise les bibliothèques TensorFlow et Pillow. Voici comment installer ces bibliothèques :</p>
+<pre><code>python -m pip install tensorflow pillow
+</code></pre>
+<p>Je vais te donner un aperçu rapide du code, et je t&#39;expliquerai plus en détail le rôle de chaque bloc plus tard. L&#39;objectif est que tu comprennes comment le programme fonctionne sans entrer dans les moindres détails.</p>
+<pre><code>import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input, decode_predictions
+import numpy as np
+
+# Charger le modèle pré-entraîné ResNet50
+model = ResNet50(weights=&#39;imagenet&#39;)
+
+def classify_image(image_path):
+    # Charger l&#39;image et la redimensionner
+    img = image.load_img(image_path, target_size=(224, 224))
+    
+    # Convertir l&#39;image en tableau numpy
+    img_array = image.img_to_array(img)
+    
+    # Ajouter une dimension supplémentaire pour le batch
+    img_array = np.expand_dims(img_array, axis=0)
+    
+    # Prétraiter l&#39;image pour le modèle
+    img_array = preprocess_input(img_array)
+    
+    # Prédire la classe de l&#39;image
+    predictions = model.predict(img_array)
+    
+    # Décoder les prédictions pour obtenir les labels
+    decoded_predictions = decode_predictions(predictions, top=3)[0]
+    
+    # Afficher les résultats
+    for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
+        print(f&#34;{i + 1}: {label} ({score:.2f})&#34;)
+
+# Exemple d&#39;utilisation
+image_path = &#39;chemin/vers/votre/image.jpg&#39;
+classify_image(image_path)
+</code></pre>
+<h2 is-upgraded>Explication du code</h2>
+<ul>
+<li><strong>Importation des bibliothèques</strong> : Les bibliothèques TensorFlow et Pillow sont importées pour charger et traiter les images, ainsi que pour utiliser le modèle pré-entraîné ResNet50.</li>
+<li><strong>Chargement du modèle</strong> : Nous chargeons le modèle ResNet50, qui a été pré-entraîné sur le dataset ImageNet. Cela signifie que le modèle a déjà appris à reconnaître un grand nombre d&#39;objets et de caractéristiques à partir de millions d&#39;images. En utilisant ce modèle pré-entraîné, nous pouvons tirer parti de cette connaissance préalable pour effectuer des prédictions sur de nouvelles images, sans avoir à entraîner le modèle depuis le début.</li>
+<li><strong>Fonction </strong><code>classify_image</code> : Cette fonction charge une image, la redimensionne, la prépare pour le modèle, effectue une prédiction et affiche les trois principales prédictions avec leurs scores de confiance.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="📝 Exercice" duration="15">
+        <p>Maintenant, tu peux ajouter des images dans le dossier en les nommant <code>monImageXX.jpg</code>. 📁📸<br>Après avoir ajouté tes images, teste si elles sont correctement reconnues par le modèle. 🤖🔍<br>Attention : Les noms des objets (animaux ou autres) seront en anglais, sauf si le dictionnaire de traduction contient la traduction. 🌍🔠</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="2">
+        <p>Le modèle de reconnaissance d&#39;images a réussi à identifier et traduire les noms d&#39;animaux 🦁 et d&#39;objets 🚗 pour la plupart des images fournies. Bien que certaines traductions aient nécessité des ajustements manuels, le programme a montré une solide capacité à classifier divers animaux et objets grâce au modèle pré-entraîné ResNet50.</p>
+<p>Le modèle fonctionne de manière efficace pour les images de haute qualité et pour les catégories bien représentées dans le jeu de données ImageNet. Cependant, pour des animaux plus rares ou des objets spécifiques, il pourrait être bénéfique d&#39;améliorer le modèle ou d&#39;utiliser un jeu de données plus spécialisé.</p>
+<p>L&#39;ajout d&#39;un dictionnaire de traduction a rendu les résultats plus accessibles pour les utilisateurs francophones. Cette approche pourrait encore être perfectionnée en élargissant le dictionnaire pour inclure davantage de termes.</p>
+<p>Nous te remercions pour ta participation et te souhaitons une excellente fin de journée.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfX81Fu993BPLEUOLTBNlrs7fU2RsWyJWzwGaszQAnwTGtSSQ/viewform?usp=sf_link"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE aesl-source>
+<network>
+
+<!--list of global events-->
+
+<!--list of constants-->
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+<!--node thymio-II-->
+<node nodeId="51938" name="thymio-II">
+
+if prox.ground.delta[0] &lt; 400 then
+	motor.left.target = 300
+	motor.right.target = 300
+else
+	if prox.ground.delta[1] &lt; 400 then
+		motor.right.target = 0
+	else
+		motor.left.target = 0
+	end
+end
+
+
+onevent prox
+	when prox.horizontal[0] &gt; 2000 do
+	end
+
+
+	when prox.ground.delta[0] &lt; 400 do
+		motor.left.target = 300
+		motor.right.target = 300
+	end
+
+
+<toolsPlugins>
+<ThymioBlockly>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="thymio_event_prox" x="12" y="-287">
+    <field name="SENSOR">prox.horizontal[0]</field>
+    <field name="MODE">PROX</field>
+  </block>
+  <block type="thymio_event_update" x="13" y="-212">
+    <field name="EVENT">prox</field>
+  </block>
+  <block type="thymio_event_prox_ground" x="12" y="-112">
+    <field name="SENSOR">prox.ground.delta[0]</field>
+    <field name="MODE">BLACK</field>
+    <statement name="HANDLER">
+      <block type="thymio_motors_start">
+        <field name="COMMAND">FORWARD</field>
+        <value name="SPEED">
+          <shadow type="math_number">
+            <field name="NUM">300</field>
+          </shadow>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="controls_if" x="13" y="63">
+    <mutation else="1"></mutation>
+    <value name="IF0">
+      <shadow type="logic_boolean">
+        <field name="BOOL">TRUE</field>
+      </shadow>
+      <block type="thymio_prox_ground_check">
+        <field name="SENSOR">prox.ground.delta[0]</field>
+        <field name="MODE">BLACK</field>
+      </block>
+    </value>
+    <statement name="DO0">
+      <block type="thymio_motors_start">
+        <field name="COMMAND">FORWARD</field>
+        <value name="SPEED">
+          <shadow type="math_number">
+            <field name="NUM">300</field>
+          </shadow>
+        </value>
+      </block>
+    </statement>
+    <statement name="ELSE">
+      <block type="controls_if">
+        <mutation else="1"></mutation>
+        <value name="IF0">
+          <shadow type="logic_boolean">
+            <field name="BOOL">TRUE</field>
+          </shadow>
+          <block type="thymio_prox_ground_check">
+            <field name="SENSOR">prox.ground.delta[1]</field>
+            <field name="MODE">BLACK</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="thymio_actuator_motor">
+            <field name="VARIABLE">motor.right.target</field>
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+        <statement name="ELSE">
+          <block type="thymio_actuator_motor">
+            <field name="VARIABLE">motor.left.target</field>
+            <value name="VALUE">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>
+</ThymioBlockly>
+</toolsPlugins>
+</node>
+
+</network>

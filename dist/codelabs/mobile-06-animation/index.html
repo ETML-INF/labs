@@ -1,0 +1,108 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Animation</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-06-animation"
+                  title="Animation"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\c281ff8c04ab60c1.gif"></p>
+<p>Pour rendre une application vivante, rien de tel qu&#39;un peu d&#39;animation...</p>
+<h2 is-upgraded>Contexte technique</h2>
+<p class="image-container"><img alt="Alt text" src="img\c9f68c44faaf269a.gif"></p>
+<p>Ce tutorial part du principe que la notion MVVM avec MAUI est maîtrisée.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Animations de base avec MAUI" duration="1">
+        <h2 is-upgraded>Voici ce qu&#39;on peut faire</h2>
+<p class="image-container"><img alt="Alt text" src="img\9cab307b71e61dc8.gif"></p>
+<ul>
+<li>Rotation</li>
+<li>Translation</li>
+<li>Changement de taille</li>
+<li>Fondu</li>
+</ul>
+<h2 is-upgraded>Voici ce qu&#39;on va faire</h2>
+<p class="image-container"><img alt="Alt text" src="img\da6b952a70b607f0.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Code : Vue" duration="5">
+        <p>Exceptionnellement, il y aura un peu de code dans la partie XAML.CS car l&#39;animation se passe uniquement au niveau de l&#39;UI.</p>
+<aside class="special"><p>Par contre, pour respecter MVVM, ce code sera appelé par le ViewModel du moment que la vue y a enregistré son action...</p>
+</aside>
+<h2 is-upgraded>XAML</h2>
+<p>Hormis le lien avec le ViewModel, voici la partie XAML de la vue:</p>
+<p class="image-container"><img alt="Alt text" src="img\ffffcc74fb0c0638.png"></p>
+<h2 is-upgraded>XAML.CS</h2>
+<p>Pour la partie XAML.CS, on procède ainsi</p>
+<ol type="1">
+<li>Récupérer une référence vers le ViewModel</li>
+<li>Enregistrer l&#39;animation à faire pour la rotation (via une méthode standard)</li>
+<li>Enregistrer l&#39;animation à faire pour le déplacement (via un lambda)</li>
+</ol>
+<p class="image-container"><img alt="Alt text" src="img\b22b5bec7f88b1e3.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Code : ViewModel" duration="10">
+        <p>En lien avec les bindings de la vue, il faut définir:</p>
+<h2 is-upgraded>Les propriétés</h2>
+<p class="image-container"><img alt="Alt text" src="img\318113b5a845091f.png"></p>
+<h2 is-upgraded>La méthode pour réagir au switch</h2>
+<p class="image-container"><img alt="Alt text" src="img\f9b44e53d3091904.png"></p>
+<h2 is-upgraded>L&#39;action et la méthode pour la rotation</h2>
+<p class="image-container"><img alt="Alt text" src="img\ca222c1261a08755.png"></p>
+<h2 is-upgraded>L&#39;action et la méthode pour le déplacement</h2>
+<p class="image-container"><img alt="Alt text" src="img\80143f3c9b2287b7.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Suite à cet exercice, les compétences suivantes ont été travaillées:</p>
+<ul>
+<li>Animer un élément graphique avec une rotation / translation</li>
+<li>Respecter MVVM avec une vue animée</li>
+<li>Utiliser le type &#34;Action&#34; pour stocker un pointeur vers une fonction</li>
+<li>Enregistrer et invoquer une Action</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

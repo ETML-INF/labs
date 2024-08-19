@@ -1,0 +1,207 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Cours en lien avec la formation MSIG">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="MSIG">
+<meta name="application-name" content="MSIG">
+<link rel="canonical" href="https://example.com/msig/">
+<link rel="preconnect" href="https://www.google-analytics.com">
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-49880327-14', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<title>MSIG</title>
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="import" href="/elements/elements.html">
+<style is="custom-style">
+:root{--paper-tabs-selection-bar-color:currentcolor;--paper-input-container-underline:{display:none};--paper-input-container-underline-focus:{display:none};}.dropdown-filter{--paper-input-container:{padding:8px}} </style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#455a64">
+<meta name="apple-mobile-web-app-title" content="MSIG">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="194x194" href="/images/favicons/favicon-194x194.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/favicons/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#455a64">
+<meta name="msapplication-TileColor" content="#455a64">
+<meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+<meta name="theme-color" content="#455a64">
+<meta name="og:type" property="og:type" content="website">
+<meta name="og:title" property="og:title" content="MSIG">
+<meta name="og:description" property="og:description" content="Cours en lien avec la formation MSIG">
+<meta name="og:url" property="og:url" content="https://example.com/msig/">
+<meta name="og:site_name" property="og:site_name" content="Codelabs">
+<meta name="og:determiner" property="og:determiner" content="the">
+<meta name="og:locale" property="og:locale" content="en_US">
+<meta name="og:image" property="og:image" content="/images/og-image.png">
+<meta name="og:image:url" property="og:image:url" content="/images/og-image.png">
+<meta name="og:image:type" property="og:image:type" content="image/png">
+<meta name="og:image:width" property="og:image:width" content="1200">
+<meta name="og:image:height" property="og:image:height" content="1200">
+<meta name="og:image:alt" property="og:image:alt" content="Codelabs">
+<meta name="twitter:card" property="twitter:card" content="summary_large_image">
+<meta name="twitter:title" property="twitter:title" content="MSIG">
+<meta name="twitter:description" property="twitter:description" content="Cours en lien avec la formation MSIG">
+<meta name="twitter:image" property="twitter:image" content="/images/og-image.png">
+<meta name="twitter:url" property="twitter:url" content="https://example.com/msig/">
+</head>
+<body id="app" is="body-bind" class="loading fullbleed view">
+<paper-header-panel id="main" mode="standard" main>
+<div id="mainToolbar" class="paper-header">
+<div class="site-width layout horizontal">
+<a href="/">
+<img src="/images/logo.png" class="logo-devs" alt="Codelabs Logo">
+</a>
+<div id="searchbar">
+<paper-input-container no-label-float>
+<paper-icon-button prefix icon="search"></paper-icon-button>
+<label>Rechercher</label>
+<input is="iron-input" bind-value="{{searchVal}}" on-keydown="onSearchKeyDown">
+</paper-input-container>
+</div>
+</div>
+</div>
+<header id="banner" down>
+<div class="site-width">
+<div class="banner-description">
+<img id="logo" src="/msig/logo-msig.png" alt="Event logo">
+<div class="banner-meta">
+<h3>MSIG</h3>
+<p>Cours en lien avec la formation MSIG</p>
+</div>
+</div>
+</div>
+</header>
+<main>
+<div id="filters" class="site-width layout horizontal center justified">
+<div id="sortby">
+<paper-tabs selected="0" noink on-iron-activate="sortBy">
+<paper-tab>A-Z</paper-tab>
+<paper-tab>Date</paper-tab>
+<paper-tab>Dur&eacute;e</paper-tab>
+</paper-tabs>
+</div>
+<paper-dropdown-menu label="Filtrer par cat&eacute;gorie" class="dropdown-filter" no-label-float noink no-animations>
+<paper-listbox id="categorylist" slot="dropdown-content" class="dropdown-content" on-iron-activate="onCategoryActivate" attr-for-selected="filter">
+<paper-item filter="dev">dev</paper-item>
+<paper-item filter="robot">robot</paper-item>
+</paper-listbox>
+</paper-dropdown-menu></div>
+<card-sorter id="cards" class="site-width">
+<a href="/codelabs\cosmos-base-02-animation\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Animation" data-duration="49" data-updated="2022-10-11T08:32:34+02:00" data-tags="msig,web" data-pin="">
+<div class="description">Animation</div>
+<div class="card-duration">
+<span>49 min </span>
+<span>Updated Oct 11, 2022</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\cosmos-base-00-hello\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Bonjour Cosmos" data-duration="27" data-updated="2022-10-11T09:43:36+02:00" data-tags="msig,web" data-pin="">
+<div class="description">Bonjour Cosmos</div>
+<div class="card-duration">
+<span>27 min </span>
+<span>Updated Oct 11, 2022</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\cosmos-base-03-raincollector\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Collecteur de pluie" data-duration="72" data-updated="2020-09-26T10:35:06+02:00" data-tags="msig,web" data-pin="">
+<div class="description">Collecteur de pluie</div>
+<div class="card-duration">
+<span>72 min </span>
+<span>Updated Sep 26, 2020</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\robot-01\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-robot" data-category="robot" data-title="Programmation de robot" data-duration="21" data-updated="2022-10-04T09:23:01+02:00" data-tags="msig,robot,web" data-pin="">
+<div class="description">Programmation de robot</div>
+<div class="card-duration">
+<span>21 min </span>
+<span>Updated Oct 4, 2022</span>
+</div>
+<div class="card-footer">
+<div class="category-icon robot-icon"></div>
+<paper-button class="robot-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\cosmos-base-01-million\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Qui veut gagner les millions ?" data-duration="68" data-updated="2020-09-01T17:33:12+02:00" data-tags="msig,web" data-pin="">
+<div class="description">Qui veut gagner les millions ?</div>
+<div class="card-duration">
+<span>68 min </span>
+<span>Updated Sep 1, 2020</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\rclone-01\index.html?index=..%2F..msig" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Synchronisation avec Rclone" data-duration="27" data-updated="2022-10-14T08:00:34+02:00" data-tags="msig,web" data-pin="">
+<div class="description">Synchronisation avec Rclone</div>
+<div class="card-duration">
+<span>27 min </span>
+<span>Updated Oct 14, 2022</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+</card-sorter>
+<div id="loading-placeholder" class="site-width">
+Chargement des ateliers, veuillez patienter...
+</div>
+</main>
+<footer id="footer">
+<div class="footer-wrapper site-width">
+<div class="link-list">
+<label>Versioning</label>
+<ul>
+<li><a href="https://git.section-inf.ch/">Git</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>LMS</label>
+<ul>
+<li><a href="https://moodle.section-inf.ch/">Moodle</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>Autre documentation</label>
+<ul>
+<li><a href="https://enseignement.section-inf.ch/">Enseignement</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>&Eacute;cole</label>
+<ul>
+<li><a href="https://www.etml.ch/">ETML</a></li>
+</ul>
+</div>
+</div>
+</footer>
+<div class="footerbar">
+<div class="site-width layout horizontal center justified">
+<span>
+Tout droit réservé.
+</span>
+</div>
+</div>
+</paper-header-panel>
+<script src="/scripts/main.js"></script>
+</body>
+</html>

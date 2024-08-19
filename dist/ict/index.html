@@ -1,0 +1,319 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Cours en lien avec la formation ICT">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="ICT">
+<meta name="application-name" content="ICT">
+<link rel="canonical" href="https://example.com/ict/">
+<link rel="preconnect" href="https://www.google-analytics.com">
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-49880327-14', 'auto');
+    ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<title>ICT</title>
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="import" href="/elements/elements.html">
+<style is="custom-style">
+:root{--paper-tabs-selection-bar-color:currentcolor;--paper-input-container-underline:{display:none};--paper-input-container-underline-focus:{display:none};}.dropdown-filter{--paper-input-container:{padding:8px}} </style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#455a64">
+<meta name="apple-mobile-web-app-title" content="ICT">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="194x194" href="/images/favicons/favicon-194x194.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/favicons/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#455a64">
+<meta name="msapplication-TileColor" content="#455a64">
+<meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+<meta name="theme-color" content="#455a64">
+<meta name="og:type" property="og:type" content="website">
+<meta name="og:title" property="og:title" content="ICT">
+<meta name="og:description" property="og:description" content="Cours en lien avec la formation ICT">
+<meta name="og:url" property="og:url" content="https://example.com/ict/">
+<meta name="og:site_name" property="og:site_name" content="Codelabs">
+<meta name="og:determiner" property="og:determiner" content="the">
+<meta name="og:locale" property="og:locale" content="en_US">
+<meta name="og:image" property="og:image" content="/images/og-image.png">
+<meta name="og:image:url" property="og:image:url" content="/images/og-image.png">
+<meta name="og:image:type" property="og:image:type" content="image/png">
+<meta name="og:image:width" property="og:image:width" content="1200">
+<meta name="og:image:height" property="og:image:height" content="1200">
+<meta name="og:image:alt" property="og:image:alt" content="Codelabs">
+<meta name="twitter:card" property="twitter:card" content="summary_large_image">
+<meta name="twitter:title" property="twitter:title" content="ICT">
+<meta name="twitter:description" property="twitter:description" content="Cours en lien avec la formation ICT">
+<meta name="twitter:image" property="twitter:image" content="/images/og-image.png">
+<meta name="twitter:url" property="twitter:url" content="https://example.com/ict/">
+</head>
+<body id="app" is="body-bind" class="loading fullbleed view">
+<paper-header-panel id="main" mode="standard" main>
+<div id="mainToolbar" class="paper-header">
+<div class="site-width layout horizontal">
+<a href="/">
+<img src="/images/logo.png" class="logo-devs" alt="Codelabs Logo">
+</a>
+<div id="searchbar">
+<paper-input-container no-label-float>
+<paper-icon-button prefix icon="search"></paper-icon-button>
+<label>Rechercher</label>
+<input is="iron-input" bind-value="{{searchVal}}" on-keydown="onSearchKeyDown">
+</paper-input-container>
+</div>
+</div>
+</div>
+<header id="banner" down>
+<div class="site-width">
+<div class="banner-description">
+<img id="logo" src="/ict/logo-ict.png" alt="Event logo">
+<div class="banner-meta">
+<h3>ICT</h3>
+<p>Cours en lien avec la formation ICT</p>
+</div>
+</div>
+</div>
+</header>
+<main>
+<div id="filters" class="site-width layout horizontal center justified">
+<div id="sortby">
+<paper-tabs selected="0" noink on-iron-activate="sortBy">
+<paper-tab>A-Z</paper-tab>
+<paper-tab>Date</paper-tab>
+<paper-tab>Dur&eacute;e</paper-tab>
+</paper-tabs>
+</div>
+<paper-dropdown-menu label="Filtrer par cat&eacute;gorie" class="dropdown-filter" no-label-float noink no-animations>
+<paper-listbox id="categorylist" slot="dropdown-content" class="dropdown-content" on-iron-activate="onCategoryActivate" attr-for-selected="filter">
+<paper-item filter="android">android</paper-item>
+<paper-item filter="dev">dev</paper-item>
+<paper-item filter="ia">ia</paper-item>
+<paper-item filter="python">python</paper-item>
+</paper-listbox>
+</paper-dropdown-menu></div>
+<card-sorter id="cards" class="site-width">
+<a href="/codelabs\mobile-02-addPage\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="Ajouter des pages avec MAUI" data-duration="5" data-updated="2024-01-20T07:50:45+01:00" data-tags="ict,web" data-pin="">
+<div class="description">Ajouter des pages avec MAUI</div>
+<div class="card-duration">
+<span>5 min </span>
+<span>Updated Jan 20, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-06-animation\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="Animation" data-duration="18" data-updated="2024-03-22T14:44:41+01:00" data-tags="ict,web" data-pin="">
+<div class="description">Animation</div>
+<div class="card-duration">
+<span>18 min </span>
+<span>Updated Mar 22, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-05-crud1\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="CRUD" data-duration="64" data-updated="2024-03-16T07:22:27+01:00" data-tags="ict,web" data-pin="">
+<div class="description">CRUD</div>
+<div class="card-duration">
+<span>64 min </span>
+<span>Updated Mar 16, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-07-sensor\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="Capteurs" data-duration="32" data-updated="2024-04-03T18:09:33+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Capteurs</div>
+<div class="card-duration">
+<span>32 min </span>
+<span>Updated Apr 3, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\python-01\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-python" data-category="python,dev" data-title="Découvrir Python par la pratique" data-duration="17" data-updated="2024-08-14T10:18:25+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Découvrir Python par la pratique</div>
+<div class="card-duration">
+<span>17 min </span>
+<span>Updated Aug 14, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon python-icon"></div>
+<paper-button class="python-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\ia-03\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-ia" data-category="ia,python,dev" data-title="Détection de danger" data-duration="57" data-updated="2024-08-19T14:26:14+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Détection de danger</div>
+<div class="card-duration">
+<span>57 min </span>
+<span>Updated Aug 19, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon ia-icon"></div>
+<paper-button class="ia-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\ia-01\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-ia" data-category="ia,python,dev" data-title="Introduction aux Principes de l&#39;IA" data-duration="41" data-updated="2024-08-15T08:36:59+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Introduction aux Principes de l&#39;IA</div>
+<div class="card-duration">
+<span>41 min </span>
+<span>Updated Aug 15, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon ia-icon"></div>
+<paper-button class="ia-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\ia-02\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-ia" data-category="ia,python,dev" data-title="L&#39;analyse d&#39;images" data-duration="26" data-updated="2024-08-19T17:12:08+02:00" data-tags="ict,web" data-pin="">
+<div class="description">L&#39;analyse d&#39;images</div>
+<div class="card-duration">
+<span>26 min </span>
+<span>Updated Aug 19, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon ia-icon"></div>
+<paper-button class="ia-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-03-mvvm1\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="MVVM" data-duration="10" data-updated="2024-02-20T10:52:29+01:00" data-tags="ict,web" data-pin="">
+<div class="description">MVVM</div>
+<div class="card-duration">
+<span>10 min </span>
+<span>Updated Feb 20, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-04-mvvm2\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="MVVM2 : ListView" data-duration="28" data-updated="2024-02-23T15:45:33+01:00" data-tags="ict,web" data-pin="">
+<div class="description">MVVM2 : ListView</div>
+<div class="card-duration">
+<span>28 min </span>
+<span>Updated Feb 23, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\ant-simu-01\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-dev" data-category="dev" data-title="Mise en place du simulateur de fourmi" data-duration="17" data-updated="2023-09-21T15:02:01+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Mise en place du simulateur de fourmi</div>
+<div class="card-duration">
+<span>17 min </span>
+<span>Updated Sep 21, 2023</span>
+</div>
+<div class="card-footer">
+<div class="category-icon dev-icon"></div>
+<paper-button class="dev-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-hello\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="Première appli mobile MAUI" data-duration="18" data-updated="2024-03-02T03:12:21+01:00" data-tags="ict,web" data-pin="">
+<div class="description">Première appli mobile MAUI</div>
+<div class="card-duration">
+<span>18 min </span>
+<span>Updated Mar 2, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\mobile-08-test\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-android" data-category="android,dev" data-title="Qualité" data-duration="27" data-updated="2024-04-25T14:01:08+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Qualité</div>
+<div class="card-duration">
+<span>27 min </span>
+<span>Updated Apr 25, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon android-icon"></div>
+<paper-button class="android-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\python-02\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-python" data-category="python,dev" data-title="Qui veut gagner des maillots" data-duration="29" data-updated="2024-08-14T11:00:11+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Qui veut gagner des maillots</div>
+<div class="card-duration">
+<span>29 min </span>
+<span>Updated Aug 14, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon python-icon"></div>
+<paper-button class="python-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\python-03\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-python" data-category="python,dev" data-title="Snake" data-duration="12" data-updated="2024-08-14T11:55:10+02:00" data-tags="ict,web" data-pin="">
+<div class="description">Snake</div>
+<div class="card-duration">
+<span>12 min </span>
+<span>Updated Aug 14, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon python-icon"></div>
+<paper-button class="python-bg">Start</paper-button>
+</div>
+</a>
+<a href="/codelabs\python-04\index.html?index=..%2F..ict" on-tap="navigate" class="codelab-card category-python" data-category="python,dev" data-title="TicTacToe" data-duration="27" data-updated="2024-08-19T14:53:30+02:00" data-tags="ict,web" data-pin="">
+<div class="description">TicTacToe</div>
+<div class="card-duration">
+<span>27 min </span>
+<span>Updated Aug 19, 2024</span>
+</div>
+<div class="card-footer">
+<div class="category-icon python-icon"></div>
+<paper-button class="python-bg">Start</paper-button>
+</div>
+</a>
+</card-sorter>
+<div id="loading-placeholder" class="site-width">
+Chargement des ateliers, veuillez patienter...
+</div>
+</main>
+<footer id="footer">
+<div class="footer-wrapper site-width">
+<div class="link-list">
+<label>Versioning</label>
+<ul>
+<li><a href="https://git.section-inf.ch/">Git</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>LMS</label>
+<ul>
+<li><a href="https://moodle.section-inf.ch/">Moodle</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>Autre documentation</label>
+<ul>
+<li><a href="https://enseignement.section-inf.ch/">Enseignement</a></li>
+</ul>
+</div>
+<div class="link-list">
+<label>&Eacute;cole</label>
+<ul>
+<li><a href="https://www.etml.ch/">ETML</a></li>
+</ul>
+</div>
+</div>
+</footer>
+<div class="footerbar">
+<div class="site-width layout horizontal center justified">
+<span>
+Tout droit réservé.
+</span>
+</div>
+</div>
+</paper-header-panel>
+<script src="/scripts/main.js"></script>
+</body>
+</html>

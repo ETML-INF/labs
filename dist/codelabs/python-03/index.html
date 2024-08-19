@@ -1,0 +1,95 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Snake</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="python-03"
+                  title="Snake"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Contexte" duration="1">
+        <p>Le second programme consistera à une version simplifiée du célèbre jeu &#34;snake&#34;</p>
+<p class="image-container"><img alt="Alt text" src="img\80748cd07e443380.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Point de départ" duration="10">
+        <p>Créer un nouveau script Python et lui ajouter le contenu suivant:</p>
+<pre><code>import term
+import cursor
+import time
+
+
+def init():
+    # Initialise le terminal en 0,0
+    term.clear()
+    term.homePos()
+    cursor.hide()
+
+
+def game():
+    title()
+
+
+def title():
+    # Faire clignoter le titre
+    for i in range(10):
+        term.write(&#39;Snake&#39;.center(40, &#39; &#39;))
+        time.sleep(0.4)
+        term.clearLine()
+        time.sleep(0.3)
+        term.pos(0, 0)
+
+
+try:
+    init()
+    game()
+
+finally:
+    # Remettre le curseur
+    cursor.show()
+
+</code></pre>
+<h2 is-upgraded>Tester</h2>
+<p>Vérifier que le programme affiche bien un titre qui clignote.</p>
+<h2 is-upgraded>Théorie</h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Normalement écrire un programme en Python est relativement confortable quand on a l&#39;habitude du C# et cette entrée en matière permet de se familiariser avec cette syntaxe.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

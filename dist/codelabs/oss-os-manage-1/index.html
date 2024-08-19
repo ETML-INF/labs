@@ -1,0 +1,241 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Tuning d&#39;un système d&#39;exploitation open source #1</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oss-os-manage-1"
+                  title="Tuning d&#39;un système d&#39;exploitation open source #1"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Aperçu" duration="1">
+        <p class="image-container"><img alt="Tuxsw1" src="img\59b84b683d9971ee.jpg"></p>
+<h2 is-upgraded>Compétences qui vont être acquises</h2>
+<ul>
+<li>Visualiser la charge système</li>
+<li>Modifier la configuration du système</li>
+<li>Gérer les logiciels (Installation / Désinstallation)</li>
+</ul>
+<google-codelab-survey survey-id="oss-os-manage-1-1">
+<h4>À ton avis, la commande ‘TOP’ sert à quoi ?</h4>
+<paper-radio-group>
+<paper-radio-button>Lister le top model du moment</paper-radio-button>
+<paper-radio-button>Trier Ou Partager (le noyau)</paper-radio-button>
+<paper-radio-button>Identifier les processus les plus gourmands</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prérequis" duration="1">
+        <h2 is-upgraded>Système d&#39;exploitation</h2>
+<p>Toutes les activités sont basées sur les opérations décrites <a href="https://labs.section-inf.ch/codelabs/oss-os-install/index.html" target="_blank">ici</a>.</p>
+<aside class="special"><p>Si nécessaire, le résultat de ces activités est disponible dans la machine virtuelle téléchargeable <a href="https://drive.infomaniak.com/app/share/131184/2c97c140-75dd-471f-9b29-a3d4b01e655b" target="_blank">ici</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Utilisation des ressources système" duration="15">
+        <p>Un système d&#39;exploitation est un peu comme un chef d&#39;orchestre ayant pour musiciens des composants électroniques.</p>
+<p class="image-container"><img alt="Orchestrate" src="img\c07263daaa47cdc5.jpg"></p>
+<h2 is-upgraded>CPU et RAM</h2>
+<p>On peut observer le travail d&#39;orchestration avec la commande <em>top</em> (écrire <em>top</em> puis valider avec la touche <em>enter</em>)</p>
+<pre><code>top
+</code></pre>
+<p class="image-container"><img alt="Top" src="img\a71d0a5d25736837.gif"></p>
+<aside class="warning"><p>Pour quitter la commande, il suffit d&#39;appuyer sur la touche <em>q</em></p>
+</aside>
+<h3 is-upgraded>Décryptage du résultat</h3>
+<p class="image-container"><img alt="TopDetail" src="img\b62b594aa8abe0f2.png"></p>
+<h4 is-upgraded>Partie 1 : Résumé</h4>
+<p>Cette partie comporte 3 points:</p>
+<ol type="1">
+<li>Le nombre de processus : 98 programmes chargés dont 1 en cours d&#39;éxécution et 97 qui dorment.</li>
+<li>L&#39;utilisation du processeur: 0.3% utilisé et 99.7% en attente de travail.</li>
+<li>L&#39;utilisation de la RAM : 1987.8Mo disponible dont 148.3Mo utilisés et 1208.3Mo de libres.</li>
+<li>L&#39;utilisation du SWAP : 2Go au total dont 0 utilisé.</li>
+</ol>
+<h4 is-upgraded>Partie 2 : Détail des processus</h4>
+<p>Le processus en haut de la liste est justement celui qui permet d&#39;afficher les informations sur le processus.<br>Voici la traduction des colonnes:</p>
+<ol type="1">
+<li>PID: process id =&gt; Numéro d&#39;identification du programme (géré par l&#39;OS et permet de l&#39;arrêter par exemple)</li>
+<li>USER: utilisateur qui a lancé le processus</li>
+<li>PR: priorité (-20 = priorité la plus importante)</li>
+<li>NI: priorité demandée par le programme</li>
+<li>VIRT: mémoire virtuelle utilisée par le programme</li>
+<li>RES: mémoire RAM utilisée par le programme</li>
+<li>SHR: partie de mémoire partagée dans RES</li>
+<li>S: statut (R=running, s=sleeping, i=idle, etc...)</li>
+<li>%CPU: pourcentage d&#39;utilisation du processeur</li>
+<li>%MEM: pourcentage d&#39;utilisation de la mémoire</li>
+<li>COMMAND: nom du programme</li>
+</ol>
+<h2 is-upgraded>Espace disque</h2>
+<p>Quand il n&#39;y a plus d&#39;espace pour stocker des nouvelles données, un ordinateur peut se bloquer. Il est donc utile de pouvoir contrôler l&#39;espace sur les disques (SSD ou HDD) et aussi observer combien d&#39;espace est pris par un dossier.</p>
+<h3 is-upgraded>Lister les disques et leur partition</h3>
+<p>Une commande pratique est la suivante:</p>
+<pre><code>sudo df -h
+</code></pre>
+<p class="image-container"><img alt="Dfh" src="img\a7ce7950e26418e.png"></p>
+<p>On voit que le disque de 20Go est rempli à 24%.</p>
+<h3 is-upgraded>Calculer la taille d&#39;un dossier</h3>
+<p>Pour savoir combien d&#39;espace est utilisé par un utilisateur, il suffit de se loguer puis d&#39;éxécuter la commande suivante:</p>
+<pre><code>du -sh .
+</code></pre>
+<p class="image-container"><img alt="Dush" src="img\78586eaf4c5095f7.png"></p>
+<p>Ici, seulement 48Ko sont utilisés. Pour vérifier que c&#39;est correct, on peut ajouter un fichier d&#39;environ 150Mo et vérifier:</p>
+<p class="image-container"><img alt="Dush Grand" src="img\ecab7e079c11037c.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Aide sur une commande" duration="10">
+        <p class="image-container"><img alt="Helpsupport" src="img\868d92267a3fef79.jpg"></p>
+<p>Voulez-vous en savoir plus sur le résultat de la commande <em>top</em>, <em>du</em>, <em>df</em>, <em>dd</em> ou vous aimeriez savoir où on peut trouver les informations décrites précédemment sans l&#39;utilisation d&#39;Internet ?</p>
+<p>Pour cela, il existe la commande <em>man</em> (manuel d&#39;utilisation). Par exemple, pour <em>top</em>, on peut écrire:</p>
+<pre><code>man top
+</code></pre>
+<p>Une fois la commande lancée, on peut:</p>
+<ol type="1">
+<li>Quitter en appuyant sur <em>q</em></li>
+<li>Tourner les pages (avancer la lecture) en appuyant sur <em>enter</em></li>
+<li>Chercher un terme en appuyant sur <em>/</em> puis en saisissant un mot puis en appuyant sur <em>enter</em>. Ensuite, on appuie sur <em>n</em> (next=suivant) pour chercher le prochain terme</li>
+</ol>
+<p><strong>En utilisant ce qui a été expliqué, que représentent les lettres </strong><em>us</em><strong> et </strong><em>sy</em><strong> à la deuxième ligne du résultat de la commande </strong><em>top</em><strong> ?</strong></p>
+<google-codelab-survey survey-id="oss-os-manage-1-2">
+<h4>US et SY</h4>
+<paper-radio-group>
+<paper-radio-button>Pourcentage de métal provenant des US et de Syrie</paper-radio-button>
+<paper-radio-button>US=unité scientifique et SY=science yamakusa</paper-radio-button>
+<paper-radio-button>US=temps utilisateur et SY=temps noyau</paper-radio-button>
+<paper-radio-button>US=espace unique et SY=espace système</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pimpage du login" duration="15">
+        <p class="image-container"><img alt="Pimp" src="img\a98d0c92e46d83d.jpg"></p>
+<p>Un système Linux est basé sur des <strong>fichiers de configuration</strong>. Ces fichiers contiennent des indications que le système d&#39;exploitation (au travers de ses programmes) interprète. C&#39;est un peu  comme un automobiliste qui regarde les panneaux de signalisation pour savoir à quelle vitesse rouler à l&#39;exception près qu&#39;un programme, lui, ne fait jamais d&#39;excès de vitesse ;-)</p>
+<h2 is-upgraded>Ajouter un message de bienvenue</h2>
+<p>Pour commencer, nous allons ajouter un message au login. Pour cela, nous avons donc besoin de 2 éléments:</p>
+<ol type="1">
+<li>Quel fichier de configuration ?</li>
+<li>Comment éditer un fichier en ligne de commande ?</li>
+</ol>
+<h3 is-upgraded>Bash</h3>
+<p>Pour la première question, un indice utile est que le programme lancé au login (interpréteur de commande) se nomme <em>bash</em>. Comme tout programme, on peut donc lire son manuel:</p>
+<pre><code>man bash
+</code></pre>
+<aside class="warning"><p>En cas de difficulté, un(e) camarade, votre professeur(e) ou Internet sauront vous aiguiller.</p>
+</aside>
+<h3 is-upgraded>Nano</h3>
+<p>Il existe plusieurs éditeurs de fichier en ligne de commande et même si <em>vi</em> (visual editor) est le plus connu, <em>nano</em> a le mérite d&#39;être plus facile à prendre en main et c&#39;est donc celui qui va être utilisé.</p>
+<p>En lien avec la partie précédente, pour éditer un fichier la commande est la suivante:</p>
+<pre><code>nano unFichierAEditer
+</code></pre>
+<aside class="warning"><p>Pour quitter l&#39;éditeur, il faut presser sur CTRL-X</p>
+</aside>
+<p>En remplaçant <em>unFichierAEditer</em> par le fichier de configuration de login (.bashrc), on peut alors ajouter une ligne tout en bas du fichier (descendre avec la flèche en bas) pour saluer l&#39;utilisateur:</p>
+<p class="image-container"><img alt="NanoBashrc" src="img\5e2d074d69bfe4c8.gif"></p>
+<p>Résumé des commandes à effectuer:</p>
+<ol type="1">
+<li>Lancer l&#39;éditeur (nano ...)</li>
+<li>Se déplacer à la fin du fichier (flèche en bas)</li>
+<li>Écrire la commande (echo &#34;Bonjour Luke&#34;)</li>
+<li>Sauvegarder (ctrl-o)</li>
+<li>Quitter (ctrl-x)</li>
+</ol>
+<p>Pour vérifier si cela fonctionne, il suffit de se déloguer :</p>
+<pre><code>exit
+</code></pre>
+<p>Puis de se reloguer:</p>
+<p class="image-container"><img alt="LoginHello" src="img\12d259bca24a7dda.png"></p>
+<h3 is-upgraded>Défi</h3>
+<p>En s&#39;inspirant de ce qui a été fait précédemment, votre mission est d&#39;ajouter la date au moment du login:</p>
+<p class="image-container"><img alt="LoginDate" src="img\71b23f5213dde4c5.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Backup" duration="15">
+        <p class="image-container"><img alt="Tuxbackup" src="img\c243b8016fe8b418.png"></p>
+<p>Il est souvent utile de sauvegarder certains fichiers ou dossiers pour les mettre en lieu sûr (clé USB ou cloud).<br>Avant de pouvoir faire un backup, il faut pouvoir se ballader dans le système de fichier sans l&#39;aide d&#39;un explorateur traditionnel qu&#39;on contrôle avec une souris.</p>
+<h2 is-upgraded>Navigation dans le système de fichier</h2>
+<p>Quand on se logue, on arrive dans le répertoire de l&#39;utilisateur qui est habituellement <em>/home/nomUtilisateur</em>.<br>Pour savoir où on est dans la ligne de commande, on peut toujours utiliser <em>pwd</em> :</p>
+<pre><code>pwd
+</code></pre>
+<p class="image-container"><img alt="Pwd" src="img\1ee41cb5e9bb9af.png"></p>
+<p>À partir de là, on peut, par exemple, lister les éléments présents dans ce répertoire:</p>
+<pre><code>ls -arth
+</code></pre>
+<p class="image-container"><img alt="Ls1" src="img\7eddf55522178bf5.png"></p>
+<h3 is-upgraded>Créer un répertoire</h3>
+<p>Pour ajouter un dossier (ou répertoire) la commande est <em>mkdir</em>:</p>
+<pre><code>mkdir nouveauDossier
+</code></pre>
+<p class="image-container"><img alt="Mkdir" src="img\e4b25dd7a58e3d17.png"></p>
+<p>Pour ‘ouvrir&#39; le dossier, on utilise la commande <em>cd</em> et ensuite on peut vérifier que le dossier est bien vide avec la commande précédente de listing et aussi voir qu&#39;on est dans un sous-dossier depuis la racine (/):</p>
+<pre><code>cd nouveauDossier
+</code></pre>
+<p class="image-container"><img alt="Cd1" src="img\9b1db0994c06ccf2.png"></p>
+<p>Pour retourner dans le dossier parent, on utilise la même commande avec le paramètre ‘..&#39;:</p>
+<pre><code>cd ..
+</code></pre>
+<h2 is-upgraded>Zipper un répertoire</h2>
+<p>Un format traditionnel pour faire des backups de répertoires entiers est le <em>zip</em>.</p>
+<p>Pour sauvegarder le répertoire qui a été créé précédemment, la commande est la suivante:</p>
+<pre><code>tar czvf backup.zip nouveauDossier
+</code></pre>
+<p class="image-container"><img alt="Tar1" src="img\de024e947775d149.png"></p>
+<aside class="special"><p>Il suffirait ensuite d&#39;uploader ce fichier sur le cloud <a href="https://stackoverflow.com/questions/27873017/example-of-dropbox-api-put-using-curl-and-oauth-2-to-upload-a-file-to-dropbox" target="_blank">exemple</a> ou le copier vers une clé USB.</p>
+</aside>
+<p>Pour vérifier que cela fonctionne, supprimons le dossier et rechargeons-le depuis la sauvegarde:</p>
+<pre><code>rm -rf nouveauDossier
+</code></pre>
+<p class="image-container"><img alt="Rm1" src="img\154ea44c9c98180c.png"></p>
+<pre><code>tar -xzvf backup.zip
+</code></pre>
+<p class="image-container"><img alt="Restore1" src="img\f7c8d57ac12f4f10.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse récapitulative" duration="3">
+        <p>Sans être encore un hacker/une hackeuse chevronné(e), les activités réalisées t&#39;ont montré quelques éléments des coulisses d&#39;un système d&#39;exploitation et il est temps de réviser ce que tu as découvert pour mieux t&#39;en souvenir:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdKPaqZDA0SJvYddbIxv1WZsTVa5lhfUZirwY-xdiDKLpuVew/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

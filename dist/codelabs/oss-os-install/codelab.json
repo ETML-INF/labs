@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-11-15T14:49:42+01:00",
+  "id": "oss-os-install",
+  "duration": 34,
+  "title": "Installation d'un système d'exploitation open source",
+  "summary": "Installer un OS opensource",
+  "source": "oss-os-install.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "system"
+  ],
+  "tags": [
+    "mem",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oss-os-install"
+}

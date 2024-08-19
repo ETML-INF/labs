@@ -1,0 +1,199 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Tuning d&#39;un système d&#39;exploitation open source #2</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oss-os-manage-2"
+                  title="Tuning d&#39;un système d&#39;exploitation open source #2"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Aperçu" duration="1">
+        <p class="image-container"><img alt="Tuxsw2" src="img\f1729b6b6966e789.png"></p>
+<h2 is-upgraded>Compétences qui vont être acquises</h2>
+<ul>
+<li>Afficher les informations du réseau</li>
+<li>Gérer les logiciels</li>
+<li>Installer une interface graphique</li>
+</ul>
+<google-codelab-survey survey-id="oss-os-manage-2-1">
+<h4>À ton avis, que signifie ipv6 ?</h4>
+<paper-radio-group>
+<paper-radio-button>Que l&#39;ordinateur en question est hyper puissant</paper-radio-button>
+<paper-radio-button>Internet Protocol Viper Six</paper-radio-button>
+<paper-radio-button>Que beaucoup de périphériques souhaitent être atteignables sur Internet</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prérequis" duration="1">
+        <h2 is-upgraded>Partie 1</h2>
+<p>Ces activités suivent la <a href="https://labs.section-inf.ch/codelabs/oss-os-manage-1/index.html" target="_blank">partie 1</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Internet" duration="15">
+        <p class="image-container"><img alt="TuxInternet" src="img\268b797524c123c8.png"></p>
+<p>La connexion au réseau Internet est un must et pour vérifier que tout est en ordre, certaines commandes sont très utiles.</p>
+<h2 is-upgraded>Adresse IP</h2>
+<p>Pour se connecter au réseau Internet, il faut une carte réseau (lan ou wifi) avec une adresse IP. Pour voir ces informations, la commande est la suivante:</p>
+<pre><code>ip addr show
+</code></pre>
+<p class="image-container"><img alt="Ipaddr" src="img\f6462ab8b795a024.png"></p>
+<p>On voit que l&#39;adresse IP attribuée à la carte réseau est 10.0.2.15 (le /24 indique que le masque est 255.255.255.0).</p>
+<h2 is-upgraded>Voisins</h2>
+<p>Une commande intéressante est de regarder s&#39;il y a d&#39;autres cartes connectées sur ce réseau :</p>
+<pre><code>ip neigh show
+</code></pre>
+<p class="image-container"><img alt="Ipneigh" src="img\f4e3df3c1be2554d.png"></p>
+<p>On constate qu&#39;un voisin (<strong>neigh</strong>bour) est là avec l&#39;adresse 10.0.2.2 et le point suivant nous indiquera de qui il s&#39;agit.</p>
+<h2 is-upgraded>Routeur</h2>
+<p>Pour aller sur le réseau Internet, on passe par un routeur (souvent integré à une box internet) qui possède une adresse locale et une adresse sur le réseau Internet.<br>Pour voir comment sont routées les informations sur le réseau, la commande est</p>
+<pre><code>ip route show
+</code></pre>
+<p class="image-container"><img alt="Iproute" src="img\6c34c2cba5f25dee.png"></p>
+<p>On voit que la route par défaut passe par l&#39;adresse relevée précédemment. On peut donc en déduire que le routeur a l&#39;adresse 10.0.2.2.</p>
+<aside class="warning"><p>Pour rappel, la carte réseau et le routeur n&#39;existent pas physiquement, ils sont simulés par le logiciel ‘virtualbox&#39; qui lui utilise la carte réseau physique de votre ordinateur connectée sur le réseau de l&#39;école.<br>Néanmoins, le fait qu&#39;ils soient virtuels n&#39;a pas d&#39;impact ici et vous pouvez faire comme si c&#39;était réel.</p>
+</aside>
+<h2 is-upgraded>Serveur WEB de l&#39;ETML</h2>
+<p>Puisque tous les feux sont au vert (adresse locale et routeur), il est temps de faire un test en envoyant un <em>message de bonjour</em> au serveur de l&#39;ETML:</p>
+<pre><code>ping etml.ch -c 1
+</code></pre>
+<p class="image-container"><img alt="Ping" src="img\a44db5901153c834.png"></p>
+<p>Plusieurs informations sont disponibles avec le retour de cette commande:</p>
+<ol type="1">
+<li>Adresse IP du serveur WEB ETML: 94.103.96.239</li>
+<li>Serveur accessible : 1 paquet transmis et 1 reçu</li>
+<li>Temps moyen de la transmission/réception du message: 11.5 millisecondes</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Logiciels" duration="15">
+        <p class="image-container"><img alt="Tuxsoft" src="img\3e5cc46444ef8bc9.jpg"></p>
+<p>Ubuntu fournit un grand nombres le logiciels qui sont en fait des produits issus de projets Open Source.</p>
+<h2 is-upgraded>Installés</h2>
+<p>Pour lister les logiciels installés, la commande est:</p>
+<pre><code>apt list --installed
+</code></pre>
+<p>Cette commande retourne plus de résultats qu&#39;il n&#39;y a de place dans la fenêtre. Dans ce cas, une astuce est d&#39;écrire le résultat de la commande dans un fichier, puis de l&#39;ouvrir avec l&#39;éditeur <em>nano</em> :</p>
+<pre><code>apt list --installed &gt; logiciels.txt
+nano logiciels.txt
+</code></pre>
+<h2 is-upgraded>Installer un logiciel</h2>
+<p>Si on veut installer un nouveau logiciel, il suffit de rechercher dans la base de données. Par exemple, si on voulait installer tetris, on pourrait faire la recherche suivante:</p>
+<pre><code>apt-cache search tetris
+</code></pre>
+<p class="image-container"><img alt="Aptsearch" src="img\67c7f11dda018747.png"></p>
+<p>On voit qu&#39;il y a plusieurs versions Open Source de Tetris. Pour que cela fonctionne en ligne de commande, nous allons installer <em>bastet</em> (basic tetris):</p>
+<pre><code>sudo apt-get install bastet
+</code></pre>
+<aside class="special"><p>Il faut répondre <em>O</em> suivi de <em>Enter</em> à la question pour ‘libboost&#39;.</p>
+</aside>
+<p>On peut maintenant lancer le programme sachant que pour l&#39;arrêter il faudra appuyer sur les touches <em>ctrl</em> et <em>c</em> simultanément:</p>
+<pre><code>bastet
+</code></pre>
+<h2 is-upgraded>Enlever un logiciel</h2>
+<p>Sauf erreur, tu as signé une charte concernant le jeu à l&#39;ETML et il faut donc retirer ce programme de l&#39;ordinateur:</p>
+<pre><code>sudo apt-get remove bastet
+</code></pre>
+<aside class="special"><p>À nouveau, il faut valider la demande de désinstallation.</p>
+</aside>
+<h2 is-upgraded>Mise à jour des logiciels</h2>
+<p>Avec tous les logiciels installés, il est utile d&#39;avoir un programme qui gère les mises à jour.<br>D&#39;ailleurs, lorsqu&#39;on se logue, on nous dit si des mises à jour sont en attente:</p>
+<p class="image-container"><img alt="LoginUpdates" src="img\15c6646904d120ee.png"></p>
+<p>Une mise à jour se fait en plusieurs étapes:</p>
+<ol type="1">
+<li>Mettre à jour la base de données des logiciels disponibles et leur version</li>
+<li>Lister les programmes nécessitant une mise à jour</li>
+<li>Lancer la mise à jour</li>
+</ol>
+<pre><code>sudo apt-get update
+apt list --upgradable
+sudo apt-get upgrade
+</code></pre>
+<aside class="special"><p>À nouveau, il faut valider la demande de mise à jour.</p>
+</aside>
+<aside class="warning"><p>Pour faire une mise à jour de l&#39;OS (système de base), la commande est <em>sudo apt-get dist-upgrade</em></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mode graphique" duration="20">
+        <p class="image-container"><img alt="Tuxdesktop" src="img\3a1ef3e9bf003463.jpg"></p>
+<p>Après une introduction à la ligne de commande, il est temps d&#39;ajouter un bureau (une interface graphique).</p>
+<h2 is-upgraded>Installation</h2>
+<p>L&#39;installation se déroule de la même manière qu&#39;avec tetris sauf qu&#39;on installe un autre programme (comme d&#39;habitude, on valide la demande)</p>
+<pre><code>sudo apt-get install xubuntu-desktop
+</code></pre>
+<p>À la question sur le gestionnaire graphique, l&#39;option <em>lightdm</em> est à préférer:</p>
+<p class="image-container"><img alt="Lightdm" src="img\61581c0655f3d54d.png"></p>
+<aside class="warning"><p>Il est tout à fait normal que cela prenne du temps car il y a beaucoup de librairies et programmes nécessaires à un bureau interactif.</p>
+</aside>
+<p>Une fois la commande terminée, un redémarrage est recommandé:</p>
+<pre><code>sudo reboot
+</code></pre>
+<p class="image-container"><img alt="Reboot" src="img\19f2f2bb67cb6481.png"></p>
+<h2 is-upgraded>Découverte</h2>
+<p>À toi de découvrir cet environnement graphique de base en te balladant dans les menus et les options avec les objectifs suivants:</p>
+<ol type="1">
+<li>Voir les logiciels installés (graphique et console)</li>
+<li>Créer un document Calc (installer si besoin) contenant un graphique avec l&#39;utilisation de la mémoire pendant 5 minutes (une valeur par minute)</li>
+<li>Exporter un PDF du document Calc et l&#39;envoyer au professeur par email</li>
+</ol>
+<p class="image-container"><img alt="Gui" src="img\cfc8676dd58f6f9d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Avancé" duration="10">
+        <p>Maintenant qu&#39;on a un mode graphique, il serait intéressant qu&#39;on puisse redimensionner la fenêtre et échanger avec l&#39;ordinateur hôte...<br>Pour cela, il faut installer un programme et redémarrer:</p>
+<pre><code>sudo apt-get install virtualbox-guest-dkms
+</code></pre>
+<p>Pour le redémarrage, il y a un bouton en haut à droite.</p>
+<p>Désormais, la fenêtre devrait être redimensionnable et pour partager le presse-papier, voici ce qu&#39;il faut activer:</p>
+<p class="image-container"><img alt="Vboxclip" src="img\d561a9b85bed84e5.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse récapitulative" duration="2">
+        <p>Il est de voir ce que tu as retenu:</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSfVNXNqlsiDa4ThMZScDDe3sscLYUL0jtNTCtQkv4hUk42hBA/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

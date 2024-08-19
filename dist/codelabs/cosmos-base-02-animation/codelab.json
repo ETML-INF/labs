@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-10-11T08:32:34+02:00",
+  "id": "cosmos-base-02-animation",
+  "duration": 49,
+  "title": "Animation",
+  "summary": "Animation",
+  "source": "cosmos-base-02-animation.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "dev"
+  ],
+  "tags": [
+    "msig",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "cosmos-base-02-animation"
+}

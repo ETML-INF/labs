@@ -1,0 +1,169 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Découvrir Python par la pratique</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="python-01"
+                  title="Découvrir Python par la pratique"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\3b5593257c81fb8c.png"></p>
+<google-codelab-survey survey-id="python-01-1">
+<h4>Y’a-t-il des serpents en Suisse ?</h4>
+<paper-radio-group>
+<paper-radio-button>Quoi des serpents !!!!</paper-radio-button>
+<paper-radio-button>Ils sont morts avec les dinosaures</paper-radio-button>
+<paper-radio-button>Vipères, orvais et autres asticots vivent encore dans notre pays...</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place de l&#39;environnement" duration="15">
+        <p>Pour faciliter l&#39;utilisation de Python sur n&#39;importe quel système, un outil tiers (nomad) non invasif sera utilisé.</p>
+<h2 is-upgraded>Nomad</h2>
+<h3 is-upgraded>Emplacement</h3>
+<p>Créer ou choisir un dossier dans lequel seront installées les applications nomades, par exemple</p>
+<pre><code>%userprofile%\nomad
+</code></pre>
+<p>ou</p>
+<pre><code>c:\nomad
+</code></pre>
+<h3 is-upgraded>Installation</h3>
+<p>Lancer un shell à l&#39;endroit du répertoire choisi/créé ci-dessus et éxécuter la commande suivante:</p>
+<pre><code>powershell -Command Invoke-WebRequest -Uri https://github.com/jonathanMelly/nomad/raw/main/install.bat -OutFile %TEMP%\downloaded.bat &amp;&amp; %TEMP%\downloaded.bat
+</code></pre>
+<h2 is-upgraded>Python</h2>
+<p>Depuis la fenêtre de commande lancée après l&#39;installation de Nomad, éxécuter la commande suivante:</p>
+<pre><code>nomad install python3
+</code></pre>
+<aside class="special"><p>Valider avec &#34;Enter&#34; l&#39;installation</p>
+</aside>
+<h3 is-upgraded>Vérifier l&#39;installation</h3>
+<p>Lancer l&#39;éxécutable Python qui vient d&#39;être installé avec l&#39;argument <em>–version</em> :</p>
+<p class="image-container"><img alt="Alt text" src="img\393e3d46bbcf3a66.png"></p>
+<h2 is-upgraded>Compléter la version light</h2>
+<h3 is-upgraded>Compléter la version installée</h3>
+<p>La version installée est une version simplifiée qui n&#39;inclut pas le gestionnaire de paquet &#34;pip&#34; et les étapes suivantes sont à suivre avec précision:</p>
+<h3 is-upgraded>Dézipper les librairies standard</h3>
+<p>Depuis le répertoire final où python est installé:</p>
+<p class="image-container"><img alt="Alt text" src="img\927ddb2065869879.png"></p>
+<pre><code>powershell -Command Expand-Archive python312.zip -DestinationPath &#34;Lib/python_zip&#34;
+</code></pre>
+<h3 is-upgraded>Éditer les chemins de chargement de python</h3>
+<p class="image-container"><img alt="Alt text" src="img\53ad08370bd9ea4c.png"></p>
+<p>Remplacer le contenu par:</p>
+<pre><code>.\Lib\python_zip
+.\DLLs
+.\Lib
+.\Scripts
+.
+.\Lib\site-packages
+</code></pre>
+<h3 is-upgraded>Ajouter un fichier sitecustomize.py</h3>
+<p class="image-container"><img alt="Alt text" src="img\23fea2d8468dc6f0.png"></p>
+<p>et y mettre le contenu suivant:</p>
+<pre><code>import os
+import site
+import sys
+
+# do not use user-wide site.USER_SITE path; it refers to a path location
+# outside of this embed installation
+site.ENABLE_USER_SITE = False
+
+# remove site.USER_SITE and the realpath variation from sys.path
+# XXX: somewhat time consuming to do on every startup but thorough
+__sys_path_index_del = list()
+`&#34;`&#34;`&#34;index to delete from sys.path`&#34;`&#34;`&#34;
+__user_site_resolve = os.path.realpath(site.USER_SITE)
+for __i, __path in enumerate(sys.path):
+    __path_resolve = os.path.realpath(__path)
+    if site.USER_SITE in (__path, __path_resolve):
+        __sys_path_index_del.append(__i)
+        continue
+    if __user_site_resolve in (__path, __path_resolve):
+        __sys_path_index_del.append(__i)
+for __index_del in reversed(__sys_path_index_del):
+    sys.path.pop(__index_del)
+del __sys_path_index_del
+del __user_site_resolve
+</code></pre>
+<h3 is-upgraded>Désactiver les futurs warnings sur le path</h3>
+<pre><code>echo [install] &gt; pip.ini &amp; echo no-warn-script-location = true &gt;&gt; pip.ini
+</code></pre>
+<h3 is-upgraded>Ajouter un dossier standard DLLs</h3>
+<pre><code>mkdir DLLs
+</code></pre>
+<h3 is-upgraded>Vérification</h3>
+<p>Éxécuter la commande suivante (toujours depuis le répertoire où python est installé) pour vérifier les chemins configurés préalablement:</p>
+<pre><code>python.exe -c &#34;import sys; print(sys.path)&#34;
+</code></pre>
+<h2 is-upgraded>PIP</h2>
+<p>À présent, on devrait pouvoir installer l&#39;outil PIP</p>
+<h3 is-upgraded>Télécharger le script</h3>
+<pre><code>powershell -Command Invoke-WebRequest -OutFile get-pip.py &#34;https://bootstrap.pypa.io/get-pip.py&#34;
+</code></pre>
+<h3 is-upgraded>Lancer le script</h3>
+<pre><code>python get-pip.py
+</code></pre>
+<h2 is-upgraded>VirtualEnv</h2>
+<p>Pour ségmenter l&#39;utilisation de python (de ses librairies surtout) par projet, le module virtualenv est utile et il permet de valider l&#39;installation de pip par la même occasion:</p>
+<pre><code>python -m pip install virtualenv
+</code></pre>
+<p class="image-container"><img alt="Alt text" src="img\8af3acade06e3580.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Hello python" duration="0">
+        <p>Maintenant que l&#39;environnement fonctionne, on peut faire un helloWorl.</p>
+<h2 is-upgraded>Créer un fichier de script</h2>
+<p>Créer le fichier <em>hello.py</em> et y ajouter le code suivant (ou toute autre variation selon l&#39;émotion du moment):</p>
+<pre><code>print(&#34;Hello Pyscine&#34;)
+</code></pre>
+<h2 is-upgraded>Éxécuter le script</h2>
+<pre><code>python hello.py
+</code></pre>
+<p class="image-container"><img alt="Alt text" src="img\f31ab69100eb6183.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Il existe plusieurs manières d&#39;utiliser Python et celle présentée a le mérite de simplement ajouter des fichiers dans un dossier, ce qui permet de facilement transporter ou jeter son contenu tout en compliquant par contre d&#39;autres étapes comme l&#39;installation de paquets supplémentaires ou l&#39;utilisation d&#39;environnement virtuels...</p>
+<p>Désormais l&#39;environnement python est prêt pour des programmes plus complexes...</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Ajouter des pages avec MAUI</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-02-addPage"
+                  title="Ajouter des pages avec MAUI"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Rappel" duration="1">
+        <p class="image-container"><img alt="mauivs" src="img\21899335f85f1e92.png"></p>
+<p>Ce document se base sur le précédent tutorial qui utilise VisualStudio et un projet MAUI basique.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ajouter une page" duration="1">
+        <h2 is-upgraded>Ouvrir le menu</h2>
+<p>Accéder au menu <em>projet</em> et choisir l&#39;entrée <em>ajouter une classe</em> :</p>
+<p class="image-container"><img alt="addClass" src="img\999a6f6e402871ec.png"></p>
+<h2 is-upgraded>Types de pages</h2>
+<p>Sélectionner ensuite <em>.NET MAUI</em> dans le filtre à gauche, puis <em>ContentPage XAML</em>:</p>
+<p class="image-container"><img alt="Alt text" src="img\bd13915736e3ea52.png"></p>
+<p>Généralement, on utilise le type <em>ContentPage XAML</em> sachant que la différence avec <em>ContentView</em> est que cette dernière est utilisée pour définir des composants personnalisés...</p>
+<aside class="special"><p>Concernant le <em>ResourceDictionary</em>, celui-ci est utilisé pour regrouper des options de styles, comme par exemple des codes couleurs spécifiques applicables directement à des layouts. Pour en savoir plus <a href="https://learn.microsoft.com/en-us/dotnet/maui/fundamentals/resource-dictionaries?view=net-maui-8.0" target="_blank">consulter cette ressource</a>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="XAML VS C#" duration="1">
+        <h2 is-upgraded>Fonctionnement général</h2>
+<p>Le <em>XAML</em> est préféré pour tout ce qui peut être décrit au niveau de l&#39;interface, un peu comme le <em>HTML</em> permet de décrire les éléments d&#39;une page <em>WEB</em>.</p>
+<p>De son côté, le C# est utilisé pour gérer ce qui se passe lorsqu&#39;on interagit avec les composants graphiques. Ainsi il est l&#39;équivalent du <em>PHP</em> ou <em>Javascript</em> (côté backend / NodeJS) ou <em>ASP.NET</em> dans une application <em>WEB</em>.</p>
+<aside class="special"><p>À noter qu&#39;on pourrait utiliser uniquement le C# pour décrire les composants d&#39;une page et que le XAML est là surtout pour faciliter la lisibilité et la clarté du code...</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Accéder aux pages ajoutées" duration="1">
+        <h2 is-upgraded>Navigation</h2>
+<p>Les pages ajoutées ne sont pas automatiquement ajoutées dans un menu quelconque et il faut donc les intégrer dans une forme de navigation pour pouvoir y accéder.</p>
+<p>Une alternative est de manuellement changer la page de démarrage vers une des nouvelles pages:</p>
+<p class="image-container"><img alt="Alt text" src="img\67df3c3f5ec44c40.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Revenons un instant sur les éléments clé de ce mini tutorial</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSe9W_cj24C8OJpWjhQhfoCya5R95VfUDpUi0QQBhQtR8s8C2g/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

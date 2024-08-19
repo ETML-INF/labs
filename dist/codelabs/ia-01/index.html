@@ -1,0 +1,462 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Introduction aux Principes de l&#39;IA</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="ia-01"
+                  title="Introduction aux Principes de l&#39;IA"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\35722139be0ee7ba.png"></p>
+<google-codelab-survey survey-id="ia-01-1">
+<h4>Quelle est votre première réaction en entendant parler d’intelligence artificielle (IA) ?</h4>
+<paper-radio-group>
+<paper-radio-button>C&#39;est fascinant, mais un peu effrayant. - Intérêt mêlé d&#39;appréhension face aux possibilités et aux implications de l&#39;IA.</paper-radio-button>
+<paper-radio-button>Ça va changer le monde ! - Enthousiasme pour l&#39;impact potentiel de l&#39;IA sur différents aspects de la vie.</paper-radio-button>
+<paper-radio-button>On est encore loin des robots intelligents... - Scepticisme quant au niveau actuel de développement et aux attentes souvent exagérées.</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonjour jeune nageur !" duration="5">
+        <p>Bienvenue dans cette aventure passionnante où tu vas créer ta première IA ! L&#39;objectif n&#39;est pas de rivaliser avec ChatGPT ou Elon Musk, mais de découvrir le monde fascinant de l&#39;intelligence artificielle.</p>
+<p>Nous aurons deux projets distincts. Nous commencerons par créer un système de chat, puis nous créerons un système d&#39;analyse d&#39;image capable de prédire l&#39;objet principal de l&#39;image.</p>
+<h2 is-upgraded>Crée ton propre PyChat</h2>
+<p>Il s&#39;agit d&#39;un petit programme qui vous demande de lui poser une question. Ensuite, il va chercher dans sa base de données selon un système moyennement complexe qui découpe la phrase en mots clés. En utilisant ces mots clés, il tente de trouver la réponse la plus pertinente possible.</p>
+<p><strong>Comment fonctionne la prédiction dans PyChat ?</strong></p>
+<ol type="1">
+<li><strong>Analyse de la question</strong> : Lorsque vous posez une question, le programme commence par analyser la phrase. Il identifie les mots clés importants en supprimant les mots courants comme &#34;le&#34;, &#34;la&#34;, &#34;et&#34;, etc.</li>
+<li><strong>Recherche dans la base de données</strong> : Une fois les mots clés identifiés, le programme les utilise pour rechercher des réponses potentielles dans sa base de données. Il compare les mots clés de la question avec ceux des réponses stockées.</li>
+<li><strong>Utilisation des statistiques</strong> : Le programme utilise des modèles statistiques pour prédire les mots qui suivent les mots clés identifiés. Par exemple, si la question contient le mot &#34;météo&#34;, le programme sait que des mots comme &#34;aujourd&#39;hui&#34;, &#34;demain&#34;, &#34;prévisions&#34; sont statistiquement susceptibles de suivre. C&#39;est un peu comme lorsque nous utilisons le dictionnaire de nos smartphones pour écrire un message ; le programme suggère les mots suivants en fonction de ce que nous avons déjà écrit.</li>
+<li><strong>Sélection de la réponse</strong> : En combinant les mots clés et les prédictions statistiques, le programme évalue les réponses possibles. Il sélectionne la réponse qui correspond le mieux aux mots clés et aux prédictions.</li>
+<li><strong>Affichage de la réponse</strong> : Enfin, le programme affiche la réponse qu&#39;il a jugée la plus pertinente.</li>
+</ol>
+<aside class="warning"><p>Avertissement : Il s&#39;agit d&#39;une simplification du système.<br>Les véritables systèmes de chat basés sur l&#39;intelligence artificielle utilisent des algorithmes beaucoup plus complexes et sophistiqués pour comprendre et répondre aux questions.</p>
+</aside>
+<h2 is-upgraded>Mise en place d&#39;un protocole de test</h2>
+<p>Pour comprendre le fonctionnement du chat, tu trouveras plus loin dans ce tutoriel un scénario dont le but est de poser des questions et de nous faire un retour sur des réflexions telles que : la réponse est-elle pertinente ? Le système apprend-il ? Enfin, comment le système pourrait-il s&#39;améliorer ?</p>
+<p>N&#39;oublie pas que l&#39;idéal est que tu te forges ta propre vision et compréhension.</p>
+<p>Prêt à commencer ? Allons-y ! 💪</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prérequis 🛠️" duration="2">
+        <p>Idéalement les <a href="https://labs.section-inf.ch/?cat=python" target="_blank">tutoriels python</a> ont été réalisés.</p>
+<p>De plus, la programmation étant un long voyage, semblable à l&#39;apprentissage d&#39;une langue 🌍, il faut d&#39;abord maîtriser les bases, comme les mots, la grammaire, et les différents sons 🗣️.<br>Avec le temps, nous formerons des phrases, et avec encore plus de pratique, nous comprendrons leur sens 🧠.<br>Puis, en saisissant les nuances 🧐, nous pourrons apprécier les blagues culturelles 🎭.</p>
+<p>Un jour, un homme africain part à la chasse. Après une longue journée dans la savane, il rentre à la maison les mains vides. Sa femme lui demande :<br><br>« Chéri, où est le gibier ? »<br><br>L&#39;homme répond : « Aujourd&#39;hui j&#39;ai attrapé quelque chose de plus précieux qu&#39;un simple animal... j&#39;ai attrapé de l&#39;expérience ! »</p>
+<ul>
+<li><strong>Humour culturel</strong> : Cette blague montre comment l&#39;humour peut varier selon les contextes culturels.</li>
+<li><strong>Leçons de vie</strong> : Les expériences peuvent être aussi précieuses que les biens matériels. Même sans gibier, l&#39;homme a acquis une leçon importante.</li>
+<li><strong>Contextualisation</strong> : Dans l&#39;apprentissage, il est crucial de reconnaître la valeur des expériences, même si les résultats ne sont pas immédiatement visibles.</li>
+</ul>
+<p>Ici, nous sommes au début, donc pas le temps de tout faire nous-mêmes. Je te propose donc une petite exploration des bibliothèques que nous utiliserons dans ce tutoriel pour comprendre les composants essentiels de notre système 🧩.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Explication des Bibliothèques (voir code ci après)" duration="1">
+        <ol type="1">
+<li><code>import nltk</code> : Pour le traitement du langage naturel, notamment le tokenizer <code>punkt</code> pour diviser le texte en mots et phrases.</li>
+<li><code>from sklearn.feature_extraction.text import CountVectorizer</code> : Convertit le texte en une matrice de comptage des mots pour l&#39;entraînement des modèles.</li>
+<li><code>from sklearn.naive_bayes import MultinomialNB</code> : Algorithme de classification basé sur le théorème de Bayes, adapté aux données textuelles.</li>
+<li><code>import json</code> : Manipule les fichiers JSON pour charger et sauvegarder les données d&#39;entraînement.</li>
+<li><code>import joblib</code> : Sérialise les objets Python pour sauvegarder et charger les modèles d&#39;apprentissage automatique.</li>
+<li><code>import string</code> : Fournit des outils pour manipuler les chaînes de caractères, comme supprimer la ponctuation.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Installation des dépendances 🛠️" duration="3">
+        <ol type="1">
+<li>Copie-colle le contenu suivant dans un fichier nommé <em>requirements.txt</em><pre><code>certifi==2024.7.4
+charset-normalizer==3.3.2
+click==8.1.7
+colorama==0.4.6
+filelock==3.15.4
+fsspec==2024.6.1
+huggingface-hub==0.24.5
+idna==3.7
+Jinja2==3.1.4
+joblib==1.4.2
+MarkupSafe==2.1.5
+mpmath==1.3.0
+networkx==3.3
+nltk==3.8.2
+numpy==2.0.1
+packaging==24.1
+PyYAML==6.0.2
+regex==2024.7.24
+requests==2.32.3
+safetensors==0.4.4
+scikit-learn==1.5.1
+scipy==1.14.0
+setuptools==72.2.0
+sympy==1.13.2
+threadpoolctl==3.5.0
+tokenizers==0.19.1
+torch==2.4.0
+tqdm==4.66.5
+transformers==4.44.0
+typing_extensions==4.12.2
+urllib3==2.2.2
+wheel==0.44.0
+</code></pre>
+<ol type="1">
+<li><strong>Ouvre ton terminal</strong>.</li>
+<li><strong>Installe les bibliothèques nécessaires</strong> :<br>Tu devras avoir un fichier nommé <code>requirements.txt</code> contenant toutes les dépendances nécessaires pour ton projet. Pour installer ces dépendances, exécute la commande suivante :</li>
+</ol>
+<pre><code>python -m pip install -r requirements.txt
+</code></pre>
+</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instructions de code 📝" duration="5">
+        <p>Ensuite, copie-colle le code suivant dans un fichier Python :</p>
+<pre><code>import nltk
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+import json
+import joblib
+import string
+import sys
+import io
+
+# Assurer que la sortie standard utilise l&#39;encodage UTF-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=&#39;utf-8&#39;)
+
+# Télécharger les ressources nécessaires de NLTK
+nltk.download(&#39;punkt&#39;)
+
+# Fonction de prétraitement du texte
+def preprocess_text(text):
+    text = text.lower()  # Conversion en minuscules
+    text = text.translate(str.maketrans(&#39;&#39;, &#39;&#39;, string.punctuation))  # Suppression de la ponctuation
+    return text
+
+# Charger les données d&#39;apprentissage depuis un fichier
+def load_data(file_path):
+    with open(file_path, &#39;r&#39;, encoding=&#39;utf-8&#39;) as file:
+        data = json.load(file)
+    return data[&#34;questions&#34;], data[&#34;responses&#34;]
+
+# Sauvegarder les données d&#39;apprentissage dans un fichier
+def save_data(file_path, questions, responses):
+    data = {&#34;questions&#34;: questions, &#34;responses&#34;: responses}
+    with open(file_path, &#39;w&#39;, encoding=&#39;utf-8&#39;) as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+def save_model(file_path, model, vectorizer):
+    joblib.dump((model, vectorizer), file_path)
+
+def load_model(file_path):
+    return joblib.load(file_path)
+
+# Fonction pour entraîner le modèle de réponse
+def train_response_model(questions, responses):
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform([preprocess_text(question) for question in questions])
+    model = MultinomialNB()
+    model.fit(X, responses)
+    return model, vectorizer
+
+# Initialisation
+data_file_path = &#34;data.json&#34;
+model_path = &#34;response_model.pkl&#34;
+
+# Charger les données
+questions, responses = load_data(data_file_path)
+
+# Entraîner ou charger le modèle
+try:
+    model, vectorizer = load_model(model_path)
+except FileNotFoundError:
+    model, vectorizer = train_response_model(questions, responses)
+    save_model(model_path, model, vectorizer)
+
+def predict_response(question):
+    question = preprocess_text(question)
+    X = vectorizer.transform([question])
+    prediction = model.predict(X)[0]
+    return prediction
+
+def main():
+    while True:
+        try:
+            question = input(&#34;Posez-moi une question: &#34;)
+            
+            # Trouver la réponse correspondant à la question
+            response = predict_response(question)
+            print(f&#34;Réponse: {response}&#34;)
+            
+            feedback = input(&#34;Est-ce que la réponse est correcte? (oui/non) &#34;).strip().lower()
+            if feedback == &#34;non&#34;:
+                correct_response = input(&#34;Quelle devrait être la bonne réponse? &#34;).strip()
+                questions.append(question)
+                responses.append(correct_response)
+                # Réentraîner le modèle avec les nouvelles données
+                global model, vectorizer
+                model, vectorizer = train_response_model(questions, responses)
+                save_data(data_file_path, questions, responses)
+                save_model(model_path, model, vectorizer)
+                print(&#34;Merci pour le retour, j&#39;ai appris quelque chose de nouveau!&#34;)
+            elif feedback == &#34;oui&#34;:
+                print(&#34;Merci pour votre confirmation!&#34;)
+            else:
+                print(&#34;Réponse non reconnue. Veuillez répondre par &#39;oui&#39; ou &#39;non&#39;.&#34;)
+        except KeyboardInterrupt:
+            print(&#34;\nProgramme terminé.&#34;)
+            break
+        except Exception as e:
+            print(f&#34;Une erreur est survenue: {e}&#34;)
+
+if __name__ == &#34;__main__&#34;:
+    main()
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Télécharger les fichiers ressources" duration="2">
+        <p>Complète le projet en ajoutant les fichiers manquant présents dans <a href="https://eduvaud.sharepoint.com/:u:/s/msteams_d0db31/EW8v5Lrtm89DnMLaEqhbbioB5iKOS1AknUA4xSNVIFp-tA?e=jIHL4Z" target="_blank">l&#39;archive suivante</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="🎬 Lancer le programme" duration="2">
+        <p>Exécute la commande suivante :</p>
+<pre><code>python pysChat.py
+</code></pre>
+<p>Suis les instructions à l&#39;écran pour interagir avec le système de chat.</p>
+<p class="image-container"><img alt="Programme lancé" title="Programme lancé" src="img\20666495a13eded0.jpg"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Activité 🛠️" duration="15">
+        <p>Super, nous avons terminé le programme ! 🎉 Il est maintenant temps de le tester et d&#39;en tirer des conclusions. 🧩</p>
+<p>Pour cela, comme indiqué plus haut, nous allons mettre en place un scénario de test. Comme cela peut être nouveau pour vous, je vais vous guider tout au long du processus. 👨‍🏫</p>
+<p>Le protocole consiste simplement à poser des questions au programme et à indiquer si les réponses sont pertinentes ou non. 🤔✅❌</p>
+<h2 is-upgraded>Scénario de test</h2>
+<p>Ci-dessous se trouve une série de questions simples, sans lien entre elles. votre tâche est de déterminer si chaque réponse proposée est correcte ou non.</p>
+<ul>
+<li><strong>Question :</strong> &#34;Quelle est la capitale de la France ?&#34;<br><strong>Réponse attendue :</strong> &#34;Paris&#34;</li>
+<li><strong>Question :</strong> &#34;Quel est le résultat de 2 + 2 ?&#34;<br><strong>Réponse attendue :</strong> &#34;4&#34;</li>
+<li><strong>Question :</strong> &#34;Comment s&#39;appelle le président des États-Unis en 2024 ?&#34;<br><strong>Réponse attendue :</strong> &#34;Joe Biden&#34; (si applicable)</li>
+</ul>
+<p><strong>À votre avis, pourquoi cette réponse pourrait-elle être incorrecte ?</strong></p>
+<h2 is-upgraded>Histoire à raconter</h2>
+<ul>
+<li><strong>Question :</strong> Connais-tu Sarah ?<br><strong>Réponse :</strong> La réponse est probablement incorrecte. Dites que c&#39;est une collègue.</li>
+<li><strong>Question :</strong> Sais-tu qui est notre chef de projet ?<br><strong>Réponse :</strong> La réponse est insatisfaisante. Dites que c&#39;est Sarah.</li>
+<li><strong>Question :</strong> As-tu déjà travaillé avec Sarah sur un projet spécifique ?<br><strong>Réponse :</strong> La réponse est vague. Dites que vous avez collaboré avec elle sur le projet de refonte du site web de l&#39;entreprise, où elle a joué un rôle clé dans la coordination des équipes.</li>
+<li><strong>Question :</strong> Es-tu au courant de la date de la prochaine réunion d&#39;équipe ?<br><strong>Réponse :</strong> La réponse manque de précision. Dites que Sarah a mentionné que la réunion est prévue pour mardi prochain à 10 heures, dans la salle de conférence principale.</li>
+<li><strong>Question :</strong> Connais-tu les objectifs fixés par Sarah pour ce trimestre ?<br><strong>Réponse :</strong> La réponse est incomplète. Dites que Sarah a fixé des objectifs précis, notamment l&#39;amélioration de la collaboration entre les départements et l&#39;augmentation de l&#39;efficacité des processus internes.</li>
+<li><strong>Question :</strong> Qui a récemment pris la responsabilité de superviser les nouvelles embauches dans l&#39;équipe ?<br><strong>Réponse attendue :</strong> Sarah, étant donné son rôle de chef de projet et son implication dans les processus internes.</li>
+<li><strong>Question :</strong> Sais-tu qui a proposé l&#39;idée de lancer une enquête de satisfaction des employés ce trimestre ?<br><strong>Réponse attendue :</strong> Sarah, en raison de son initiative et de son souci d&#39;améliorer les processus internes.</li>
+</ul>
+<h2 is-upgraded>Test logique</h2>
+<ul>
+<li><strong>Question :</strong> &#34;Si un avion vole à 800 km/h pendant 2 heures, quelle distance parcourt-il ?&#34;<br><strong>Réponse attendue :</strong> &#34;1600 km&#34;<br><strong>Vérification :</strong> Est-ce que la réponse est correcte ?<br><strong>Objectif :</strong> Tester la capacité du modèle à comprendre et traiter des questions nécessitant une logique de base.</li>
+<li><strong>Question :</strong> &#34;Si je te dis que 2 + 2 = 5, que dis-tu ?&#34;<br><strong>Réponse attendue :</strong> &#34;C&#39;est incorrect.&#34;<br><strong>Vérification :</strong> Est-ce que la réponse est correcte ?<br><strong>Objectif :</strong> Tester la capacité du modèle à détecter des erreurs logiques.</li>
+<li><strong>Question :</strong> &#34;Peux-tu me raconter une blague ?&#34;<br><strong>Réponse attendue :</strong> Une blague ou une indication que le modèle ne peut pas répondre à cette question.<br><strong>Vérification :</strong> Est-ce que la réponse est correcte ?<br><strong>Objectif :</strong> Tester la flexibilité du modèle pour des questions ouvertes.</li>
+</ul>
+<h2 is-upgraded>Analyse des réponses et réajustement</h2>
+<p>après avoir exécuté ces scénarios de test, vous devez :</p>
+<ol type="1">
+<li><strong>analyser les réponses :</strong> vérifiez si les réponses sont correctes par rapport aux attentes.</li>
+<li><strong>fournir du feedback :</strong> si une réponse est incorrecte, fournissez la bonne réponse et voyez si le modèle s&#39;améliore après réentraînement.</li>
+<li><strong>répéter le processus :</strong> continuez à poser des questions jusqu&#39;à ce que le modèle soit suffisamment robuste pour répondre à la plupart des questions de manière satisfaisante.</li>
+</ol>
+<p><strong>l&#39;objectif est d&#39;observer l&#39;amélioration progressive du système, qui ne fonctionne pas parfaitement au départ.</strong></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Explication du Code par Blocs" duration="5">
+        <h2 is-upgraded>1. Importations et Configuration</h2>
+<pre><code>import nltk
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+import json
+import joblib
+import string
+import sys
+import io
+
+# Assurer que la sortie standard utilise l&#39;encodage UTF-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=&#39;utf-8&#39;)
+</code></pre>
+<ul>
+<li><code>import nltk</code> : Charge la bibliothèque Natural Language Toolkit pour le traitement du langage naturel.</li>
+<li><code>from sklearn.feature_extraction.text import CountVectorizer</code> : Importation de <code>CountVectorizer</code> pour convertir les textes en matrices de fréquence de mots.</li>
+<li><code>from sklearn.naive_bayes import MultinomialNB</code> : Importation de l&#39;algorithme de classification Naïve Bayes pour l&#39;apprentissage automatique.</li>
+<li><code>import json</code> : Permet la manipulation des fichiers JSON pour charger et sauvegarder les données.</li>
+<li><code>import joblib</code> : Utilisé pour la sérialisation des objets Python, comme les modèles d&#39;apprentissage automatique.</li>
+<li><code>import string</code> : Fournit des outils pour la manipulation de chaînes de caractères, comme la suppression de la ponctuation.</li>
+<li><code>import sys</code> et <code>import io</code> : Pour configurer l&#39;encodage UTF-8 de la sortie standard.</li>
+</ul>
+<h2 is-upgraded>2. Prétraitement du Texte</h2>
+<pre><code># Télécharger les ressources nécessaires de NLTK
+nltk.download(&#39;punkt&#39;)
+
+# Fonction de prétraitement du texte
+def preprocess_text(text):
+    text = text.lower()  # Conversion en minuscules
+    text = text.translate(str.maketrans(&#39;&#39;, &#39;&#39;, string.punctuation))  # Suppression de la ponctuation
+    return text
+</code></pre>
+<ul>
+<li><code>nltk.download(&#39;punkt&#39;)</code> : Télécharge le tokenizer <code>punkt</code> de NLTK pour diviser le texte en mots et phrases.</li>
+<li><code>preprocess_text</code> : Fonction pour normaliser le texte en le convertissant en minuscules et en supprimant la ponctuation.</li>
+</ul>
+<h2 is-upgraded>3. Gestion des Données</h2>
+<pre><code># Charger les données d&#39;apprentissage depuis un fichier
+def load_data(file_path):
+    with open(file_path, &#39;r&#39;, encoding=&#39;utf-8&#39;) as file:
+        data = json.load(file)
+    return data[&#34;questions&#34;], data[&#34;responses&#34;]
+
+# Sauvegarder les données d&#39;apprentissage dans un fichier
+def save_data(file_path, questions, responses):
+    data = {&#34;questions&#34;: questions, &#34;responses&#34;: responses}
+    with open(file_path, &#39;w&#39;, encoding=&#39;utf-8&#39;) as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+</code></pre>
+<ul>
+<li><code>load_data</code> : Charge les questions et réponses depuis un fichier JSON.</li>
+<li><code>save_data</code> : Sauvegarde les questions et réponses dans un fichier JSON.</li>
+</ul>
+<h2 is-upgraded>4. Gestion du Modèle</h2>
+<pre><code>def save_model(file_path, model, vectorizer):
+    joblib.dump((model, vectorizer), file_path)
+
+def load_model(file_path):
+    return joblib.load(file_path)
+</code></pre>
+<ul>
+<li><code>save_model</code> : Sauvegarde le modèle et le vecteur de caractéristiques dans un fichier avec <code>joblib</code>.</li>
+<li><code>load_model</code> : Charge le modèle et le vecteur de caractéristiques depuis un fichier.</li>
+</ul>
+<h2 is-upgraded>5. Entraînement du Modèle</h2>
+<pre><code># Fonction pour entraîner le modèle de réponse
+def train_response_model(questions, responses):
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform([preprocess_text(question) for question in questions])
+    model = MultinomialNB()
+    model.fit(X, responses)
+    return model, vectorizer
+</code></pre>
+<ul>
+<li><code>train_response_model</code> : Entraîne un modèle de classification Naïve Bayes pour prédire les réponses basées sur les questions. Utilise <code>CountVectorizer</code> pour transformer le texte en une matrice de fréquences de mots, puis entraîne le modèle avec ces données.</li>
+</ul>
+<h2 is-upgraded>6. Initialisation et Exécution Principale</h2>
+<pre><code># Initialisation
+data_file_path = &#34;data.json&#34;
+model_path = &#34;response_model.pkl&#34;
+
+# Charger les données
+questions, responses = load_data(data_file_path)
+
+# Entraîner ou charger le modèle
+try:
+    model, vectorizer = load_model(model_path)
+except FileNotFoundError:
+    model, vectorizer = train_response_model(questions, responses)
+    save_model(model_path, model, vectorizer)
+</code></pre>
+<ul>
+<li><strong>Initialisation</strong> : Définit les chemins pour les fichiers de données et le modèle.</li>
+<li><strong>Chargement des données</strong> : Charge les questions et réponses depuis le fichier JSON.</li>
+<li><strong>Entraînement ou chargement du modèle</strong> : Essaie de charger le modèle préexistant, ou l&#39;entraîne si le fichier du modèle n&#39;existe pas.</li>
+</ul>
+<h2 is-upgraded>7. Prédiction et Interaction</h2>
+<pre><code>def predict_response(question):
+    question = preprocess_text(question)
+    X = vectorizer.transform([question])
+    prediction = model.predict(X)[0]
+    return prediction
+
+def main():
+    while True:
+        try:
+            question = input(&#34;Posez-moi une question: &#34;)
+            
+            # Trouver la réponse correspondant à la question
+            response = predict_response(question)
+            print(f&#34;Réponse: {response}&#34;)
+            
+            feedback = input(&#34;Est-ce que la réponse est correcte? (oui/non) &#34;).strip().lower()
+            if feedback == &#34;non&#34;:
+                correct_response = input(&#34;Quelle devrait être la bonne réponse? &#34;).strip()
+                questions.append(question)
+                responses.append(correct_response)
+                # Réentraîner le modèle avec les nouvelles données
+                global model, vectorizer
+                model, vectorizer = train_response_model(questions, responses)
+                save_data(data_file_path, questions, responses)
+                save_model(model_path, model, vectorizer)
+                print(&#34;Merci pour le retour, j&#39;ai appris quelque chose de nouveau!&#34;)
+            elif feedback == &#34;oui&#34;:
+                print(&#34;Merci pour votre confirmation!&#34;)
+            else:
+                print(&#34;Réponse non reconnue. Veuillez répondre par &#39;oui&#39; ou &#39;non&#39;.&#34;)
+        except KeyboardInterrupt:
+            print(&#34;\nProgramme terminé.&#34;)
+            break
+        except Exception as e:
+            print(f&#34;Une erreur est survenue: {e}&#34;)
+
+if __name__ == &#34;__main__&#34;:
+    main()
+</code></pre>
+<ul>
+<li><code>predict_response</code> : Prépare la question, transforme le texte en une matrice de caractéristiques, et prédit la réponse en utilisant le modèle.</li>
+<li><code>main</code> : Fonction principale qui boucle pour prendre des questions de l&#39;utilisateur, fournir des réponses, et gérer les retours de feedback pour améliorer le modèle.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="0">
+        <iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdgvNnN_qdtcta6VOWNShCJgL3bHiL0kITMamG84VLQigh8_A/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
