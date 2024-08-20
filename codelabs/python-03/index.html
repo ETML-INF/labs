@@ -45,7 +45,7 @@ def init():
     # Initialise le terminal en 0,0
     term.clear()
     term.homePos()
-    cursor.hide()
+    cursor.hide()   
 
 
 def game():
@@ -74,12 +74,210 @@ finally:
 <h2 is-upgraded>Tester</h2>
 <p>Vérifier que le programme affiche bien un titre qui clignote.</p>
 <h2 is-upgraded>Théorie</h2>
+<p>On peut déduire de ce code que</p>
+<ol type="1">
+<li>Les fonctions sont déclarées avec le mot clé <strong>def</strong>, suivi d&#39;un nom puis de parenthèses et enfin deux points</li>
+<li>Les fonctions doivent être déclarées avant d&#39;être utilisées</li>
+<li>On peut protéger du code avec <em>try:</em> et <em>finally:</em> pour, en cas d&#39;erreur, éxécuter du code particulier (nettoyage, reset...)</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Éléments du jeu (serpent, ...)" duration="10">
+        <p>Pour modéliser un serpent, rien de tel qu&#39;une liste de coordonnées X et Y... En python, on peut faire un <em>tableau de tuple</em> de manière relativement simple:</p>
+<pre><code>snake = [(0, 0)]
+</code></pre>
+<p>Il faut ensuite lui ajouter une information de direction courante, là aussi une information X et Y suffisent:</p>
+<pre><code>direction = (1, 0)
+</code></pre>
+<h2 is-upgraded>Explications</h2>
+<ul>
+<li>(1,0)  =&gt; X est positif (va à droite)</li>
+<li>(-1,0) =&gt; X est négatif (va à gauche)</li>
+<li>(0,1)  =&gt; Y est positif (va en bas)</li>
+<li>(0,-1) =&gt; Y est négatif (va en haut)</li>
+</ul>
+<h2 is-upgraded>Score et nourriture</h2>
+<p>La nourriture est positionnée aléatoirement sur une coordonnée X et Y et le score est initialisé à zéro:</p>
+<pre><code>WIDTH=25
+HEIGHT=25
+food = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
+score = 0
+</code></pre>
+<h2 is-upgraded>Code actuel</h2>
+<p>Le code devrait désormais ressembler à cela:</p>
+<pre><code>import term
+import cursor
+import time
+import random
+import msvcrt
+
+
+def init():
+    # Initialise le terminal en 0,0
+    term.clear()
+    term.homePos()
+    cursor.hide()       
+
+def game():
+    title()
+    
+    WIDTH=25
+    HEIGHT=25
+    
+    snake = [(0, 0)]
+    direction = (1, 0)
+    food = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
+    score = 0
+
+def title():
+    # Faire clignoter le titre
+    for i in range(10):
+        term.write(&#39;Snake&#39;.center(40, &#39; &#39;))
+        time.sleep(0.4)
+        term.clearLine()
+        time.sleep(0.3)
+        term.pos(0, 0)
+
+try:
+    init()
+    game()
+
+finally:
+    # Remettre le curseur
+    cursor.show()
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Boucle de jeu" duration="15">
+        <p>On peut maintenant faire <em>vivre</em> le jeu.</p>
+<h2 is-upgraded>Gadget</h2>
+<p>Pour se faciliter la vie avec la librairie <em>term</em>, on va redéfinir une fonction pour bouger le curseur pour garder une logique X suivi de Y:</p>
+<pre><code>def moveCursor(x,y):
+    term.pos(y, x)
+</code></pre>
+<h2 is-upgraded>Affichage du serpent</h2>
+<p>Il suffit d&#39;afficher tous ses couples de coordonnées en différenciant la tête:</p>
+<pre><code>while True:
+    # Version &#34;agressive&#34; pour nettoyer l&#39;écran avec un effet de bord
+    # de clignotement...
+    term.clear()
+
+    # Afficher le serpent complet
+    for i,pos in enumerate(snake):
+        moveCursor(pos[0], pos[1])
+        if i==0:
+            print(&#39;@&#39;)
+        else:
+            print(&#39;O&#39;)  
+
+</code></pre>
+<h2 is-upgraded>Affichage de la nourriture</h2>
+<p>Il faut aussi faire apparaître la nourriture:</p>
+<pre><code># Affichage de la nourriture
+moveCursor(food[0], food[1])
+print(&#39;X&#39;)
+</code></pre>
+<h2 is-upgraded>Gestion du clavier</h2>
+<p>Pour faire changer le serpent de direction, on a besoin du clavier en mode (non bloquant), pour  cela et sur Windows, on utilise la librairie <strong>msvcrt</strong>:</p>
+<pre><code># Get user input
+if msvcrt.kbhit():
+    user_input = ord(msvcrt.getch())
+    
+    if user_input == 27: #ESC
+        #Quitter
+        break
+    
+    if user_input==224:
+        user_input = ord(msvcrt.getch())
+        
+        if user_input == 72: # HAUT
+            direction = (0, -1)
+        elif user_input == 80: # BAS
+            direction = (0, 1)
+        elif user_input == 75: # GAUCHE
+            direction = (-1, 0)
+        elif user_input == 77: # DROIT
+            direction = (1, 0)
+</code></pre>
+<aside class="warning"><p>En cas d&#39;erreur, ajouter <em>import msvcrt</em> en haut du programme</p>
+</aside>
+<h2 is-upgraded>Déplacer le serpent</h2>
+<p>Ensuite on doit calculer la prochaine position de la tête du serpent:</p>
+<pre><code>new_head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
+snake.insert(0, new_head)
+</code></pre>
+<aside class="special"><p>Pour l&#39;instant le serpent grandit toujours mais on va régler cela avec la gestion de la nourriture juste après</p>
+</aside>
+<h2 is-upgraded>Nourriture</h2>
+<p>Si la tête du serpent est sur la même coordonnée qu&#39;une nourriture, on augmente le score et on regénère une nourriture.</p>
+<p>Dans le cas contraire, il faut <em>réduire</em> la taille du serpent car on a déjà ajouté la tête à la nouvelle coordonnée...</p>
+<pre><code>if snake[0] == food:
+    score += 1
+    food = (random.randint(0, WIDTH), random.randint(0, HEIGHT))
+else:
+    snake.pop() # pas de nourriture, le serpent ne doit pas grandir (tête déjà ajoutée)
+</code></pre>
+<h2 is-upgraded>Mort</h2>
+<p>Il reste à gérer la mort du serpent en vérifiant s&#39;il est en dehors de la zone de jeu OU qu&#39;il se <em>mort la queue</em> :</p>
+<pre><code>if (snake[0][0] &lt; 0 or snake[0][0] &gt; WIDTH or
+    snake[0][1] &lt; 0 or snake[0][1] &gt; HEIGHT or
+    snake[0] in snake[1:]):
+        break
+</code></pre>
+<h2 is-upgraded>FPS</h2>
+<p>Pour ralentir un peu le jeu, on ajoute un délai :</p>
+<pre><code>time.sleep(0.1)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Fin de jeu" duration="10">
+        <p>Il reste encore à gérer la fin du jeu.</p>
+<h2 is-upgraded>État actuel</h2>
+<p>Si tout va bien, le code condensé devrait ressembler à cela:</p>
+<p class="image-container"><img alt="Alt text" src="img\532e61adf442f61d.png"></p>
+<h2 is-upgraded>Gestion de la fin de la partie</h2>
+<p>On va ajouter une méthode <em>gameOver</em> qui va afficher le score une fois sorti de la boucle de jeu:</p>
+<pre><code>    #while True...
+    #...
+        time.sleep(0.1)
+    # Fin de la boucle de jeu    
+    gameOver(score)
+        
+def gameOver(score):
+    # Game over
+    term.clear()
+    term.homePos()
+    print(f&#39;Game Over! Your score is {str(score)}&#39;.center(40,&#39; &#39;))
+    input(&#34;Press Enter to quit...&#34;.center(40,&#39; &#39;))
+</code></pre>
+<h3 is-upgraded>Théorie</h3>
+<p>On peut mélanger des variables et du texte en ajoutant <em>f</em> devant une chaîne de caractère (un peu comme le $ de C#)...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Améliorations" duration="45">
+        <p>À partir de là, c&#39;est à vous d&#39;améliorer le jeu:</p>
+<ul>
+<li>Ajouter une bordure tout autour du jeu</li>
+<li>Remplacer le <em>term.clear()</em> par une gestion intelligente avec moveCursor et print(&#39; ‘) pour effacer les éléments à effacer sans faire scintiller tout l&#39;écran</li>
+<li>Vérifier que la nourriture n&#39;arrive pas sur le serpent</li>
+<li>Augmenter la vitesse au fur et à mesure que le score augmente</li>
+<li>...</li>
+</ul>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Synthèse" duration="1">
-        <p>Normalement écrire un programme en Python est relativement confortable quand on a l&#39;habitude du C# et cette entrée en matière permet de se familiariser avec cette syntaxe.</p>
+        <p>Ce tutorial était un aperçu rapide des fondamentaux de Python sans ajouter la complexité liée à une interface utilisateur plus complexe que la console.</p>
+<p>Pour en savoir plus sur python, se rendre par exemple sur https://www.learnpython.org/</p>
 
 
       </google-codelab-step>
