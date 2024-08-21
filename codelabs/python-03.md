@@ -70,6 +70,10 @@ Attention, la librairie pour déplacer le curseur ne fonctionne pas bien avec le
 
 ![Alt text](assets/python/gitbash.png)
 
+
+Negative
+: Attention, avec gitbash, il faut préfixer les éxécutables avec *./*, par exemple **./python.exe script.py**
+
 ### Tester
 Vérifier que le programme affiche bien un titre qui clignote.
 
