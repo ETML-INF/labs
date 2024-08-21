@@ -59,6 +59,12 @@ finally:
 
 ```
 
+### Installation des dépendances
+Il faut ajouter les paquets suivants:
+```python
+python -m pip install py-term cursor
+```
+
 ### Tester
 Vérifier que le programme affiche bien un titre qui clignote.
 
