@@ -65,6 +65,11 @@ Il faut ajouter les paquets suivants:
 python -m pip install py-term cursor
 ```
 
+### Gestion de la console
+Attention, la librairie pour déplacer le curseur ne fonctionne pas bien avec le *cmd.exe* standard... L’alternative la plus simple est d’utiliser le *git bash* installé avec git sur les ordinateurs:
+
+![Alt text](assets/python/gitbash.png)
+
 ### Tester
 Vérifier que le programme affiche bien un titre qui clignote.
 
