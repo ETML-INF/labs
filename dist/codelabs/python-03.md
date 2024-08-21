@@ -66,13 +66,28 @@ python -m pip install py-term cursor
 ```
 
 ### Gestion de la console
-Attention, la librairie pour déplacer le curseur ne fonctionne pas bien avec le *cmd.exe* standard... L’alternative la plus simple est d’utiliser le *git bash* installé avec git sur les ordinateurs:
+Attention, la librairie pour déplacer le curseur ne fonctionne pas bien avec le *cmd.exe* standard... L’alternative la plus simple est d’utiliser *windows terminal* qui supporte les caractères spéciaux:
 
-![Alt text](assets/python/gitbash.png)
+#### Installer
+
+Lancer le store
+
+![Alt text](assets/python/wt1.png)
+
+Identifier l’application
+
+![Alt text](assets/python/wt2.png)
+
+Installer / Ouvrir
+
+![Alt text](assets/python/wt3.png)
 
 
-Negative
-: Attention, avec gitbash, il faut préfixer les éxécutables avec *./*, par exemple **./python.exe script.py**
+#### Lancer et choisir un CMD standard
+![Alt text](assets/python/wt4.png)
+
+#### Vérifier que cela ressemble à ça
+![Alt text](wt5.png)
 
 ### Tester
 Vérifier que le programme affiche bien un titre qui clignote.
