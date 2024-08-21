@@ -198,6 +198,8 @@ if msvcrt.kbhit():
         #Quitter
         break
     
+    # Selon la console utilisée on passe par 2 étapes pour récupérer une touche fléchée...
+    # Cela implique du supprimer ce premier test en cas de problème...
     if user_input==224:
         user_input = ord(msvcrt.getch())
         
