@@ -105,7 +105,7 @@ Remplacer le contenu par:
 ![Alt text](assets/python/sitecustom-add.png)
 
 et y mettre le contenu suivant:
-```text
+```python
 import os
 import site
 import sys
@@ -117,7 +117,7 @@ site.ENABLE_USER_SITE = False
 # remove site.USER_SITE and the realpath variation from sys.path
 # XXX: somewhat time consuming to do on every startup but thorough
 __sys_path_index_del = list()
-`"`"`"index to delete from sys.path`"`"`"
+#index to delete from sys.path
 __user_site_resolve = os.path.realpath(site.USER_SITE)
 for __i, __path in enumerate(sys.path):
     __path_resolve = os.path.realpath(__path)
