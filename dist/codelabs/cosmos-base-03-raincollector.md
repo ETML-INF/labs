@@ -27,7 +27,7 @@ Survey
 : Quelle est la meilleure utilité à récolter l'eau de pluie ?
 <ul>
   <li>Réduire la densité hygromètrique de l'atmosphère</li>
-  <li>Agrémenter des coktails d'eau déminéralisée</li>
+  <li>Agrémenter des cocktails d'eau déminéralisée</li>
   <li>Utiliser l'acidité de cette eau pour dissoudre la rouille sur un métal</li>
   <li>Arroser le jardin et ainsi économiser l'eau potable</li>
 </ul>
