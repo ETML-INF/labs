@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2024-03-02T03:12:21+01:00",
+  "updated": "2025-12-21T20:52:28+01:00",
   "id": "mobile-hello",
   "duration": 18,
   "title": "Première appli mobile MAUI",
   "summary": "mobile app hello world",
-  "source": ".\\mobile-01-hello.md",
+  "source": "mobile-01-hello.md",
   "theme": "",
   "status": [
     "published"

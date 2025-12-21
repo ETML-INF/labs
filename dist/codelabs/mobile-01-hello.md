@@ -67,7 +67,7 @@ Negative
 
 #### Package "maison"
 
-Pour accélérer la mise en place, il existe un [zip](https://eduvaud.sharepoint.com/:f:/s/msteams_d0db31/Eq39Jwt6uYxLtMCBxOYfZ9ABoeGuE79ErVvY0SoYeHxa2g?e=STeXvT) qui contient juste ce qu’il faut pour démarrer un émulateur.
+Pour accélérer la mise en place, il existe un [zip](https://eduvaud.sharepoint.com/:u:/s/ETML_INF_MAITRES_Teams/IQC9jZy2LNyDSI16oX-Q3CuPARGv478Xa15R9QmLMpokKGo?e=CM8uvm) qui contient juste ce qu’il faut pour démarrer un émulateur.
 Une fois décompressé, lancer le fichier *.bat*.
 
 #### Version integrée à VisualStudio
