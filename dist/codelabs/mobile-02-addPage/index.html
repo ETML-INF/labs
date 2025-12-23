@@ -59,10 +59,607 @@
       </google-codelab-step>
     
       <google-codelab-step label="Accéder aux pages ajoutées" duration="1">
-        <h2 is-upgraded>Navigation</h2>
+        <h2 is-upgraded>Navigation initiale</h2>
 <p>Les pages ajoutées ne sont pas automatiquement ajoutées dans un menu quelconque et il faut donc les intégrer dans une forme de navigation pour pouvoir y accéder.</p>
 <p>Une alternative est de manuellement changer la page de démarrage vers une des nouvelles pages:</p>
 <p class="image-container"><img alt="Alt text" src="img\67df3c3f5ec44c40.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Navigation générale avec MAUI" duration="5">
+        <h2 is-upgraded>Vue d&#39;ensemble</h2>
+<p>MAUI Shell inclut une expérience de navigation basée sur URI qui utilise des routes pour naviguer vers n&#39;importe quelle page de l&#39;application, mais il existe également d&#39;autres méthodes de navigation. Explorons les différentes approches.</p>
+<h2 is-upgraded>Navigation Shell (Recommandée)</h2>
+<h3 is-upgraded>Configuration de base</h3>
+<p>Créons d&#39;abord une structure Shell dans le projet. Dans <code>AppShell.xaml</code>, ajouter :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;
+&lt;Shell
+    x:Class=&#34;HelloMaui1.AppShell&#34;
+    xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+    xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+    xmlns:local=&#34;clr-namespace:HelloMaui1&#34;&gt;
+
+    &lt;ShellContent
+        Title=&#34;Accueil&#34;
+        ContentTemplate=&#34;{DataTemplate local:MainPage}&#34;
+        Route=&#34;MainPage&#34; /&gt;
+
+    &lt;ShellContent
+        Title=&#34;Profil&#34;
+        ContentTemplate=&#34;{DataTemplate local:ProfilePage}&#34;
+        Route=&#34;ProfilePage&#34; /&gt;
+
+&lt;/Shell&gt;
+</code></pre>
+<h3 is-upgraded>Navigation par routes</h3>
+<p>Ajouter une nouvelle page <code>ProfilePage.xaml</code> :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;HelloMaui1.ProfilePage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Title=&#34;Profil&#34;&gt;
+    &lt;StackLayout&gt;
+        &lt;Label x:Name=&#34;WelcomeLabel&#34;
+               Text=&#34;Page Profil&#34;
+               VerticalOptions=&#34;Center&#34; 
+               HorizontalOptions=&#34;Center&#34; /&gt;
+        
+        &lt;Button Text=&#34;Retour à l&#39;accueil&#34;
+                Clicked=&#34;OnRetourClicked&#34; /&gt;
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<p>Dans le code-behind <code>ProfilePage.xaml.cs</code> :</p>
+<pre><code>public partial class ProfilePage : ContentPage
+{
+    public ProfilePage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnRetourClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(&#34;//MainPage&#34;);
+    }
+}
+</code></pre>
+<h3 is-upgraded>Navigation depuis MainPage</h3>
+<p>Modifiez votre <code>MainPage.xaml</code> pour ajouter un bouton de navigation :</p>
+<pre><code>&lt;Button Text=&#34;Aller au Profil&#34;
+        Clicked=&#34;OnProfilClicked&#34;
+        x:Name=&#34;ProfilBtn&#34; /&gt;
+</code></pre>
+<p>Et dans <code>MainPage.xaml.cs</code> :</p>
+<pre><code>private async void OnProfilClicked(object sender, EventArgs e)
+{
+    await Shell.Current.GoToAsync(&#34;//ProfilePage&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Navigation modale</h2>
+<h3 is-upgraded>Qu&#39;est-ce qu&#39;une page modale ?</h3>
+<p>Une page modale encourage les utilisateurs à compléter une tâche autonome qui ne peut pas être abandonnée avant que la tâche soit terminée ou annulée.</p>
+<h3 is-upgraded>Créer une page modale</h3>
+<p>Ajoutez une nouvelle page <code>SettingsPage.xaml</code> :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;HelloMaui1.SettingsPage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Shell.PresentationMode=&#34;Modal&#34;
+             Title=&#34;Paramètres&#34;&gt;
+    &lt;StackLayout Padding=&#34;20&#34;&gt;
+        &lt;Label Text=&#34;Paramètres de l&#39;application&#34;
+               Font=&#34;Large&#34;
+               HorizontalOptions=&#34;Center&#34; /&gt;
+        
+        &lt;Switch x:Name=&#34;NotificationSwitch&#34; /&gt;
+        &lt;Label Text=&#34;Notifications activées&#34; /&gt;
+        
+        &lt;Button Text=&#34;Sauvegarder et fermer&#34;
+                Clicked=&#34;OnSauvegarderClicked&#34;
+                BackgroundColor=&#34;Green&#34;
+                TextColor=&#34;White&#34; /&gt;
+                
+        &lt;Button Text=&#34;Annuler&#34;
+                Clicked=&#34;OnAnnulerClicked&#34;
+                BackgroundColor=&#34;Red&#34;
+                TextColor=&#34;White&#34; /&gt;
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<p>Shell.PresentationMode peut être défini sur &#34;Modal&#34; pour indiquer que la page sera affichée comme une page modale.</p>
+<p>Dans <code>SettingsPage.xaml.cs</code> :</p>
+<pre><code>public partial class SettingsPage : ContentPage
+{
+    public SettingsPage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnSauvegarderClicked(object sender, EventArgs e)
+    {
+        // Sauvegarder les paramètres
+        await Shell.Current.GoToAsync(&#34;..&#34;);
+    }
+
+    private async void OnAnnulerClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(&#34;..&#34;);
+    }
+}
+</code></pre>
+<h3 is-upgraded>Enregistrement de la route modale</h3>
+<p>Dans <code>App.xaml.cs</code>, ajoutez :</p>
+<pre><code>public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+        
+        // Enregistrer les routes
+        Routing.RegisterRoute(&#34;settings&#34;, typeof(SettingsPage));
+        
+        MainPage = new AppShell();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Navigation par pile (Stack Navigation)</h2>
+<h3 is-upgraded>Navigation hiérarchique</h3>
+<p>La navigation hiérarchique fonctionne comme une pile de papiers—dernier entré, premier sorti (LIFO).</p>
+<p>Ajoutez une page <code>DetailPage.xaml</code> :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;HelloMaui1.DetailPage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Title=&#34;Détails&#34;&gt;
+    &lt;StackLayout Padding=&#34;20&#34;&gt;
+        &lt;Label x:Name=&#34;DetailLabel&#34;
+               Text=&#34;Page de détails&#34;
+               Font=&#34;Large&#34;
+               HorizontalOptions=&#34;Center&#34; /&gt;
+        
+        &lt;Button Text=&#34;Aller plus loin&#34;
+                Clicked=&#34;OnPlusLoinClicked&#34; /&gt;
+                
+        &lt;Button Text=&#34;Retour&#34;
+                Clicked=&#34;OnRetourClicked&#34; /&gt;
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<p>Dans <code>DetailPage.xaml.cs</code> :</p>
+<pre><code>public partial class DetailPage : ContentPage
+{
+    public DetailPage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnPlusLoinClicked(object sender, EventArgs e)
+    {
+        // Navigation vers une autre page (empile)
+        await Shell.Current.GoToAsync(&#34;detail2&#34;);
+    }
+
+    private async void OnRetourClicked(object sender, EventArgs e)
+    {
+        // Retour (dépile)
+        await Shell.Current.GoToAsync(&#34;..&#34;);
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Navigation avec paramètres orientée Flashcard" duration="1">
+        <h2 is-upgraded>Introduction</h2>
+<p>Maintenant que vous maîtrisez les bases, explorons les paramètres de requête avancés dans MAUI. L&#39;objectif est de comprendre comment passer et recevoir des données complexes entre les pages avec des interfaces minimales contextualisées dans une app de type Flashcard...</p>
+<h2 is-upgraded>Interface IQueryAttributable - La méthode moderne</h2>
+<h3 is-upgraded>Pourquoi IQueryAttributable ?</h3>
+<p>L&#39;interface IQueryAttributable est la méthode recommandée pour accepter les paramètres de requête plutôt que QueryProperty. Elle permet de gérer plusieurs paramètres de manière plus flexible.<br>Elle impose d&#39;implémenter une méthode pour traiter les paramètres.</p>
+<h3 is-upgraded>Exemple pratique : Page de détail de carte</h3>
+<p>Créez <code>CardDetailPage.xaml</code> :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;FlashcardApp.CardDetailPage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Title=&#34;Détail Carte&#34;&gt;
+
+    &lt;StackLayout Padding=&#34;20&#34; Spacing=&#34;15&#34;&gt;
+        
+        &lt;Label Text=&#34;Page Détail de Carte&#34; 
+               FontSize=&#34;20&#34; 
+               HorizontalOptions=&#34;Center&#34; /&gt;
+
+        &lt;!-- Affichage des paramètres reçus --&gt;
+        &lt;Label x:Name=&#34;ParamsLabel&#34; 
+               Text=&#34;Paramètres reçus : aucun&#34;
+               BackgroundColor=&#34;LightGray&#34;
+               Padding=&#34;10&#34; /&gt;
+
+        &lt;!-- Boutons de navigation --&gt;
+        &lt;Button Text=&#34;Aller à Édition&#34;
+                BackgroundColor=&#34;Orange&#34;
+                Clicked=&#34;OnEditClicked&#34; /&gt;
+
+        &lt;Button Text=&#34;Aller à Jeu&#34;
+                BackgroundColor=&#34;Green&#34;
+                Clicked=&#34;OnPlayClicked&#34; /&gt;
+
+        &lt;Button Text=&#34;Retour&#34;
+                BackgroundColor=&#34;Gray&#34;
+                Clicked=&#34;OnBackClicked&#34; /&gt;
+
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<h3 is-upgraded>Code-behind avec IQueryAttributable</h3>
+<p>Dans <code>CardDetailPage.xaml.cs</code> :</p>
+<pre><code>namespace FlashcardApp;
+
+public partial class CardDetailPage : ContentPage, IQueryAttributable
+{
+    // Variables pour stocker les paramètres reçus
+    private string _deckId = &#34;&#34;;
+    private string _cardId = &#34;&#34;;
+    private string _deckName = &#34;&#34;;
+    private string _question = &#34;&#34;;
+    private string _answer = &#34;&#34;;
+
+    public CardDetailPage()
+    {
+        InitializeComponent();
+    }
+
+    // Méthode obligatoire de IQueryAttributable
+    public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
+    {
+        var receivedParams = new List&lt;string&gt;();
+
+        // Récupération de chaque paramètre
+        if (query.TryGetValue(&#34;deckId&#34;, out var deckIdObj))
+        {
+            _deckId = deckIdObj?.ToString() ?? &#34;&#34;;
+            receivedParams.Add($&#34;deckId: {_deckId}&#34;);
+        }
+
+        if (query.TryGetValue(&#34;cardId&#34;, out var cardIdObj))
+        {
+            _cardId = cardIdObj?.ToString() ?? &#34;&#34;;
+            receivedParams.Add($&#34;cardId: {_cardId}&#34;);
+        }
+
+        if (query.TryGetValue(&#34;deckName&#34;, out var deckNameObj))
+        {
+            _deckName = System.Web.HttpUtility.UrlDecode(deckNameObj?.ToString() ?? &#34;&#34;);
+            receivedParams.Add($&#34;deckName: {_deckName}&#34;);
+        }
+
+        if (query.TryGetValue(&#34;question&#34;, out var questionObj))
+        {
+            _question = System.Web.HttpUtility.UrlDecode(questionObj?.ToString() ?? &#34;&#34;);
+            receivedParams.Add($&#34;question: {_question}&#34;);
+        }
+
+        if (query.TryGetValue(&#34;answer&#34;, out var answerObj))
+        {
+            _answer = System.Web.HttpUtility.UrlDecode(answerObj?.ToString() ?? &#34;&#34;);
+            receivedParams.Add($&#34;answer: {_answer}&#34;);
+        }
+
+        // Afficher tous les paramètres reçus
+        ParamsLabel.Text = receivedParams.Count &gt; 0 
+            ? string.Join(&#34;\n&#34;, receivedParams) 
+            : &#34;Aucun paramètre reçu&#34;;
+    }
+
+    private async void OnEditClicked(object sender, EventArgs e)
+    {
+        // Passer les paramètres vers la page d&#39;édition
+        await Shell.Current.GoToAsync($&#34;edit-card?cardId={_cardId}&amp;deckId={_deckId}&amp;question={Uri.EscapeDataString(_question)}&amp;answer={Uri.EscapeDataString(_answer)}&#34;);
+    }
+
+    private async void OnPlayClicked(object sender, EventArgs e)
+    {
+        // Passer vers le mode jeu
+        await Shell.Current.GoToAsync($&#34;play-card?cardId={_cardId}&amp;deckName={Uri.EscapeDataString(_deckName)}&#34;);
+    }
+
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(&#34;..&#34;);
+    }
+}
+</code></pre>
+<h2 is-upgraded>Page de jeu simple</h2>
+<h3 is-upgraded>Créez <code>PlayCardPage.xaml</code> :</h3>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;FlashcardApp.PlayCardPage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Title=&#34;Jeu Carte&#34;&gt;
+
+    &lt;StackLayout Padding=&#34;20&#34; Spacing=&#34;15&#34;&gt;
+        
+        &lt;Label Text=&#34;Page Jeu de Carte&#34; 
+               FontSize=&#34;20&#34; 
+               HorizontalOptions=&#34;Center&#34; /&gt;
+
+        &lt;!-- Paramètres reçus --&gt;
+        &lt;Label x:Name=&#34;PlayParamsLabel&#34; 
+               Text=&#34;Paramètres reçus : aucun&#34;
+               BackgroundColor=&#34;LightGreen&#34;
+               Padding=&#34;10&#34; /&gt;
+
+        &lt;!-- Boutons de jeu --&gt;
+        &lt;Button Text=&#34;Carte suivante&#34;
+                BackgroundColor=&#34;Blue&#34;
+                Clicked=&#34;OnNextCardClicked&#34; /&gt;
+
+        &lt;Button Text=&#34;Terminer session&#34;
+                BackgroundColor=&#34;Purple&#34;
+                Clicked=&#34;OnEndSessionClicked&#34; /&gt;
+
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<h3 is-upgraded>Code-behind <code>PlayCardPage.xaml.cs</code> :</h3>
+<pre><code>namespace FlashcardApp;
+
+public partial class PlayCardPage : ContentPage, IQueryAttributable
+{
+    private string _cardId = &#34;&#34;;
+    private string _deckName = &#34;&#34;;
+
+    public PlayCardPage()
+    {
+        InitializeComponent();
+    }
+
+    public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
+    {
+        var receivedParams = new List&lt;string&gt;();
+
+        foreach (var param in query)
+        {
+            var decodedValue = System.Web.HttpUtility.UrlDecode(param.Value?.ToString() ?? &#34;&#34;);
+            receivedParams.Add($&#34;{param.Key}: {decodedValue}&#34;);
+
+            if (param.Key == &#34;cardId&#34;) _cardId = decodedValue;
+            if (param.Key == &#34;deckName&#34;) _deckName = decodedValue;
+        }
+
+        PlayParamsLabel.Text = receivedParams.Count &gt; 0 
+            ? string.Join(&#34;\n&#34;, receivedParams) 
+            : &#34;Aucun paramètre reçu&#34;;
+    }
+
+    private async void OnNextCardClicked(object sender, EventArgs e)
+    {
+        // Simuler navigation vers carte suivante
+        var nextCardId = &#34;card_&#34; + (int.Parse(_cardId.Split(&#39;_&#39;)[1]) + 1);
+        await Shell.Current.GoToAsync($&#34;..?nextCard={nextCardId}&amp;from=play&#34;);
+    }
+
+    private async void OnEndSessionClicked(object sender, EventArgs e)
+    {
+        await DisplayAlert(&#34;Session&#34;, $&#34;Session terminée pour {_deckName}&#34;, &#34;OK&#34;);
+        await Shell.Current.GoToAsync(&#34;../..&#34;);
+    }
+}
+</code></pre>
+<h2 is-upgraded>Navigation depuis les pages existantes</h2>
+<h3 is-upgraded>Modifier votre <code>DecksPage</code> pour tester</h3>
+<p>Ajoutez ces boutons dans <code>DecksPage.xaml</code> :</p>
+<pre><code>&lt;!-- Ajouter ces boutons dans votre DecksPage existante --&gt;
+&lt;Button Text=&#34;Test Navigation Complète&#34;
+        BackgroundColor=&#34;Navy&#34;
+        TextColor=&#34;White&#34;
+        Clicked=&#34;OnTestNavigationClicked&#34; /&gt;
+</code></pre>
+<p>Et dans <code>DecksPage.xaml.cs</code> :</p>
+<pre><code>private async void OnTestNavigationClicked(object sender, EventArgs e)
+{
+    // Test navigation avec Dictionary
+    var parameters = new Dictionary&lt;string, object&gt;
+    {
+        {&#34;deckId&#34;, &#34;deck_123&#34;},
+        {&#34;cardId&#34;, &#34;card_456&#34;},
+        {&#34;deckName&#34;, &#34;Test Anglais&#34;},
+        {&#34;question&#34;, &#34;What is your name?&#34;},
+        {&#34;answer&#34;, &#34;My name is...&#34;}
+    };
+
+    await Shell.Current.GoToAsync(&#34;card-detail&#34;, parameters);
+}
+</code></pre>
+<h3 is-upgraded>Enregistrement des routes</h3>
+<p>Dans <code>App.xaml.cs</code> :</p>
+<pre><code>public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+        
+        // Enregistrer toutes les routes
+        Routing.RegisterRoute(&#34;card-detail&#34;, typeof(CardDetailPage));
+        Routing.RegisterRoute(&#34;edit-card&#34;, typeof(EditCardPage));
+        Routing.RegisterRoute(&#34;play-card&#34;, typeof(PlayCardPage));
+        
+        MainPage = new AppShell();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Points clés :</h2>
+<p><strong>IQueryAttributable</strong> : Interface moderne pour recevoir les paramètres<br><strong>ApplyQueryAttributes</strong> : Méthode unique pour traiter tous les paramètres<br><strong>URL Encoding</strong> : Gestion des caractères spéciaux avec <code>HttpUtility.UrlDecode</code><strong>Dictionary vs URL</strong> : Deux méthodes de passage de paramètres</p>
+<aside class="special"><p>Ce squelette permet de comprendre parfaitement le mécanisme des paramètres de requête avant d&#39;ajouter la complexité de l&#39;interface utilisateur dans les prochains tutoriels.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Paramètres :  Les deux méthodes de passage de paramètres" duration="10">
+        <h2 is-upgraded>Introduction</h2>
+<p>Passer les paramètres comme sur une page WEB comporte des inconvénients et il existe une manière alternative utilisant un dictionnaire...</p>
+<h2 is-upgraded>Méthode 1 : Navigation par URL (méthode présentée précédemment)</h2>
+<pre><code>// Construction manuelle de l&#39;URL avec les paramètres
+await Shell.Current.GoToAsync($&#34;card-detail?cardId={cardId}&amp;question={Uri.EscapeDataString(question)}&#34;);
+</code></pre>
+<h2 is-upgraded>Méthode 2 : Navigation par Dictionary (version améliorée)</h2>
+<pre><code>// Passage d&#39;un dictionnaire d&#39;objets
+var parameters = new Dictionary&lt;string, object&gt;
+{
+    {&#34;cardId&#34;, cardId},
+    {&#34;question&#34;, question}
+};
+await Shell.Current.GoToAsync(&#34;card-detail&#34;, parameters);
+</code></pre>
+<h2 is-upgraded>La différence importante</h2>
+<p>Reprenons les exemples pour bien montrer la différence :</p>
+<h3 is-upgraded>Exemple avec URL</h3>
+<p>Dans <code>DecksPage.xaml.cs</code> :</p>
+<pre><code>private async void OnNavigateWithUrlClicked(object sender, EventArgs e)
+{
+    // MÉTHODE 1 : Construction manuelle de l&#39;URL
+    var deckName = &#34;Anglais Niveau 1&#34;;
+    var question = &#34;What&#39;s your name?&#34;;
+    var answer = &#34;Mon nom est...&#34;;
+    
+    // Il faut encoder manuellement les caractères spéciaux
+    var encodedDeckName = Uri.EscapeDataString(deckName);
+    var encodedQuestion = Uri.EscapeDataString(question);
+    var encodedAnswer = Uri.EscapeDataString(answer);
+    
+    await Shell.Current.GoToAsync($&#34;card-detail?deckName={encodedDeckName}&amp;cardId=123&amp;question={encodedQuestion}&amp;answer={encodedAnswer}&#34;);
+}
+</code></pre>
+<h3 is-upgraded>Exemple avec Dictionary</h3>
+<p>Dans <code>DecksPage.xaml.cs</code> :</p>
+<pre><code>private async void OnNavigateWithDictionaryClicked(object sender, EventArgs e)
+{
+    // MÉTHODE 2 : Utilisation d&#39;un Dictionary
+    var parameters = new Dictionary&lt;string, object&gt;
+    {
+        {&#34;deckName&#34;, &#34;Anglais Niveau 1&#34;},           // Pas besoin d&#39;encoder
+        {&#34;cardId&#34;, 123},                            // Peut être un int
+        {&#34;question&#34;, &#34;What&#39;s your name?&#34;},          // Caractères spéciaux automatiquement gérés
+        {&#34;answer&#34;, &#34;Mon nom est...&#34;},               // Accents gérés automatiquement
+        {&#34;isEditMode&#34;, true},                       // Peut être un boolean
+        {&#34;difficulty&#34;, DifficultyLevel.Easy}        // Peut être un enum
+    };
+    
+    await Shell.Current.GoToAsync(&#34;card-detail&#34;, parameters);
+}
+</code></pre>
+<h2 is-upgraded>Avantages et inconvénients</h2>
+<h3 is-upgraded>Méthode URL (String)</h3>
+<p><strong>Avantages :</strong></p>
+<ul>
+<li>Simple pour peu de paramètres</li>
+<li>URL visible et débuggable</li>
+<li>Compatible avec navigation web</li>
+</ul>
+<p><strong>Inconvénients :</strong></p>
+<ul>
+<li>Encodage manuel requis pour caractères spéciaux</li>
+<li>Tous les paramètres deviennent des strings</li>
+<li>URL peut devenir très longue</li>
+</ul>
+<h3 is-upgraded>Méthode Dictionary</h3>
+<p><strong>Avantages :</strong></p>
+<ul>
+<li>Encodage automatique</li>
+<li>Supporte différents types d&#39;objets</li>
+<li>Plus lisible pour beaucoup de paramètres</li>
+<li>Peut passer des objets complexes</li>
+</ul>
+<p><strong>Inconvénients :</strong></p>
+<ul>
+<li>Moins transparent (paramètres cachés)</li>
+<li>Plus de code pour peu de paramètres</li>
+</ul>
+<h2 is-upgraded>Exemple pratique complet</h2>
+<p>Voici un exemple contextualisé qui montre les deux méthodes côte à côte :</p>
+<h3 is-upgraded>Page de test - <code>TestNavigationPage.xaml</code> :</h3>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage x:Class=&#34;FlashcardApp.TestNavigationPage&#34;
+             xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             Title=&#34;Test Navigation&#34;&gt;
+
+    &lt;StackLayout Padding=&#34;20&#34; Spacing=&#34;15&#34;&gt;
+        
+        &lt;Label Text=&#34;Test des deux méthodes de navigation&#34; 
+               FontSize=&#34;18&#34; 
+               HorizontalOptions=&#34;Center&#34; /&gt;
+
+        &lt;Button Text=&#34;Navigation par URL&#34;
+                BackgroundColor=&#34;Blue&#34;
+                TextColor=&#34;White&#34;
+                Clicked=&#34;OnNavigateUrlClicked&#34; /&gt;
+
+        &lt;Button Text=&#34;Navigation par Dictionary&#34;
+                BackgroundColor=&#34;Green&#34;
+                TextColor=&#34;White&#34;
+                Clicked=&#34;OnNavigateDictionaryClicked&#34; /&gt;
+
+    &lt;/StackLayout&gt;
+&lt;/ContentPage&gt;
+</code></pre>
+<h3 is-upgraded>Code-behind - <code>TestNavigationPage.xaml.cs</code> :</h3>
+<pre><code>namespace FlashcardApp;
+
+public partial class TestNavigationPage : ContentPage
+{
+    public TestNavigationPage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnNavigateUrlClicked(object sender, EventArgs e)
+    {
+        // MÉTHODE 1 : URL String (manuel)
+        var deckName = &#34;Français - Expressions&#34;;
+        var question = &#34;Comment dit-on &#39;Hello&#39; en français ?&#34;;
+        var answer = &#34;Bonjour / Salut&#34;;
+        
+        // Encodage obligatoire
+        var url = $&#34;card-detail?deckName={Uri.EscapeDataString(deckName)}&amp;cardId=url_001&amp;question={Uri.EscapeDataString(question)}&amp;answer={Uri.EscapeDataString(answer)}&amp;method=URL&#34;;
+        
+        await Shell.Current.GoToAsync(url);
+    }
+
+    private async void OnNavigateDictionaryClicked(object sender, EventArgs e)
+    {
+        // MÉTHODE 2 : Dictionary (automatique)
+        var parameters = new Dictionary&lt;string, object&gt;
+        {
+            {&#34;deckName&#34;, &#34;Français - Expressions&#34;},
+            {&#34;cardId&#34;, &#34;dict_001&#34;},
+            {&#34;question&#34;, &#34;Comment dit-on &#39;Hello&#39; en français ?&#34;},
+            {&#34;answer&#34;, &#34;Bonjour / Salut&#34;},
+            {&#34;method&#34;, &#34;Dictionary&#34;}
+        };
+        
+        await Shell.Current.GoToAsync(&#34;card-detail&#34;, parameters);
+    }
+}
+</code></pre>
+<h2 is-upgraded>Dans quelle situation utiliser quoi ?</h2>
+<h3 is-upgraded>Utiliser <strong>URL</strong> quand :</h3>
+<ul>
+<li>On a 1-3 paramètres simples</li>
+<li>Tous les paramètres sont des strings</li>
+</ul>
+<h3 is-upgraded>Utiliser <strong>Dictionary</strong> quand :</h3>
+<ul>
+<li>On a beaucoup de paramètres</li>
+<li>Les paramètres contiennent des caractères spéciaux</li>
+<li>On aimerait passer différents types de données</li>
+<li>On veut un code plus facile à lire / modifier</li>
+</ul>
+<aside class="special"><p>La méthode Dictionary est généralement recommandée pour les applications complexes car elle gère automatiquement l&#39;encodage et permet plus de flexibilité dans les types de données.</p>
+</aside>
 
 
       </google-codelab-step>

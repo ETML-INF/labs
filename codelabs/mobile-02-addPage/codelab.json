@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2024-01-20T07:50:45+01:00",
+  "updated": "2025-12-23T06:41:46+01:00",
   "id": "mobile-02-addPage",
-  "duration": 5,
+  "duration": 66,
   "title": "Ajouter des pages avec MAUI",
   "summary": "mobile app add page",
-  "source": ".\\mobile-02-addPage.md",
+  "source": "mobile-02-addPage.md",
   "theme": "",
   "status": [
     "published"
