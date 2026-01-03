@@ -1,0 +1,1403 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>CRUD</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-05a-crud"
+                  title="CRUD"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="2">
+        <p class="image-container"><img alt="overview" src="img\c4a191e1a1fa30b8.png"></p>
+<p>Ce tutorial présente une approche de base pour gérer des données dans une application MAUI en utilisant uniquement du code-behind (sans MVVM) et de la sérialisation JSON pour la persistance.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>Apprendre à créer une application de gestion de paquets de cartes (decks) avec les opérations CRUD :</p>
+<ul>
+<li><strong>C</strong>reate : Créer de nouveaux decks</li>
+<li><strong>R</strong>ead : Lister les decks existants avec CollectionView</li>
+<li><strong>U</strong>pdate : Renommer un deck</li>
+<li><strong>D</strong>elete : Supprimer un deck</li>
+</ul>
+<h2 is-upgraded>Approche technique</h2>
+<p>Cette application utilise :</p>
+<ul>
+<li><strong>Code-behind simple</strong> : Pas de ViewModel, logique directement dans les fichiers .xaml.cs</li>
+<li><strong>JSON</strong> : Stockage des données dans un fichier JSON</li>
+<li><strong>XAML</strong> : Interface utilisateur déclarative</li>
+<li><strong>CollectionView</strong> : Affichage moderne de la liste</li>
+</ul>
+<aside class="special"><p>Cette approche est idéale pour débuter car elle évite la complexité du pattern MVVM tout en restant fonctionnelle.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mise en place du projet" duration="5">
+        <h2 is-upgraded>Créer le projet</h2>
+<p>Créer un nouveau projet MAUI nommé <strong>DeckManager</strong> en suivant les étapes du tutorial <a href="https://labs.section-inf.ch/codelabs/mobile-hello/index.html" target="_blank">hello world</a> ou reprendre un projet existant (par exemple, le projet Flashcard...).</p>
+<h2 is-upgraded>Structure du projet</h2>
+<p>Nous allons organiser le projet avec les dossiers suivants :</p>
+<ul>
+<li><strong>Models</strong> : Pour la classe Deck</li>
+<li><strong>Services</strong> : Pour la gestion du JSON</li>
+<li><strong>Pages</strong> : Pour les pages XAML</li>
+</ul>
+<p>Créer ces dossiers dans l&#39;explorateur de solution :</p>
+<p class="image-container"><img alt="Screenshot" src="img\dd225d15fddbc3d.png"></p>
+<aside class="special"><p>Un projet bien organisé et plus facile à maintenir et faire évoluer</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Modèle de données" duration="5">
+        <h2 is-upgraded>Classe Deck</h2>
+<p>Dans le dossier <strong>Models</strong>, créer une nouvelle classe <code>Deck.cs</code> :</p>
+<pre><code>namespace DeckManager.Models
+{
+    public class Deck
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTime CreatedDate { get; set; }
+        public int CardCount { get; set; }
+
+        public Deck()
+        {
+            CreatedDate = DateTime.Now;
+        }
+
+        public override string ToString()
+        {
+            return $&#34;{Name} ({CardCount} cards)&#34;;
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Propriétés</h2>
+<ul>
+<li><strong>Id</strong> : Identifiant unique du deck</li>
+<li><strong>Name</strong> : Nom du deck (ex: &#34;Anglais niveau 1&#34;)</li>
+<li><strong>CreatedDate</strong> : Date de création</li>
+<li><strong>CardCount</strong> : Nombre de cartes dans le deck</li>
+</ul>
+<aside class="special"><p>La méthode <code>ToString()</code> redéfinie est utile pour le débogage et l&#39;affichage rapide (la version par défaut écrivant simplement le nom de la classe).</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Service de persistance JSON" duration="10">
+        <h2 is-upgraded>Pourquoi JSON ?</h2>
+<p>Le format JSON est simple, lisible et parfait pour stocker des données structurées sans avoir besoin d&#39;une base de données complexe.</p>
+<h2 is-upgraded>Classe JsonDataService</h2>
+<p>Dans le dossier <strong>Services</strong>, créer la classe <code>JsonDataService.cs</code> :</p>
+<pre><code>using System.Text.Json;
+using DeckManager.Models;
+
+namespace DeckManager.Services
+{
+    public class JsonDataService
+    {
+        private readonly string _filePath;
+
+        public JsonDataService()
+        {
+            // Path to store the JSON file in app data
+            _filePath = Path.Combine(
+                FileSystem.AppDataDirectory,
+                &#34;decks.json&#34;
+            );
+        }
+
+        public async Task&lt;List&lt;Deck&gt;&gt; LoadDecksAsync()
+        {
+            try
+            {
+                if (!File.Exists(_filePath))
+                {
+                    return new List&lt;Deck&gt;();
+                }
+
+                var json = await File.ReadAllTextAsync(_filePath);
+                var decks = JsonSerializer.Deserialize&lt;List&lt;Deck&gt;&gt;(json);
+                return decks ?? new List&lt;Deck&gt;();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($&#34;Error loading: {ex.Message}&#34;);
+                return new List&lt;Deck&gt;();
+            }
+        }
+
+        public async Task SaveDecksAsync(List&lt;Deck&gt; decks)
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+                var json = JsonSerializer.Serialize(decks, options);
+                await File.WriteAllTextAsync(_filePath, json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($&#34;Error saving: {ex.Message}&#34;);
+            }
+        }
+
+        public string GetFilePath()
+        {
+            return _filePath;
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Points clés</h2>
+<ul>
+<li><strong>FileSystem.AppDataDirectory</strong> : Dossier de données de l&#39;application (%APPDATA%...)</li>
+<li><strong>LoadDecksAsync</strong> : Charge les decks depuis le fichier JSON</li>
+<li><strong>SaveDecksAsync</strong> : Sauvegarde les decks dans le fichier JSON</li>
+<li><strong>WriteIndented</strong> : Rend le JSON lisible (formaté)</li>
+<li><strong>Async</strong> : Les méthodes qui ont des dépendances vers des entrées/sorties qui peuvent être lentes (accès au système de fichier) supportent<br>le mode asynchrone qui évite de bloquer l&#39;appelant le temps que l&#39;opération soit réalisée... Ceci permet notamment d&#39;éviter de bloquer<br>la partie graphique et donner une impression d&#39;application lente...</li>
+</ul>
+<aside class="special"><p>Le service gère automatiquement les erreurs et retourne une liste vide en cas de problème.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Page de gestion des decks - XAML" duration="10">
+        <h2 is-upgraded>Créer la page</h2>
+<p>Ajoutez une nouvelle page XAML dans le dossier racine : <strong>DecksPage.xaml</strong></p>
+<p class="image-container"><img alt="Alt text" src="img\bd13915736e3ea52.png"></p>
+<h2 is-upgraded>Interface utilisateur</h2>
+<p>Remplacez le contenu de <code>DecksPage.xaml</code> :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             x:Class=&#34;DeckManager.DecksPage&#34;
+             Title=&#34;Mes Decks&#34;&gt;
+
+    &lt;Grid RowDefinitions=&#34;Auto,*,Auto&#34; Padding=&#34;10&#34;&gt;
+
+        &lt;!-- Header with add button --&gt;
+        &lt;HorizontalStackLayout Grid.Row=&#34;0&#34;
+                              Spacing=&#34;10&#34;
+                              Margin=&#34;0,0,0,10&#34;&gt;
+            &lt;Entry x:Name=&#34;NewDeckEntry&#34;
+                   Placeholder=&#34;Nom du nouveau deck&#34;
+                   HorizontalOptions=&#34;FillAndExpand&#34; /&gt;
+            &lt;Button Text=&#34;Ajouter&#34;
+                    Clicked=&#34;OnAddDeckClicked&#34;
+                    BackgroundColor=&#34;#2196F3&#34;
+                    TextColor=&#34;White&#34; /&gt;
+        &lt;/HorizontalStackLayout&gt;
+
+        &lt;!-- Decks list --&gt;
+        &lt;CollectionView Grid.Row=&#34;1&#34;
+                       x:Name=&#34;DecksCollectionView&#34;
+                       SelectionMode=&#34;None&#34;&gt;
+            &lt;CollectionView.ItemTemplate&gt;
+                &lt;DataTemplate&gt;
+                    &lt;Frame Margin=&#34;0,5&#34;
+                           Padding=&#34;10&#34;
+                           BorderColor=&#34;LightGray&#34;
+                           CornerRadius=&#34;8&#34;
+                           HasShadow=&#34;True&#34;&gt;
+                        &lt;Grid ColumnDefinitions=&#34;*,Auto,Auto&#34;&gt;
+
+                            &lt;!-- Deck info --&gt;
+                            &lt;StackLayout Grid.Column=&#34;0&#34;
+                                        VerticalOptions=&#34;Center&#34;&gt;
+                                &lt;Label Text=&#34;{Binding Name}&#34;
+                                       FontSize=&#34;18&#34;
+                                       FontAttributes=&#34;Bold&#34; /&gt;
+                                &lt;Label Text=&#34;{Binding CardCount, StringFormat=&#39;{0} cartes&#39;}&#34;
+                                       FontSize=&#34;14&#34;
+                                       TextColor=&#34;Gray&#34; /&gt;
+                                &lt;Label Text=&#34;{Binding CreatedDate, StringFormat=&#39;Créé le {0:dd/MM/yyyy}&#39;}&#34;
+                                       FontSize=&#34;12&#34;
+                                       TextColor=&#34;LightGray&#34; /&gt;
+                            &lt;/StackLayout&gt;
+
+                            &lt;!-- Edit button --&gt;
+                            &lt;Button Grid.Column=&#34;1&#34;
+                                   Text=&#34;✏️&#34;
+                                   FontSize=&#34;20&#34;
+                                   BackgroundColor=&#34;Transparent&#34;
+                                   Clicked=&#34;OnEditDeckClicked&#34;
+                                   CommandParameter=&#34;{Binding .}&#34; /&gt;
+
+                            &lt;!-- Delete button --&gt;
+                            &lt;Button Grid.Column=&#34;2&#34;
+                                   Text=&#34;🗑️&#34;
+                                   FontSize=&#34;20&#34;
+                                   BackgroundColor=&#34;Transparent&#34;
+                                   Clicked=&#34;OnDeleteDeckClicked&#34;
+                                   CommandParameter=&#34;{Binding .}&#34; /&gt;
+                        &lt;/Grid&gt;
+                    &lt;/Frame&gt;
+                &lt;/DataTemplate&gt;
+            &lt;/CollectionView.ItemTemplate&gt;
+
+            &lt;!-- Empty view --&gt;
+            &lt;CollectionView.EmptyView&gt;
+                &lt;StackLayout HorizontalOptions=&#34;Center&#34;
+                            VerticalOptions=&#34;Center&#34;&gt;
+                    &lt;Label Text=&#34;📚&#34;
+                           FontSize=&#34;60&#34;
+                           HorizontalOptions=&#34;Center&#34; /&gt;
+                    &lt;Label Text=&#34;Aucun deck&#34;
+                           FontSize=&#34;18&#34;
+                           TextColor=&#34;Gray&#34;
+                           HorizontalOptions=&#34;Center&#34; /&gt;
+                    &lt;Label Text=&#34;Créez votre premier deck ci-dessus&#34;
+                           FontSize=&#34;14&#34;
+                           TextColor=&#34;LightGray&#34;
+                           HorizontalOptions=&#34;Center&#34; /&gt;
+                &lt;/StackLayout&gt;
+            &lt;/CollectionView.EmptyView&gt;
+        &lt;/CollectionView&gt;
+
+        &lt;!-- Info bar --&gt;
+        &lt;Label Grid.Row=&#34;2&#34;
+               x:Name=&#34;InfoLabel&#34;
+               Text=&#34;Prêt&#34;
+               FontSize=&#34;12&#34;
+               TextColor=&#34;Gray&#34;
+               HorizontalOptions=&#34;Center&#34;
+               Margin=&#34;0,10,0,0&#34; /&gt;
+    &lt;/Grid&gt;
+
+&lt;/ContentPage&gt;
+</code></pre>
+<h2 is-upgraded>Points XAML importants</h2>
+<ul>
+<li><strong>CollectionView</strong> : Affichage moderne et performant de la liste</li>
+<li><strong>DataTemplate</strong> : Définit l&#39;apparence de chaque élément</li>
+<li><strong>Binding</strong> : Lie les propriétés du Deck à l&#39;interface</li>
+<li><strong>CommandParameter</strong> : Passe l&#39;objet Deck aux boutons</li>
+<li><strong>EmptyView</strong> : Affichage quand la liste est vide</li>
+</ul>
+<aside class="special"><p>Le CollectionView est plus moderne et flexible que la ListView désormais dépréciée.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Code-behind - Chargement et CREATE" duration="10">
+        <h2 is-upgraded>Initialisation</h2>
+<p>Ouvrir <code>DecksPage.xaml.cs</code> et remplacer/adapter son contenu comme suit :</p>
+<pre><code>using DeckManager.Models;
+using DeckManager.Services;
+
+namespace DeckManager
+{
+    public partial class DecksPage : ContentPage
+    {
+        private JsonDataService _dataService;
+        private List&lt;Deck&gt; _decks;
+        private int _nextId = 1;
+
+        public DecksPage()
+        {
+            InitializeComponent();
+            _dataService = new JsonDataService();
+            _decks = new List&lt;Deck&gt;();
+            LoadDecks();
+        }
+
+        private async void LoadDecks()
+        {
+            _decks = await _dataService.LoadDecksAsync();
+
+            // Calculate next ID
+            if (_decks.Any())
+            {
+                _nextId = _decks.Max(d =&gt; d.Id) + 1;
+            }
+
+            RefreshView();
+            UpdateInfo($&#34;Chargé: {_decks.Count} deck(s)&#34;);
+        }
+
+        private void RefreshView()
+        {
+            DecksCollectionView.ItemsSource = null;
+            DecksCollectionView.ItemsSource = _decks;
+        }
+
+        private void UpdateInfo(string message)
+        {
+            InfoLabel.Text = $&#34;{DateTime.Now:HH:mm:ss} - {message}&#34;;
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>CREATE - Ajouter un deck</h2>
+<p>Ajouter la méthode pour créer un nouveau deck :</p>
+<pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
+{
+    var name = NewDeckEntry.Text?.Trim();
+
+    if (string.IsNullOrEmpty(name))
+    {
+        await DisplayAlert(&#34;Erreur&#34;, &#34;Veuillez entrer un nom&#34;, &#34;OK&#34;);
+        return;
+    }
+
+    // Create new deck
+    var newDeck = new Deck
+    {
+        Id = _nextId++,
+        Name = name,
+        CardCount = 0
+    };
+
+    _decks.Add(newDeck);
+    await _dataService.SaveDecksAsync(_decks);
+
+    RefreshView();
+    NewDeckEntry.Text = string.Empty;
+    UpdateInfo($&#34;Ajouté: {name}&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Points clés</h2>
+<ul>
+<li><strong>Validation</strong> : Vérifie que le nom n&#39;est pas vide</li>
+<li><strong>ID automatique</strong> : Incrémente <code>_nextId</code> pour chaque nouveau deck</li>
+<li><strong>Sauvegarde</strong> : Persiste immédiatement dans le JSON</li>
+<li><strong>Rafraîchissement</strong> : Met à jour l&#39;affichage</li>
+<li><strong>Reset</strong> : Vide le champ de saisie</li>
+</ul>
+<aside class="special"><p>La sauvegarde automatique garantit qu&#39;aucune donnée n&#39;est perdue.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="UPDATE - Renommer un deck (version DisplayPrompt)" duration="8">
+        <h2 is-upgraded>Méthode d&#39;édition avec popup</h2>
+<p>Ajoutez la méthode dans <code>DecksPage.xaml.cs</code> :</p>
+<pre><code>private async void OnEditDeckClicked(object sender, EventArgs e)
+{
+    var button = sender as Button;
+    var deck = button?.CommandParameter as Deck;
+
+    if (deck == null) return;
+
+    // Prompt for new name
+    var newName = await DisplayPromptAsync(
+        &#34;Renommer&#34;,
+        &#34;Nouveau nom du deck:&#34;,
+        initialValue: deck.Name,
+        placeholder: &#34;Nom du deck&#34;
+    );
+
+    if (string.IsNullOrWhiteSpace(newName))
+    {
+        return; // User cancelled or entered empty
+    }
+
+    // Update deck name
+    deck.Name = newName.Trim();
+    await _dataService.SaveDecksAsync(_decks);
+
+    RefreshView();
+    UpdateInfo($&#34;Renommé: {newName}&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Fonctionnement</h2>
+<ol type="1">
+<li><strong>CommandParameter</strong> : Récupère le deck depuis le bouton</li>
+<li><strong>DisplayPromptAsync</strong> : Affiche un popup de saisie</li>
+<li><strong>initialValue</strong> : Pré-remplit avec le nom actuel</li>
+<li><strong>Validation</strong> : Vérifie que le nouveau nom n&#39;est pas vide</li>
+<li><strong>Mise à jour</strong> : Modifie le nom et sauvegarde</li>
+</ol>
+<aside class="special"><p><code>DisplayPromptAsync</code> est une méthode native MAUI très pratique pour les saisies rapides.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="UPDATE - Alternative avec Entry inline" duration="12">
+        <h2 is-upgraded>Approche différente</h2>
+<p>Au lieu d&#39;utiliser un popup, on peut permettre l&#39;édition directement dans la liste avec un Entry qui apparaît au clic.</p>
+<h2 is-upgraded>Première idée : Modifier le XAML du DataTemplate</h2>
+<p>Une option serait d&#39;avoir un emplacement qu&#39;on affiche/masque pour la partie saisie d&#39;information.<br>Ceci correspondrait à remplacer le <code>DataTemplate</code> dans <code>DecksPage.xaml</code> comme suit :</p>
+<pre><code>&lt;CollectionView.ItemTemplate&gt;
+    &lt;DataTemplate&gt;
+        &lt;Frame Margin=&#34;0,5&#34;
+               Padding=&#34;10&#34;
+               BorderColor=&#34;LightGray&#34;
+               CornerRadius=&#34;8&#34;
+               HasShadow=&#34;True&#34;&gt;
+            &lt;Grid ColumnDefinitions=&#34;*,Auto,Auto,Auto&#34;&gt;
+
+                &lt;!-- Deck info (normal mode) --&gt;
+                &lt;StackLayout Grid.Column=&#34;0&#34;
+                            VerticalOptions=&#34;Center&#34;
+                            x:Name=&#34;DisplayStack&#34;&gt;
+                    &lt;Label Text=&#34;{Binding Name}&#34;
+                           FontSize=&#34;18&#34;
+                           FontAttributes=&#34;Bold&#34; /&gt;
+                    &lt;Label Text=&#34;{Binding CardCount, StringFormat=&#39;{0} cartes&#39;}&#34;
+                           FontSize=&#34;14&#34;
+                           TextColor=&#34;Gray&#34; /&gt;
+                    &lt;Label Text=&#34;{Binding CreatedDate, StringFormat=&#39;Créé le {0:dd/MM/yyyy}&#39;}&#34;
+                           FontSize=&#34;12&#34;
+                           TextColor=&#34;LightGray&#34; /&gt;
+                &lt;/StackLayout&gt;
+
+                &lt;!-- Edit mode (hidden by default) --&gt;
+                &lt;HorizontalStackLayout Grid.Column=&#34;0&#34;
+                                      VerticalOptions=&#34;Center&#34;
+                                      IsVisible=&#34;False&#34;
+                                      x:Name=&#34;EditStack&#34;&gt;
+                    &lt;Entry Text=&#34;{Binding Name}&#34;
+                           x:Name=&#34;EditEntry&#34;
+                           HorizontalOptions=&#34;FillAndExpand&#34;
+                           WidthRequest=&#34;200&#34; /&gt;
+                    &lt;Button Text=&#34;✓&#34;
+                           FontSize=&#34;18&#34;
+                           BackgroundColor=&#34;Green&#34;
+                           TextColor=&#34;White&#34;
+                           Clicked=&#34;OnSaveEditClicked&#34;
+                           CommandParameter=&#34;{Binding .}&#34; /&gt;
+                    &lt;Button Text=&#34;✗&#34;
+                           FontSize=&#34;18&#34;
+                           BackgroundColor=&#34;Red&#34;
+                           TextColor=&#34;White&#34;
+                           Clicked=&#34;OnCancelEditClicked&#34;
+                           CommandParameter=&#34;{Binding .}&#34; /&gt;
+                &lt;/HorizontalStackLayout&gt;
+
+                &lt;!-- Edit button --&gt;
+                &lt;Button Grid.Column=&#34;1&#34;
+                       Text=&#34;✏️&#34;
+                       FontSize=&#34;20&#34;
+                       BackgroundColor=&#34;Transparent&#34;
+                       Clicked=&#34;OnEditDeckInlineClicked&#34;
+                       CommandParameter=&#34;{Binding .}&#34;
+                       x:Name=&#34;EditButton&#34; /&gt;
+
+                &lt;!-- Delete button --&gt;
+                &lt;Button Grid.Column=&#34;2&#34;
+                       Text=&#34;🗑️&#34;
+                       FontSize=&#34;20&#34;
+                       BackgroundColor=&#34;Transparent&#34;
+                       Clicked=&#34;OnDeleteDeckClicked&#34;
+                       CommandParameter=&#34;{Binding .}&#34; /&gt;
+            &lt;/Grid&gt;
+        &lt;/Frame&gt;
+    &lt;/DataTemplate&gt;
+&lt;/CollectionView.ItemTemplate&gt;
+</code></pre>
+<h2 is-upgraded>Code-behind pour l&#39;édition inline</h2>
+<aside class="warning"><p>Malheureusement, dans un DataTemplate, on ne peut pas facilement accéder aux éléments par leur x:Name depuis le code-behind.</p>
+</aside>
+<h2 is-upgraded>Deuxième idée : Créer une page d&#39;édition - EditDeckPage.xaml</h2>
+<p>Voici donc une nouvelle page dédiée à la création :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34; ?&gt;
+&lt;ContentPage xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+             xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+             x:Class=&#34;DeckManager.EditDeckPage&#34;
+             Title=&#34;Modifier le deck&#34;&gt;
+
+    &lt;StackLayout Padding=&#34;20&#34; Spacing=&#34;15&#34;&gt;
+
+        &lt;Label Text=&#34;Nom du deck&#34;
+               FontSize=&#34;16&#34;
+               FontAttributes=&#34;Bold&#34; /&gt;
+
+        &lt;Entry x:Name=&#34;NameEntry&#34;
+               Placeholder=&#34;Nom du deck&#34;
+               FontSize=&#34;18&#34; /&gt;
+
+        &lt;Label Text=&#34;Nombre de cartes&#34;
+               FontSize=&#34;16&#34;
+               FontAttributes=&#34;Bold&#34;
+               Margin=&#34;0,20,0,0&#34; /&gt;
+
+        &lt;HorizontalStackLayout Spacing=&#34;10&#34;&gt;
+            &lt;Button Text=&#34;-&#34;
+                   Clicked=&#34;OnDecrementClicked&#34;
+                   WidthRequest=&#34;50&#34;
+                   BackgroundColor=&#34;LightGray&#34; /&gt;
+
+            &lt;Label x:Name=&#34;CardCountLabel&#34;
+                   Text=&#34;0&#34;
+                   FontSize=&#34;24&#34;
+                   VerticalOptions=&#34;Center&#34;
+                   HorizontalOptions=&#34;Center&#34;
+                   WidthRequest=&#34;60&#34;
+                   HorizontalTextAlignment=&#34;Center&#34; /&gt;
+
+            &lt;Button Text=&#34;+&#34;
+                   Clicked=&#34;OnIncrementClicked&#34;
+                   WidthRequest=&#34;50&#34;
+                   BackgroundColor=&#34;LightGray&#34; /&gt;
+        &lt;/HorizontalStackLayout&gt;
+
+        &lt;Button Text=&#34;Sauvegarder&#34;
+               Clicked=&#34;OnSaveClicked&#34;
+               BackgroundColor=&#34;#4CAF50&#34;
+               TextColor=&#34;White&#34;
+               Margin=&#34;0,30,0,0&#34; /&gt;
+
+        &lt;Button Text=&#34;Annuler&#34;
+               Clicked=&#34;OnCancelClicked&#34;
+               BackgroundColor=&#34;Gray&#34;
+               TextColor=&#34;White&#34; /&gt;
+
+    &lt;/StackLayout&gt;
+
+&lt;/ContentPage&gt;
+</code></pre>
+<h2 is-upgraded>Code-behind EditDeckPage.xaml.cs</h2>
+<p>Et voici la partie de traitement :</p>
+<pre><code>using DeckManager.Models;
+using DeckManager.Services;
+
+namespace DeckManager
+{
+    public partial class EditDeckPage : ContentPage, IQueryAttributable
+    {
+        private Deck _deck;
+        private int _cardCount;
+        private JsonDataService _dataService;
+        private List&lt;Deck&gt; _decks;
+
+        public EditDeckPage()
+        {
+            InitializeComponent();
+        }
+
+        // Receive navigation parameters
+        public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
+        {
+            if (query.TryGetValue(&#34;deck&#34;, out var deckObj) &amp;&amp; deckObj is Deck deck)
+            {
+                _deck = deck;
+                _cardCount = deck.CardCount;
+
+                // Initialize fields
+                NameEntry.Text = deck.Name;
+                CardCountLabel.Text = _cardCount.ToString();
+            }
+
+            if (query.TryGetValue(&#34;dataService&#34;, out var serviceObj) &amp;&amp; serviceObj is JsonDataService service)
+            {
+                _dataService = service;
+            }
+
+            if (query.TryGetValue(&#34;decks&#34;, out var decksObj) &amp;&amp; decksObj is List&lt;Deck&gt; decks)
+            {
+                _decks = decks;
+            }
+        }
+
+        private void OnIncrementClicked(object sender, EventArgs e)
+        {
+            _cardCount++;
+            CardCountLabel.Text = _cardCount.ToString();
+        }
+
+        private void OnDecrementClicked(object sender, EventArgs e)
+        {
+            if (_cardCount &gt; 0)
+            {
+                _cardCount--;
+                CardCountLabel.Text = _cardCount.ToString();
+            }
+        }
+
+        private async void OnSaveClicked(object sender, EventArgs e)
+        {
+            var newName = NameEntry.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                await DisplayAlert(&#34;Erreur&#34;, &#34;Le nom ne peut pas être vide&#34;, &#34;OK&#34;);
+                return;
+            }
+
+            // Update deck
+            _deck.Name = newName;
+            _deck.CardCount = _cardCount;
+
+            // Save immediately to JSON
+            await _dataService.SaveDecksAsync(_decks);
+
+            await Shell.Current.GoToAsync(&#34;..&#34;);
+        }
+
+        private async void OnCancelClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(&#34;..&#34;);
+        }
+    }
+}
+</code></pre>
+<h3 is-upgraded>Explication de la syntaxe pour la récupération des paramètres</h3>
+<p>La ligne suivante peut sembler complexe :</p>
+<pre><code>if (query.TryGetValue(&#34;deck&#34;, out var deckObj) &amp;&amp; deckObj is Deck deck)
+</code></pre>
+<p>Décomposons-la étape par étape pour comprendre ce qui se passe :</p>
+<h4 is-upgraded>Version décomposée (équivalente mais plus longue)</h4>
+<pre><code>// Étape 1 : Essayer de récupérer la valeur avec la clé &#34;deck&#34;
+bool found = query.TryGetValue(&#34;deck&#34;, out var deckObj);
+
+// Étape 2 : Vérifier que la valeur a été trouvée
+if (found)
+{
+    // Étape 3 : Vérifier que l&#39;objet est bien de type Deck
+    if (deckObj is Deck)
+    {
+        // Étape 4 : Convertir (cast) vers le type Deck
+        Deck deck = (Deck)deckObj;
+
+        // Étape 5 : Utiliser la variable deck
+        _deck = deck;
+        // ...
+    }
+}
+</code></pre>
+<h4 is-upgraded>Version condensée (celle utilisée)</h4>
+<p>La syntaxe condensée combine toutes ces étapes :</p>
+<pre><code>if (query.TryGetValue(&#34;deck&#34;, out var deckObj) &amp;&amp; deckObj is Deck deck)
+{
+    _deck = deck;
+    // ...
+}
+</code></pre>
+<h4 is-upgraded>Explication partie par partie</h4>
+<ol type="1">
+<li><code>query.TryGetValue(&#34;deck&#34;, out var deckObj)</code><ul>
+<li>Cherche la clé <code>&#34;deck&#34;</code> dans le dictionnaire</li>
+<li>Si trouvée : retourne <code>true</code> ET stocke la valeur dans <code>deckObj</code></li>
+<li>Si non trouvée : retourne <code>false</code></li>
+</ul>
+</li>
+<li><code>&amp;&amp;</code> (ET logique)<ul>
+<li>N&#39;évalue la partie droite QUE si la partie gauche est <code>true</code></li>
+<li>Court-circuite si <code>TryGetValue</code> retourne <code>false</code></li>
+</ul>
+</li>
+<li><code>deckObj is Deck deck</code><ul>
+<li>Vérifie que <code>deckObj</code> est de type <code>Deck</code></li>
+<li>Si oui : retourne <code>true</code> ET crée une variable <code>deck</code> typée</li>
+<li>Si non : retourne <code>false</code></li>
+</ul>
+</li>
+<li><strong>Résultat final</strong><ul>
+<li>Le bloc <code>if</code> s&#39;exécute SEULEMENT si :<br><br><ul>
+<li>La clé existe dans le dictionnaire</li>
+<li>ET la valeur est du bon type</li>
+</ul>
+</li>
+<li>La variable <code>deck</code> est directement utilisable (typée)</li>
+</ul>
+</li>
+</ol>
+<aside class="special"><p>Cette syntaxe condensée est très courante en C# moderne car elle évite les conversions (cast) dangereuses et rend le code plus sûr.</p>
+</aside>
+<h2 is-upgraded>Modifier DecksPage pour utiliser EditDeckPage</h2>
+<p>Il faut maintenant adapter la page initiale en remplaçant la méthode <code>OnEditDeckClicked</code> dans <code>DecksPage.xaml.cs</code>.</p>
+<p>Pour rappel, il existe plusieurs manières de passer des paramètres entre les pages avec le ‘shell&#39; et nous suggérons d&#39;utiliser<br>la version la plus polyvalente, même si elle demande un peu plus de code :</p>
+<pre><code>private async void OnEditDeckClicked(object sender, EventArgs e)
+{
+    var button = sender as Button;
+    var deck = button?.CommandParameter as Deck;
+
+    if (deck == null) return;
+
+    // Navigate to edit page using Shell
+    // Pass deck, dataService and decks list so EditDeckPage can save
+    var navigationParameter = new Dictionary&lt;string, object&gt;
+    {
+        { &#34;deck&#34;, deck },
+        { &#34;dataService&#34;, _dataService },
+        { &#34;decks&#34;, _decks }
+    };
+    await Shell.Current.GoToAsync(&#34;EditDeck&#34;, navigationParameter);
+}
+
+// Refresh view when returning from edit page
+protected override void OnAppearing()
+{
+    base.OnAppearing();
+
+    // Just refresh the display (save is done in EditDeckPage)
+    RefreshView();
+}
+</code></pre>
+<h3 is-upgraded>Pourquoi passer le service et la liste ?</h3>
+<p>En passant <code>_dataService</code> et <code>_decks</code> à la page d&#39;édition, celle-ci peut sauvegarder immédiatement lorsque l&#39;utilisateur clique sur &#34;Sauvegarder&#34;. C&#39;est plus clair et intuitif :</p>
+<ul>
+<li><strong>Clic sur Sauvegarder</strong> → Modifications enregistrées</li>
+<li><strong>Clic sur Annuler</strong> → Rien n&#39;est sauvegardé</li>
+</ul>
+<p>Une alternative consiste à utiliser un registre de services via une classe statique, par exemple, ou en utilisant <a href="https://learn.microsoft.com/en-us/dotnet/maui/fundamentals/dependency-injection?view=net-maui-10.0" target="_blank">le système .NET</a> un peu plus complexe</p>
+<h2 is-upgraded>Avantages de l&#39;approche avec page dédiée</h2>
+<ul>
+<li><strong>Interface complète</strong> : Plus d&#39;espace pour les contrôles</li>
+<li><strong>Édition de plusieurs propriétés</strong> : Nom ET nombre de cartes</li>
+<li><strong>Meilleure UX</strong> : Focus clair sur la tâche d&#39;édition</li>
+<li><strong>Code plus simple</strong> : Pas de gestion de visibilité complexe</li>
+</ul>
+<aside class="special"><p>L&#39;utilisation d&#39;une page dédiée pour l&#39;édition est une pratique courante dans les applications mobiles.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="DELETE - Supprimer un deck" duration="8">
+        <h2 is-upgraded>Méthode de suppression</h2>
+<p>Ajoutez la méthode dans <code>DecksPage.xaml.cs</code> :</p>
+<pre><code>private async void OnDeleteDeckClicked(object sender, EventArgs e)
+{
+    var button = sender as Button;
+    var deck = button?.CommandParameter as Deck;
+
+    if (deck == null) return;
+
+    // Confirm deletion
+    var confirm = await DisplayAlert(
+        &#34;Confirmation&#34;,
+        $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
+        &#34;Supprimer&#34;,
+        &#34;Annuler&#34;
+    );
+
+    if (!confirm) return;
+
+    // Remove deck
+    _decks.Remove(deck);
+    await _dataService.SaveDecksAsync(_decks);
+
+    RefreshView();
+    UpdateInfo($&#34;Supprimé: {deck.Name}&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Sécurité de suppression</h2>
+<ul>
+<li><strong>DisplayAlert</strong> : Demande confirmation avant suppression</li>
+<li><strong>Bouton destructif</strong> : &#34;Supprimer&#34; en premier (rouge sur iOS)</li>
+<li><strong>Bouton d&#39;annulation</strong> : &#34;Annuler&#34; pour revenir en arrière</li>
+<li><strong>Retour booléen</strong> : <code>confirm</code> indique le choix de l&#39;utilisateur</li>
+</ul>
+<aside class="warning"><p>Toujours demander confirmation avant une suppression pour éviter les erreurs.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Amélioration : ObservableCollection au lieu de RefreshView" duration="8">
+        <h2 is-upgraded>Pourquoi RefreshView() ?</h2>
+<p>Dans ce tutorial, nous utilisons une méthode <code>RefreshView()</code> qui réassigne la liste :</p>
+<pre><code>private void RefreshView()
+{
+    DecksCollectionView.ItemsSource = null;
+    DecksCollectionView.ItemsSource = _decks;
+}
+</code></pre>
+<p>Cette approche simple force le <code>CollectionView</code> à se rafraîchir complètement. Mais pourquoi est-ce nécessaire ?</p>
+<p><strong>Le problème</strong> : Lorsqu&#39;on utilise une <code>List&lt;Deck&gt;</code>, le CollectionView ne détecte PAS automatiquement :</p>
+<ul>
+<li>L&#39;ajout d&#39;éléments (<code>_decks.Add(...)</code>)</li>
+<li>La suppression d&#39;éléments (<code>_decks.Remove(...)</code>)</li>
+<li>Les modifications de propriétés d&#39;un élément (ex: <code>deck.Name = &#34;nouveau nom&#34;</code>)</li>
+</ul>
+<h2 is-upgraded>Qu&#39;est-ce que ObservableCollection ?</h2>
+<p><code>ObservableCollection&lt;T&gt;</code> est une collection intelligente qui <strong>notifie automatiquement</strong> les changements :</p>
+<ul>
+<li>Détecte les ajouts</li>
+<li>Détecte les suppressions</li>
+<li>Détecte les remplacements d&#39;éléments</li>
+<li>Ne détecte PAS les modifications de propriétés (il faudrait <code>INotifyPropertyChanged</code> sur la classe Deck)</li>
+</ul>
+<h2 is-upgraded>Modifications nécessaires</h2>
+<p>Voici les changements à apporter pour utiliser <code>ObservableCollection</code> :</p>
+<h3 is-upgraded>1. Modifier la déclaration dans DecksPage.xaml.cs</h3>
+<pre><code>using System.Collections.ObjectModel;  // Ajouter ce using
+using DeckManager.Models;
+using DeckManager.Services;
+
+namespace DeckManager
+{
+    public partial class DecksPage : ContentPage
+    {
+        private JsonDataService _dataService;
+        private ObservableCollection&lt;Deck&gt; _decks;  // List devient ObservableCollection
+        private int _nextId = 1;
+
+        public DecksPage()
+        {
+            InitializeComponent();
+            _dataService = new JsonDataService();
+            _decks = new ObservableCollection&lt;Deck&gt;();  // new ObservableCollection
+            LoadDecks();
+        }
+</code></pre>
+<h3 is-upgraded>2. Modifier LoadDecks pour charger dans ObservableCollection</h3>
+<pre><code>private async void LoadDecks()
+{
+    var loadedDecks = await _dataService.LoadDecksAsync();
+
+    // Clear and repopulate ObservableCollection
+    _decks.Clear();
+    foreach (var deck in loadedDecks)
+    {
+        _decks.Add(deck);
+    }
+
+    if (_decks.Any())
+    {
+        _nextId = _decks.Max(d =&gt; d.Id) + 1;
+    }
+
+    // Assign ItemsSource ONCE (no need to reassign every time)
+    if (DecksCollectionView.ItemsSource == null)
+    {
+        DecksCollectionView.ItemsSource = _decks;
+    }
+
+    UpdateInfo($&#34;Chargé: {_decks.Count} deck(s)&#34;);
+}
+</code></pre>
+<h3 is-upgraded>3. Supprimer RefreshView() partout où cela apparaît</h3>
+<p>Avec <code>ObservableCollection</code>, plus besoin de rafraîchir manuellement :</p>
+<p><strong>Méthode OnAddDeckClicked :</strong></p>
+<pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
+{
+    var name = NewDeckEntry.Text?.Trim();
+
+    if (string.IsNullOrEmpty(name))
+    {
+        await DisplayAlert(&#34;Erreur&#34;, &#34;Veuillez entrer un nom&#34;, &#34;OK&#34;);
+        return;
+    }
+
+    var newDeck = new Deck
+    {
+        Id = _nextId++,
+        Name = name,
+        CardCount = 0
+    };
+
+    _decks.Add(newDeck);  // ← La vue se met à jour automatiquement !
+    await _dataService.SaveDecksAsync(_decks.ToList());
+
+    // RefreshView();  ← SUPPRIMÉ !
+    NewDeckEntry.Text = string.Empty;
+    UpdateInfo($&#34;Ajouté: {name}&#34;);
+}
+</code></pre>
+<p><strong>Méthode OnDeleteDeckClicked :</strong></p>
+<pre><code>private async void OnDeleteDeckClicked(object sender, EventArgs e)
+{
+    var button = sender as Button;
+    var deck = button?.CommandParameter as Deck;
+
+    if (deck == null) return;
+
+    var confirm = await DisplayAlert(
+        &#34;Confirmation&#34;,
+        $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
+        &#34;Supprimer&#34;,
+        &#34;Annuler&#34;
+    );
+
+    if (!confirm) return;
+
+    _decks.Remove(deck);  // ← La vue se met à jour automatiquement !
+    await _dataService.SaveDecksAsync(_decks.ToList());
+
+    // RefreshView();  ← SUPPRIMÉ !
+    UpdateInfo($&#34;Supprimé: {deck.Name}&#34;);
+}
+</code></pre>
+<p><strong>Méthode OnAppearing :</strong></p>
+<pre><code>protected override void OnAppearing()
+{
+    base.OnAppearing();
+
+    // RefreshView();  ← SUPPRIMÉ !
+    // L&#39;ObservableCollection met déjà à jour la vue automatiquement
+}
+</code></pre>
+<h3 is-upgraded>4. Adapter JsonDataService ou les appels</h3>
+<p>La méthode <code>SaveDecksAsync</code> attend une <code>List&lt;Deck&gt;</code>, donc convertir :</p>
+<pre><code>await _dataService.SaveDecksAsync(_decks.ToList());
+</code></pre>
+<p>Ou modifier <code>JsonDataService</code> pour accepter <code>IEnumerable&lt;Deck&gt;</code> :</p>
+<pre><code>public async Task SaveDecksAsync(IEnumerable&lt;Deck&gt; decks)
+{
+    try
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+        var json = JsonSerializer.Serialize(decks, options);
+        await File.WriteAllTextAsync(_filePath, json);
+    }
+    catch (Exception ex)
+    {
+        System.Diagnostics.Debug.WriteLine($&#34;Error saving: {ex.Message}&#34;);
+    }
+}
+</code></pre>
+<h3 is-upgraded>5. Adapter EditDeckPage pour recevoir ObservableCollection</h3>
+<pre><code>private ObservableCollection&lt;Deck&gt; _decks;  // ← Change type
+
+public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
+{
+    // ...
+
+    if (query.TryGetValue(&#34;decks&#34;, out var decksObj) &amp;&amp; decksObj is ObservableCollection&lt;Deck&gt; decks)
+    {
+        _decks = decks;
+    }
+}
+</code></pre>
+<p>Et dans OnSaveClicked :</p>
+<pre><code>// Update deck (ObservableCollection détecte le changement si on remplace l&#39;objet)
+_deck.Name = newName;
+_deck.CardCount = _cardCount;
+
+// Save to JSON
+await _dataService.SaveDecksAsync(_decks.ToList());
+</code></pre>
+<h2 is-upgraded>Comparaison des approches</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><em>Aspect</em></p>
+</td><td colspan="1" rowspan="1"><p><em>List + RefreshView</em></p>
+</td><td colspan="1" rowspan="1"><p><em>ObservableCollection</em></p>
+</td></tr>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Simplicité</strong></p>
+</td><td colspan="1" rowspan="1"><p>Très simple</p>
+</td><td colspan="1" rowspan="1"><p>Un peu plus de code</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Performance</strong></p>
+</td><td colspan="1" rowspan="1"><p>Rafraîchit TOUT</p>
+</td><td colspan="1" rowspan="1"><p>Met à jour uniquement l&#39;élément modifié</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Détection automatique</strong></p>
+</td><td colspan="1" rowspan="1"><p>Non</p>
+</td><td colspan="1" rowspan="1"><p>Oui (ajout/suppression)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Code explicite</strong></p>
+</td><td colspan="1" rowspan="1"><p>Clair où ça rafraîchit</p>
+</td><td colspan="1" rowspan="1"><p>&#34;Magique&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Propriétés modifiées</strong></p>
+</td><td colspan="1" rowspan="1"><p>Non détecté</p>
+</td><td colspan="1" rowspan="1"><p>Non détecté (besoin de INotifyPropertyChanged)</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Quand utiliser chaque approche ?</h2>
+<p><strong>List + RefreshView</strong> :</p>
+<ul>
+<li>Applications simples avec peu d&#39;éléments</li>
+<li>Quand la clarté du code est prioritaire</li>
+<li>Pour apprendre les bases sans &#34;magie&#34;</li>
+</ul>
+<p><strong>ObservableCollection</strong> :</p>
+<ul>
+<li>Listes avec beaucoup d&#39;éléments (meilleures performances)</li>
+<li>Mises à jour fréquentes</li>
+<li>Applications professionnelles</li>
+</ul>
+<aside class="special"><p>Dans un contexte d&#39;apprentissage, <code>List + RefreshView</code> est pertinent car il montre explicitement QUAND et POURQUOI on rafraîchit la vue. L&#39;ObservableCollection doit cependant être connue car elle a justement été créee pour gérer les problématiques de mises à jour.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Navigation et intégration" duration="5">
+        <h2 is-upgraded>Configurer la navigation Shell</h2>
+<p>Si besoin, voici comment configurer <code>AppShell.xaml</code> pour le tutoriel :</p>
+<pre><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;
+&lt;Shell
+    x:Class=&#34;DeckManager.AppShell&#34;
+    xmlns=&#34;http://schemas.microsoft.com/dotnet/2021/maui&#34;
+    xmlns:x=&#34;http://schemas.microsoft.com/winfx/2009/xaml&#34;
+    xmlns:local=&#34;clr-namespace:DeckManager&#34;&gt;
+
+    &lt;ShellContent
+        Title=&#34;Decks&#34;
+        ContentTemplate=&#34;{DataTemplate local:DecksPage}&#34;
+        Route=&#34;DecksPage&#34; /&gt;
+
+&lt;/Shell&gt;
+</code></pre>
+<h2 is-upgraded>Enregistrer les routes</h2>
+<p>Dans <code>App.xaml.cs</code>, enregistrez la route pour EditDeckPage :</p>
+<pre><code>namespace DeckManager
+{
+    public partial class App : Application
+    {
+        public App()
+        {
+            InitializeComponent();
+
+            // Register navigation routes
+            Routing.RegisterRoute(&#34;EditDeck&#34;, typeof(EditDeckPage));
+
+            MainPage = new AppShell();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Points clés de la navigation Shell</h2>
+<ul>
+<li><strong>Route registration</strong> : Les pages non déclarées dans AppShell doivent être enregistrées !</li>
+<li><strong>GoToAsync</strong> : Navigation avec <code>Shell.Current.GoToAsync(&#34;RouteName&#34;)</code></li>
+<li><strong>Parameters</strong> : Passage de paramètres via Dictionary</li>
+<li><strong>IQueryAttributable</strong> : Interface pour recevoir les paramètres</li>
+<li><strong>&#34;..&#34;</strong> : Navigation arrière (comme &#34;retour&#34;)</li>
+</ul>
+<aside class="warning"><p>Ne pas utiliser <code>Navigation.PushAsync()</code> avec Shell ! Cela utilise une pile de navigation différente et causera des conflits. Utiliser toujours <code>Shell.Current.GoToAsync()</code>.</p>
+</aside>
+<aside class="special"><p>Shell gère automatiquement la barre de navigation et le bouton retour.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Validation de l&#39;application" duration="5">
+        <h2 is-upgraded>Lancer l&#39;application</h2>
+<p>Il est temps de faire un tour des fonctionnalités pour vérifier que tout est en ordre.</p>
+<h2 is-upgraded>Tester les opérations CRUD</h2>
+<ol type="1">
+<li><strong>CREATE</strong> : Ajouter plusieurs decks avec des noms différents</li>
+<li><strong>READ</strong>   : Vérifier que la liste s&#39;affiche correctement</li>
+<li><strong>UPDATE</strong> : Cliquez sur ✏️ et renommez un deck (essayez les 2 méthodes)</li>
+<li><strong>DELETE</strong> : Cliquez sur 🗑️ et supprimez un deck</li>
+</ol>
+<h2 is-upgraded>Vérifier la persistance</h2>
+<ol type="1">
+<li>Ajoutez quelques decks</li>
+<li>Fermez l&#39;application complètement</li>
+<li>Relancez l&#39;application</li>
+<li>Vérifiez que les decks sont toujours là</li>
+</ol>
+<aside class="special"><p>Si les données persistent après redémarrage, votre sérialisation JSON fonctionne parfaitement !</p>
+</aside>
+<h2 is-upgraded>Cas limite</h2>
+<ul>
+<li>Qu&#39;est-ce qui se passe si on créee 2 decks avec le même nom ?</li>
+<li>Que faudrait-il faire ?</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Améliorations possibles" duration="5">
+        <h2 is-upgraded>Tri et recherche</h2>
+<p>Ajouter / Adapter ces fonctionnalités pour améliorer l&#39;expérience utilisateur :</p>
+<pre><code>// Sort decks by name
+private void SortDecks()
+{
+    _decks = _decks.OrderBy(d =&gt; d.Name).ToList();
+    RefreshView();
+}
+
+// Search filter
+private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+{
+    var searchText = e.NewTextValue?.ToLower() ?? &#34;&#34;;
+
+    if (string.IsNullOrWhiteSpace(searchText))
+    {
+        DecksCollectionView.ItemsSource = _decks;
+    }
+    else
+    {
+        var filtered = _decks.Where(d =&gt;
+            d.Name.ToLower().Contains(searchText)
+        ).ToList();
+        DecksCollectionView.ItemsSource = filtered;
+    }
+}
+</code></pre>
+<h3 is-upgraded>Tri par nom ou par date</h3>
+<ul>
+<li>L&#39;exemple propose un tri par nom, mais peut-être que par date de création serait plus judicieux ?</li>
+</ul>
+<h2 is-upgraded>Ajout d&#39;un SearchBar dans le XAML</h2>
+<pre><code>&lt;SearchBar Placeholder=&#34;Rechercher un deck...&#34;
+           TextChanged=&#34;OnSearchTextChanged&#34;
+           Margin=&#34;0,0,0,10&#34; /&gt;
+</code></pre>
+<h2 is-upgraded>Thème coloré par deck</h2>
+<p>Ajouter une propriété Color au modèle Deck et assigner des couleurs :</p>
+<pre><code>public class Deck
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public DateTime CreatedDate { get; set; }
+    public int CardCount { get; set; }
+    public string Color { get; set; } = &#34;#2196F3&#34;;
+
+    // ...
+}
+</code></pre>
+<aside class="special"><p>Ces améliorations peuvent être implémentées progressivement sans changer l&#39;architecture.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Déboguer le fichier JSON" duration="3">
+        <h2 is-upgraded>Localiser le fichier</h2>
+<p>Ajouter un bouton de debug dans une nouvelle page &#34;debug&#34; :</p>
+<pre><code>private async void OnShowPathClicked(object sender, EventArgs e)
+{
+    var path = _dataService.GetFilePath();
+    await DisplayAlert(&#34;Fichier JSON&#34;, path, &#34;OK&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Exemple de contenu JSON</h2>
+<p>Voici à quoi ressemble le fichier <code>decks.json</code> :</p>
+<pre><code>[
+  {
+    &#34;Id&#34;: 1,
+    &#34;Name&#34;: &#34;Anglais - Vocabulaire&#34;,
+    &#34;CreatedDate&#34;: &#34;2024-01-15T10:30:00&#34;,
+    &#34;CardCount&#34;: 25
+  },
+  {
+    &#34;Id&#34;: 2,
+    &#34;Name&#34;: &#34;Mathématiques&#34;,
+    &#34;CreatedDate&#34;: &#34;2024-01-15T11:00:00&#34;,
+    &#34;CardCount&#34;: 15
+  },
+  {
+    &#34;Id&#34;: 3,
+    &#34;Name&#34;: &#34;Histoire - Dates importantes&#34;,
+    &#34;CreatedDate&#34;: &#34;2024-01-15T14:20:00&#34;,
+    &#34;CardCount&#34;: 40
+  }
+]
+</code></pre>
+<aside class="special"><p>Le format JSON est lisible et peut même être édité manuellement si nécessaire pour le débogage.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Code complet - DecksPage.xaml.cs" duration="2">
+        <h2 is-upgraded>Fichier complet pour référence</h2>
+<pre><code>using DeckManager.Models;
+using DeckManager.Services;
+
+namespace DeckManager
+{
+    public partial class DecksPage : ContentPage
+    {
+        private JsonDataService _dataService;
+        private List&lt;Deck&gt; _decks;
+        private int _nextId = 1;
+
+        public DecksPage()
+        {
+            InitializeComponent();
+            _dataService = new JsonDataService();
+            _decks = new List&lt;Deck&gt;();
+            LoadDecks();
+        }
+
+        private async void LoadDecks()
+        {
+            _decks = await _dataService.LoadDecksAsync();
+
+            if (_decks.Any())
+            {
+                _nextId = _decks.Max(d =&gt; d.Id) + 1;
+            }
+
+            RefreshView();
+            UpdateInfo($&#34;Chargé: {_decks.Count} deck(s)&#34;);
+        }
+
+        private void RefreshView()
+        {
+            DecksCollectionView.ItemsSource = null;
+            DecksCollectionView.ItemsSource = _decks;
+        }
+
+        private void UpdateInfo(string message)
+        {
+            InfoLabel.Text = $&#34;{DateTime.Now:HH:mm:ss} - {message}&#34;;
+        }
+
+        private async void OnAddDeckClicked(object sender, EventArgs e)
+        {
+            var name = NewDeckEntry.Text?.Trim();
+
+            if (string.IsNullOrEmpty(name))
+            {
+                await DisplayAlert(&#34;Erreur&#34;, &#34;Veuillez entrer un nom&#34;, &#34;OK&#34;);
+                return;
+            }
+
+            var newDeck = new Deck
+            {
+                Id = _nextId++,
+                Name = name,
+                CardCount = 0
+            };
+
+            _decks.Add(newDeck);
+            await _dataService.SaveDecksAsync(_decks);
+
+            RefreshView();
+            NewDeckEntry.Text = string.Empty;
+            UpdateInfo($&#34;Ajouté: {name}&#34;);
+        }
+
+        private async void OnEditDeckClicked(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+            var deck = button?.CommandParameter as Deck;
+
+            if (deck == null) return;
+
+            // Navigate to edit page using Shell
+            // Pass deck, dataService and decks list so EditDeckPage can save
+            var navigationParameter = new Dictionary&lt;string, object&gt;
+            {
+                { &#34;deck&#34;, deck },
+                { &#34;dataService&#34;, _dataService },
+                { &#34;decks&#34;, _decks }
+            };
+            await Shell.Current.GoToAsync(&#34;EditDeck&#34;, navigationParameter);
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // Just refresh the display (save is done in EditDeckPage)
+            RefreshView();
+        }
+
+        private async void OnDeleteDeckClicked(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+            var deck = button?.CommandParameter as Deck;
+
+            if (deck == null) return;
+
+            var confirm = await DisplayAlert(
+                &#34;Confirmation&#34;,
+                $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
+                &#34;Supprimer&#34;,
+                &#34;Annuler&#34;
+            );
+
+            if (!confirm) return;
+
+            _decks.Remove(deck);
+            await _dataService.SaveDecksAsync(_decks);
+
+            RefreshView();
+            UpdateInfo($&#34;Supprimé: {deck.Name}&#34;);
+        }
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <h2 is-upgraded>Compétences acquises</h2>
+<p>Suite à ce tutorial, les éléments suivants ont été pratiqué :</p>
+<ul>
+<li>Créer un modèle de données simple (classe Deck)</li>
+<li>Implémenter un service de persistance JSON</li>
+<li>Utiliser CollectionView pour afficher une liste</li>
+<li>Réaliser les 4 opérations CRUD :<ul>
+<li><strong>Create</strong> : Ajouter des decks</li>
+<li><strong>Read</strong> : Charger et afficher les decks</li>
+<li><strong>Update</strong> : Renommer un deck (2 approches : DisplayPrompt et page dédiée)</li>
+<li><strong>Delete</strong> : Supprimer avec confirmation</li>
+</ul>
+</li>
+<li>Gérer les événements en code-behind</li>
+<li>Utiliser le binding XAML avec DataTemplate</li>
+<li>Sérialiser/désérialiser du JSON avec System.Text.Json</li>
+<li>Stocker des fichiers dans FileSystem.AppDataDirectory</li>
+<li>Naviguer entre pages avec Shell (GoToAsync, routes, IQueryAttributable)</li>
+</ul>
+<h2 is-upgraded>Comparaison des approches UPDATE</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><em>Approche</em></p>
+</td><td colspan="1" rowspan="1"><p><em>Avantages</em></p>
+</td><td colspan="1" rowspan="1"><p><em>Inconvénients</em></p>
+</td></tr>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>DisplayPrompt</strong></p>
+</td><td colspan="1" rowspan="1"><p>Simple, rapide à implémenter</p>
+</td><td colspan="1" rowspan="1"><p>Limité à une seule propriété</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Page dédiée</strong></p>
+</td><td colspan="1" rowspan="1"><p>Interface complète, plusieurs propriétés</p>
+</td><td colspan="1" rowspan="1"><p>Un peu plus de code</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Prochaines étapes</h2>
+<p>Cette base est parfaite pour la suite du projet Flashcard, soit:</p>
+<ul>
+<li><strong>Ajouter la gestion des cartes (flashcards) dans chaque deck</strong></li>
+<li><strong>Ajouter des animations</strong></li>
+<li><strong>Implémenter un mode de révision</strong></li>
+</ul>
+<aside class="special"><p>Ce tutorial est une base solide pour créer des applications MAUI avec persistance de données !</p>
+</aside>
+<h2 is-upgraded>Quiz</h2>
+<p>Voici un quizz pour vérifier les aspects clé des éléments présentés</p>
+<iframe class="youtube-video" src="https://docs.google.com/forms/d/e/1FAIpQLSdptggAJ22bvZqkhEmzEBL2HXSZzr4T4emGlvgTQsjttM5pqw/viewform?embedded=true"></iframe>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

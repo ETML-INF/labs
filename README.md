@@ -28,3 +28,5 @@ go to http://localhost:12345/
 gulp dist
 ```
 
+## Déploiement
+Auto via kreativmedia (just push!!!)
