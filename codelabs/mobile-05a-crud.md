@@ -8,7 +8,7 @@ status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
-# CRUD
+# CRUD en code behind
 
 ## Introduction
 Duration: 0:02:00
@@ -137,8 +137,8 @@ namespace DeckManager.Services
                     return new List<Deck>();
                 }
 
-                var json = await File.ReadAllTextAsync(_filePath);
-                var decks = JsonSerializer.Deserialize<List<Deck>>(json);
+                string json = await File.ReadAllTextAsync(_filePath);
+                List<Deck>? decks = JsonSerializer.Deserialize<List<Deck>>(json);
                 return decks ?? new List<Deck>();
             }
             catch (Exception ex)
@@ -152,11 +152,11 @@ namespace DeckManager.Services
         {
             try
             {
-                var options = new JsonSerializerOptions
+                JsonSerializerOptions options = new JsonSerializerOptions
                 {
                     WriteIndented = true
                 };
-                var json = JsonSerializer.Serialize(decks, options);
+                string json = JsonSerializer.Serialize(decks, options);
                 await File.WriteAllTextAsync(_filePath, json);
             }
             catch (Exception ex)
@@ -373,7 +373,7 @@ Ajouter la méthode pour créer un nouveau deck :
 ```csharp
 private async void OnAddDeckClicked(object sender, EventArgs e)
 {
-    var name = NewDeckEntry.Text?.Trim();
+    string? name = NewDeckEntry.Text?.Trim();
 
     if (string.IsNullOrEmpty(name))
     {
@@ -382,7 +382,7 @@ private async void OnAddDeckClicked(object sender, EventArgs e)
     }
 
     // Create new deck
-    var newDeck = new Deck
+    Deck newDeck = new Deck
     {
         Id = _nextId++,
         Name = name,
@@ -419,13 +419,13 @@ Ajoutez la méthode dans `DecksPage.xaml.cs` :
 ```csharp
 private async void OnEditDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Prompt for new name
-    var newName = await DisplayPromptAsync(
+    string? newName = await DisplayPromptAsync(
         "Renommer",
         "Nouveau nom du deck:",
         initialValue: deck.Name,
@@ -631,7 +631,7 @@ namespace DeckManager
         // Receive navigation parameters
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query.TryGetValue("deck", out var deckObj) && deckObj is Deck deck)
+            if (query.TryGetValue("deck", out object? deckObj) && deckObj is Deck deck)
             {
                 _deck = deck;
                 _cardCount = deck.CardCount;
@@ -641,12 +641,12 @@ namespace DeckManager
                 CardCountLabel.Text = _cardCount.ToString();
             }
 
-            if (query.TryGetValue("dataService", out var serviceObj) && serviceObj is JsonDataService service)
+            if (query.TryGetValue("dataService", out object? serviceObj) && serviceObj is JsonDataService service)
             {
                 _dataService = service;
             }
 
-            if (query.TryGetValue("decks", out var decksObj) && decksObj is List<Deck> decks)
+            if (query.TryGetValue("decks", out object? decksObj) && decksObj is List<Deck> decks)
             {
                 _decks = decks;
             }
@@ -669,7 +669,7 @@ namespace DeckManager
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            var newName = NameEntry.Text?.Trim();
+            string? newName = NameEntry.Text?.Trim();
 
             if (string.IsNullOrWhiteSpace(newName))
             {
@@ -708,7 +708,7 @@ Décomposons-la étape par étape pour comprendre ce qui se passe :
 
 ```csharp
 // Étape 1 : Essayer de récupérer la valeur avec la clé "deck"
-bool found = query.TryGetValue("deck", out var deckObj);
+bool found = query.TryGetValue("deck", out object? deckObj);
 
 // Étape 2 : Vérifier que la valeur a été trouvée
 if (found)
@@ -731,7 +731,7 @@ if (found)
 La syntaxe condensée combine toutes ces étapes :
 
 ```csharp
-if (query.TryGetValue("deck", out var deckObj) && deckObj is Deck deck)
+if (query.TryGetValue("deck", out object? deckObj) && deckObj is Deck deck)
 {
     _deck = deck;
     // ...
@@ -773,14 +773,14 @@ la version la plus polyvalente, même si elle demande un peu plus de code :
 ```csharp
 private async void OnEditDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Navigate to edit page using Shell
     // Pass deck, dataService and decks list so EditDeckPage can save
-    var navigationParameter = new Dictionary<string, object>
+    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
     {
         { "deck", deck },
         { "dataService", _dataService },
@@ -827,13 +827,13 @@ Ajoutez la méthode dans `DecksPage.xaml.cs` :
 ```csharp
 private async void OnDeleteDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Confirm deletion
-    var confirm = await DisplayAlert(
+    bool confirm = await DisplayAlert(
         "Confirmation",
         $"Voulez-vous vraiment supprimer '{deck.Name}' ?",
         "Supprimer",
@@ -924,11 +924,11 @@ namespace DeckManager
 ```csharp
 private async void LoadDecks()
 {
-    var loadedDecks = await _dataService.LoadDecksAsync();
+    List<Deck> loadedDecks = await _dataService.LoadDecksAsync();
 
     // Clear and repopulate ObservableCollection
     _decks.Clear();
-    foreach (var deck in loadedDecks)
+    foreach (Deck deck in loadedDecks)
     {
         _decks.Add(deck);
     }
@@ -956,7 +956,7 @@ Avec `ObservableCollection`, plus besoin de rafraîchir manuellement :
 ```csharp
 private async void OnAddDeckClicked(object sender, EventArgs e)
 {
-    var name = NewDeckEntry.Text?.Trim();
+    string? name = NewDeckEntry.Text?.Trim();
 
     if (string.IsNullOrEmpty(name))
     {
@@ -964,7 +964,7 @@ private async void OnAddDeckClicked(object sender, EventArgs e)
         return;
     }
 
-    var newDeck = new Deck
+    Deck newDeck = new Deck
     {
         Id = _nextId++,
         Name = name,
@@ -984,12 +984,12 @@ private async void OnAddDeckClicked(object sender, EventArgs e)
 ```csharp
 private async void OnDeleteDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
-    var confirm = await DisplayAlert(
+    bool confirm = await DisplayAlert(
         "Confirmation",
         $"Voulez-vous vraiment supprimer '{deck.Name}' ?",
         "Supprimer",
@@ -1055,7 +1055,7 @@ public void ApplyQueryAttributes(IDictionary<string, object> query)
 {
     // ...
 
-    if (query.TryGetValue("decks", out var decksObj) && decksObj is ObservableCollection<Deck> decks)
+    if (query.TryGetValue("decks", out object? decksObj) && decksObj is ObservableCollection<Deck> decks)
     {
         _decks = decks;
     }
@@ -1204,7 +1204,7 @@ private void SortDecks()
 // Search filter
 private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
 {
-    var searchText = e.NewTextValue?.ToLower() ?? "";
+    string searchText = e.NewTextValue?.ToLower() ?? "";
 
     if (string.IsNullOrWhiteSpace(searchText))
     {
@@ -1212,7 +1212,7 @@ private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     }
     else
     {
-        var filtered = _decks.Where(d =>
+        List<Deck> filtered = _decks.Where(d =>
             d.Name.ToLower().Contains(searchText)
         ).ToList();
         DecksCollectionView.ItemsSource = filtered;
@@ -1261,7 +1261,7 @@ Ajouter un bouton de debug dans une nouvelle page "debug" :
 ```csharp
 private async void OnShowPathClicked(object sender, EventArgs e)
 {
-    var path = _dataService.GetFilePath();
+    string path = _dataService.GetFilePath();
     await DisplayAlert("Fichier JSON", path, "OK");
 }
 ```
@@ -1347,7 +1347,7 @@ namespace DeckManager
 
         private async void OnAddDeckClicked(object sender, EventArgs e)
         {
-            var name = NewDeckEntry.Text?.Trim();
+            string? name = NewDeckEntry.Text?.Trim();
 
             if (string.IsNullOrEmpty(name))
             {
@@ -1355,7 +1355,7 @@ namespace DeckManager
                 return;
             }
 
-            var newDeck = new Deck
+            Deck newDeck = new Deck
             {
                 Id = _nextId++,
                 Name = name,
@@ -1372,14 +1372,14 @@ namespace DeckManager
 
         private async void OnEditDeckClicked(object sender, EventArgs e)
         {
-            var button = sender as Button;
-            var deck = button?.CommandParameter as Deck;
+            Button? button = sender as Button;
+            Deck? deck = button?.CommandParameter as Deck;
 
             if (deck == null) return;
 
             // Navigate to edit page using Shell
             // Pass deck, dataService and decks list so EditDeckPage can save
-            var navigationParameter = new Dictionary<string, object>
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
             {
                 { "deck", deck },
                 { "dataService", _dataService },
@@ -1398,12 +1398,12 @@ namespace DeckManager
 
         private async void OnDeleteDeckClicked(object sender, EventArgs e)
         {
-            var button = sender as Button;
-            var deck = button?.CommandParameter as Deck;
+            Button? button = sender as Button;
+            Deck? deck = button?.CommandParameter as Deck;
 
             if (deck == null) return;
 
-            var confirm = await DisplayAlert(
+            bool confirm = await DisplayAlert(
                 "Confirmation",
                 $"Voulez-vous vraiment supprimer '{deck.Name}' ?",
                 "Supprimer",

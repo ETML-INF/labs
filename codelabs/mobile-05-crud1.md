@@ -8,7 +8,7 @@ status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
-# CRUD
+# CRUD avec MVVM
 
 ## Introduction
 Duration: 0:0:30

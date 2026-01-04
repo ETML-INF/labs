@@ -94,6 +94,10 @@ const STAGING_BUCKET = gcs.bucketName(args.stagingBucket || 'DEFAULT_STAGING_BUC
 // VIEWS_FILTER is the filter to use for view inclusion.
 const VIEWS_FILTER = args.viewsFilter || '*';
 
+// USE_SYMLINKS controls whether to use symlinks (true) or copy directories (false).
+// Default is false (copy). Use --useSymlinks to enable symlinks.
+const USE_SYMLINKS = !!args.useSymlinks || false;
+
 // clean:build removes the build directory
 gulp.task('clean:build', (callback) => {
   return del('build')
@@ -858,16 +862,21 @@ const sortCodelabs = (codelabs, view) => {
 // are specified (i.e. if codelabRe and viewRe are both undefined), then this
 // function returns all codelabs in the codelabs directory.
 const copyFilteredCodelabs = (dest) =>  {
-  // No filters were specified, symlink the codelabs folder directly and save
+  // No filters were specified, copy or symlink the codelabs folder directly and save
   // processing.
   if (CODELABS_FILTER === '*' && VIEWS_FILTER === '*') {
     const source = path.join(CODELABS_DIR);
     const target = path.join(dest, CODELABS_NAMESPACE);
-	//console.log(__dirname); 
-	//console.log("link "+source+"->"+target);
-    //fs.ensureSymlinkSync(source, target, 'dir');
-	lnk.sync(source, dest,{rename:CODELABS_NAMESPACE});
-		//.then(() => console.log('done linking '+source+'->'+target));
+
+	if (USE_SYMLINKS) {
+	  // Use symlink/junction (requires --useSymlinks flag)
+	  console.log("Creating symlink: "+source+" -> "+target);
+	  lnk.sync(source, dest, {rename: CODELABS_NAMESPACE});
+	} else {
+	  // Copy directory (default behavior)
+	  console.log("Copying directory: "+source+" -> "+target);
+	  fs.copySync(source, target);
+	}
     return
   }
 
@@ -877,9 +886,14 @@ const copyFilteredCodelabs = (dest) =>  {
     const codelab = codelabs[i];
     const source = path.join(CODELABS_DIR, codelab.id);
     const target = path.join(dest, CODELABS_NAMESPACE, codelab.id);
-    fs.ensureSymlinkSync(source, target, 'dir');
-	/*lnk(source, target)
-		.then(() => console.log('done linking '+source+'->'+target));*/
+
+	if (USE_SYMLINKS) {
+	  // Use symlink/junction (requires --useSymlinks flag)
+	  fs.ensureSymlinkSync(source, target, 'dir');
+	} else {
+	  // Copy directory (default behavior)
+	  fs.copySync(source, target);
+	}
   }
 };
 

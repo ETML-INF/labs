@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>CRUD</title>
+  <title>CRUD en code behind</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
@@ -23,7 +23,7 @@
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid="UA-170792591-1"
                   id="mobile-05a-crud"
-                  title="CRUD"
+                  title="CRUD en code behind"
                   environment="web"
                   feedback-link="https://git.section-inf.ch/jmy/labs/issues">
     
@@ -139,8 +139,8 @@ namespace DeckManager.Services
                     return new List&lt;Deck&gt;();
                 }
 
-                var json = await File.ReadAllTextAsync(_filePath);
-                var decks = JsonSerializer.Deserialize&lt;List&lt;Deck&gt;&gt;(json);
+                string json = await File.ReadAllTextAsync(_filePath);
+                List&lt;Deck&gt;? decks = JsonSerializer.Deserialize&lt;List&lt;Deck&gt;&gt;(json);
                 return decks ?? new List&lt;Deck&gt;();
             }
             catch (Exception ex)
@@ -154,11 +154,11 @@ namespace DeckManager.Services
         {
             try
             {
-                var options = new JsonSerializerOptions
+                JsonSerializerOptions options = new JsonSerializerOptions
                 {
                     WriteIndented = true
                 };
-                var json = JsonSerializer.Serialize(decks, options);
+                string json = JsonSerializer.Serialize(decks, options);
                 await File.WriteAllTextAsync(_filePath, json);
             }
             catch (Exception ex)
@@ -360,7 +360,7 @@ namespace DeckManager
 <p>Ajouter la méthode pour créer un nouveau deck :</p>
 <pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
 {
-    var name = NewDeckEntry.Text?.Trim();
+    string? name = NewDeckEntry.Text?.Trim();
 
     if (string.IsNullOrEmpty(name))
     {
@@ -369,7 +369,7 @@ namespace DeckManager
     }
 
     // Create new deck
-    var newDeck = new Deck
+    Deck newDeck = new Deck
     {
         Id = _nextId++,
         Name = name,
@@ -403,13 +403,13 @@ namespace DeckManager
 <p>Ajoutez la méthode dans <code>DecksPage.xaml.cs</code> :</p>
 <pre><code>private async void OnEditDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Prompt for new name
-    var newName = await DisplayPromptAsync(
+    string? newName = await DisplayPromptAsync(
         &#34;Renommer&#34;,
         &#34;Nouveau nom du deck:&#34;,
         initialValue: deck.Name,
@@ -599,7 +599,7 @@ namespace DeckManager
         // Receive navigation parameters
         public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
         {
-            if (query.TryGetValue(&#34;deck&#34;, out var deckObj) &amp;&amp; deckObj is Deck deck)
+            if (query.TryGetValue(&#34;deck&#34;, out object? deckObj) &amp;&amp; deckObj is Deck deck)
             {
                 _deck = deck;
                 _cardCount = deck.CardCount;
@@ -609,12 +609,12 @@ namespace DeckManager
                 CardCountLabel.Text = _cardCount.ToString();
             }
 
-            if (query.TryGetValue(&#34;dataService&#34;, out var serviceObj) &amp;&amp; serviceObj is JsonDataService service)
+            if (query.TryGetValue(&#34;dataService&#34;, out object? serviceObj) &amp;&amp; serviceObj is JsonDataService service)
             {
                 _dataService = service;
             }
 
-            if (query.TryGetValue(&#34;decks&#34;, out var decksObj) &amp;&amp; decksObj is List&lt;Deck&gt; decks)
+            if (query.TryGetValue(&#34;decks&#34;, out object? decksObj) &amp;&amp; decksObj is List&lt;Deck&gt; decks)
             {
                 _decks = decks;
             }
@@ -637,7 +637,7 @@ namespace DeckManager
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            var newName = NameEntry.Text?.Trim();
+            string? newName = NameEntry.Text?.Trim();
 
             if (string.IsNullOrWhiteSpace(newName))
             {
@@ -669,7 +669,7 @@ namespace DeckManager
 <p>Décomposons-la étape par étape pour comprendre ce qui se passe :</p>
 <h4 is-upgraded>Version décomposée (équivalente mais plus longue)</h4>
 <pre><code>// Étape 1 : Essayer de récupérer la valeur avec la clé &#34;deck&#34;
-bool found = query.TryGetValue(&#34;deck&#34;, out var deckObj);
+bool found = query.TryGetValue(&#34;deck&#34;, out object? deckObj);
 
 // Étape 2 : Vérifier que la valeur a été trouvée
 if (found)
@@ -688,7 +688,7 @@ if (found)
 </code></pre>
 <h4 is-upgraded>Version condensée (celle utilisée)</h4>
 <p>La syntaxe condensée combine toutes ces étapes :</p>
-<pre><code>if (query.TryGetValue(&#34;deck&#34;, out var deckObj) &amp;&amp; deckObj is Deck deck)
+<pre><code>if (query.TryGetValue(&#34;deck&#34;, out object? deckObj) &amp;&amp; deckObj is Deck deck)
 {
     _deck = deck;
     // ...
@@ -730,14 +730,14 @@ if (found)
 <p>Pour rappel, il existe plusieurs manières de passer des paramètres entre les pages avec le ‘shell&#39; et nous suggérons d&#39;utiliser<br>la version la plus polyvalente, même si elle demande un peu plus de code :</p>
 <pre><code>private async void OnEditDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Navigate to edit page using Shell
     // Pass deck, dataService and decks list so EditDeckPage can save
-    var navigationParameter = new Dictionary&lt;string, object&gt;
+    Dictionary&lt;string, object&gt; navigationParameter = new Dictionary&lt;string, object&gt;
     {
         { &#34;deck&#34;, deck },
         { &#34;dataService&#34;, _dataService },
@@ -780,13 +780,13 @@ protected override void OnAppearing()
 <p>Ajoutez la méthode dans <code>DecksPage.xaml.cs</code> :</p>
 <pre><code>private async void OnDeleteDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
     // Confirm deletion
-    var confirm = await DisplayAlert(
+    bool confirm = await DisplayAlert(
         &#34;Confirmation&#34;,
         $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
         &#34;Supprimer&#34;,
@@ -866,11 +866,11 @@ namespace DeckManager
 <h3 is-upgraded>2. Modifier LoadDecks pour charger dans ObservableCollection</h3>
 <pre><code>private async void LoadDecks()
 {
-    var loadedDecks = await _dataService.LoadDecksAsync();
+    List&lt;Deck&gt; loadedDecks = await _dataService.LoadDecksAsync();
 
     // Clear and repopulate ObservableCollection
     _decks.Clear();
-    foreach (var deck in loadedDecks)
+    foreach (Deck deck in loadedDecks)
     {
         _decks.Add(deck);
     }
@@ -894,7 +894,7 @@ namespace DeckManager
 <p><strong>Méthode OnAddDeckClicked :</strong></p>
 <pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
 {
-    var name = NewDeckEntry.Text?.Trim();
+    string? name = NewDeckEntry.Text?.Trim();
 
     if (string.IsNullOrEmpty(name))
     {
@@ -902,7 +902,7 @@ namespace DeckManager
         return;
     }
 
-    var newDeck = new Deck
+    Deck newDeck = new Deck
     {
         Id = _nextId++,
         Name = name,
@@ -920,12 +920,12 @@ namespace DeckManager
 <p><strong>Méthode OnDeleteDeckClicked :</strong></p>
 <pre><code>private async void OnDeleteDeckClicked(object sender, EventArgs e)
 {
-    var button = sender as Button;
-    var deck = button?.CommandParameter as Deck;
+    Button? button = sender as Button;
+    Deck? deck = button?.CommandParameter as Deck;
 
     if (deck == null) return;
 
-    var confirm = await DisplayAlert(
+    bool confirm = await DisplayAlert(
         &#34;Confirmation&#34;,
         $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
         &#34;Supprimer&#34;,
@@ -979,7 +979,7 @@ public void ApplyQueryAttributes(IDictionary&lt;string, object&gt; query)
 {
     // ...
 
-    if (query.TryGetValue(&#34;decks&#34;, out var decksObj) &amp;&amp; decksObj is ObservableCollection&lt;Deck&gt; decks)
+    if (query.TryGetValue(&#34;decks&#34;, out object? decksObj) &amp;&amp; decksObj is ObservableCollection&lt;Deck&gt; decks)
     {
         _decks = decks;
     }
@@ -1133,7 +1133,7 @@ private void SortDecks()
 // Search filter
 private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
 {
-    var searchText = e.NewTextValue?.ToLower() ?? &#34;&#34;;
+    string searchText = e.NewTextValue?.ToLower() ?? &#34;&#34;;
 
     if (string.IsNullOrWhiteSpace(searchText))
     {
@@ -1141,7 +1141,7 @@ private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     }
     else
     {
-        var filtered = _decks.Where(d =&gt;
+        List&lt;Deck&gt; filtered = _decks.Where(d =&gt;
             d.Name.ToLower().Contains(searchText)
         ).ToList();
         DecksCollectionView.ItemsSource = filtered;
@@ -1181,7 +1181,7 @@ private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
 <p>Ajouter un bouton de debug dans une nouvelle page &#34;debug&#34; :</p>
 <pre><code>private async void OnShowPathClicked(object sender, EventArgs e)
 {
-    var path = _dataService.GetFilePath();
+    string path = _dataService.GetFilePath();
     await DisplayAlert(&#34;Fichier JSON&#34;, path, &#34;OK&#34;);
 }
 </code></pre>
@@ -1261,7 +1261,7 @@ namespace DeckManager
 
         private async void OnAddDeckClicked(object sender, EventArgs e)
         {
-            var name = NewDeckEntry.Text?.Trim();
+            string? name = NewDeckEntry.Text?.Trim();
 
             if (string.IsNullOrEmpty(name))
             {
@@ -1269,7 +1269,7 @@ namespace DeckManager
                 return;
             }
 
-            var newDeck = new Deck
+            Deck newDeck = new Deck
             {
                 Id = _nextId++,
                 Name = name,
@@ -1286,14 +1286,14 @@ namespace DeckManager
 
         private async void OnEditDeckClicked(object sender, EventArgs e)
         {
-            var button = sender as Button;
-            var deck = button?.CommandParameter as Deck;
+            Button? button = sender as Button;
+            Deck? deck = button?.CommandParameter as Deck;
 
             if (deck == null) return;
 
             // Navigate to edit page using Shell
             // Pass deck, dataService and decks list so EditDeckPage can save
-            var navigationParameter = new Dictionary&lt;string, object&gt;
+            Dictionary&lt;string, object&gt; navigationParameter = new Dictionary&lt;string, object&gt;
             {
                 { &#34;deck&#34;, deck },
                 { &#34;dataService&#34;, _dataService },
@@ -1312,12 +1312,12 @@ namespace DeckManager
 
         private async void OnDeleteDeckClicked(object sender, EventArgs e)
         {
-            var button = sender as Button;
-            var deck = button?.CommandParameter as Deck;
+            Button? button = sender as Button;
+            Deck? deck = button?.CommandParameter as Deck;
 
             if (deck == null) return;
 
-            var confirm = await DisplayAlert(
+            bool confirm = await DisplayAlert(
                 &#34;Confirmation&#34;,
                 $&#34;Voulez-vous vraiment supprimer &#39;{deck.Name}&#39; ?&#34;,
                 &#34;Supprimer&#34;,
