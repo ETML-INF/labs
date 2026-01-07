@@ -1,6 +1,6 @@
 @echo off
 REM Use custom node as old project...
-set "NODE_VERSION=20.6.0"
+set "NODE_VERSION=17.6.0"
 set "NVM_SYMLINK=%NVM_HOME%\v%NODE_VERSION%"
 
 REM Temporarily add the specific Node version to PATH

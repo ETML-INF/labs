@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://labs.section-inf.ch/elements",
   "mainga": "UA-49880327-14",
-  "updated": "2024-04-03T18:09:33+02:00",
-  "id": "mobile-07-sensor",
-  "duration": 32,
-  "title": "Capteurs",
-  "summary": "mobile app sensors",
-  "source": "mobile-07-sensor.md",
+  "updated": "2026-01-07T10:02:01+01:00",
+  "id": "mobile-06a-animation",
+  "duration": 18,
+  "title": "Animation avec code behind",
+  "summary": "mobile app crud",
+  "source": "mobile-06a-animation.md",
   "theme": "",
   "status": [
     "published"
@@ -23,5 +23,5 @@
   ],
   "feedback": "https://git.section-inf.ch/jmy/labs/issues",
   "ga": "UA-170792591-1",
-  "url": "mobile-07-sensor"
+  "url": "mobile-06a-animation"
 }

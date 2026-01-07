@@ -1,0 +1,249 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Animation avec code behind</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-06a-animation"
+                  title="Animation avec code behind"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p class="image-container"><img alt="Alt text" src="img\c281ff8c04ab60c1.gif"></p>
+<p>Pour rendre une application vivante, rien de tel qu&#39;un peu d&#39;animation...</p>
+<h2 is-upgraded>Contexte technique</h2>
+<p>Ce tutorial utilise une approche <strong>code-behind</strong> où toute la logique est directement dans le fichier XAML.CS.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Animations de base avec MAUI" duration="1">
+        <h2 is-upgraded>Voici ce qu&#39;on peut faire</h2>
+<p class="image-container"><img alt="Alt text" src="img\9cab307b71e61dc8.gif"></p>
+<ul>
+<li>Rotation</li>
+<li>Translation</li>
+<li>Changement de taille</li>
+<li>Fondu</li>
+</ul>
+<h2 is-upgraded>Voici ce qu&#39;on va faire</h2>
+<p class="image-container"><img alt="Alt text" src="img\da6b952a70b607f0.gif"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Vue" duration="5">
+        <h2 is-upgraded>XAML</h2>
+<p class="image-container"><img src="img\acd408e084934d7f.png"></p>
+<p><strong>Éléments clés:</strong></p>
+<ul>
+<li><code>BoxView</code> nommé &#34;box&#34; qui sera l&#39;élément animé</li>
+<li><code>Switch</code> pour activer/désactiver la rotation avec le gestionnaire <code>OnRotationToggled</code></li>
+<li>Deux <code>Button</code> pour déplacer à gauche/droite avec <code>OnMoveLeft</code>/<code>OnMoveRight</code></li>
+<li><code>Slider</code> pour ajuster la vitesse avec <code>OnSpeedChanged</code></li>
+</ul>
+<h2 is-upgraded>XAML.CS</h2>
+<p>Pour la partie XAML.CS, on procède ainsi:</p>
+<ol type="1">
+<li>Définir les propriétés pour l&#39;état de l&#39;animation (rotation active, position, vitesse)</li>
+<li>Créer les gestionnaires d&#39;événements pour les boutons de déplacement</li>
+<li>Créer la méthode pour gérer le switch de rotation</li>
+<li>Créer la méthode pour ajuster la vitesse via le slider</li>
+<li>Implémenter les méthodes d&#39;animation directement avec les APIs MAUI</li>
+</ol>
+<p>Exemple de structure:</p>
+<pre><code>public partial class AnimationPage : ContentPage
+{
+    private bool rotationActive = false;
+    private double currentX = 0;
+    private uint animationSpeed = 500; // Vitesse en millisecondes
+
+    public AnimationPage()
+    {
+        InitializeComponent();
+        // Démarrer la rotation continue si activée
+        RotateContinuously();
+    }
+
+    // Gestionnaire pour le switch de rotation
+    private void OnRotationToggled(object sender, ToggledEventArgs e)
+    {
+        rotationActive = e.Value;
+    }
+
+    // Rotation continue en arrière-plan
+    private async void RotateContinuously()
+    {
+        while (true)
+        {
+            if (rotationActive)
+            {
+                await box.RotateTo(box.Rotation + 90, animationSpeed);
+            }
+            await Task.Delay(100);
+        }
+    }
+
+    // Déplacement vers la gauche
+    private async void OnMoveLeft(object sender, EventArgs e)
+    {
+        currentX -= 50;
+        await box.TranslateTo(currentX, 0, animationSpeed);
+    }
+
+    // Déplacement vers la droite
+    private async void OnMoveRight(object sender, EventArgs e)
+    {
+        currentX += 50;
+        await box.TranslateTo(currentX, 0, animationSpeed);
+    }
+
+    // Ajustement de la vitesse
+    private void OnSpeedChanged(object sender, ValueChangedEventArgs e)
+    {
+        animationSpeed = (uint)(51 - e.NewValue) * 10; // Inversion pour que plus = plus rapide
+        speedLabel.Text = $&#34;Speed {(int)e.NewValue}&#34;;
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Implémentation détaillée" duration="10">
+        <p>Voici l&#39;implémentation complète des différentes parties du code-behind:</p>
+<h2 is-upgraded>Les propriétés et variables</h2>
+<pre><code>public partial class AnimationPage : ContentPage
+{
+    private bool rotationActive = false;
+    private double currentX = 0;
+    private uint animationSpeed = 500;
+}
+</code></pre>
+<p>Ces variables permettent de:</p>
+<ul>
+<li><code>rotationActive</code>: Suivre si la rotation est activée ou non</li>
+<li><code>currentX</code>: Mémoriser la position horizontale actuelle de la BoxView</li>
+<li><code>animationSpeed</code>: Contrôler la vitesse des animations (en millisecondes)</li>
+</ul>
+<h2 is-upgraded>Le constructeur et la rotation continue</h2>
+<pre><code>public AnimationPage()
+{
+    InitializeComponent();
+    // Démarrer la boucle de rotation en arrière-plan
+    RotateContinuously();
+}
+
+private async void RotateContinuously()
+{
+    while (true)
+    {
+        if (rotationActive)
+        {
+            // Rotation de 90 degrés à chaque itération
+            await box.RotateTo(box.Rotation + 90, animationSpeed);
+        }
+        // Petite pause pour éviter de surcharger le CPU
+        await Task.Delay(100);
+    }
+}
+</code></pre>
+<p><strong>Points importants:</strong></p>
+<ul>
+<li>La méthode <code>RotateContinuously()</code> tourne en boucle infinie (<code>while(true)</code>)</li>
+<li>Elle vérifie si <code>rotationActive</code> est vrai pour animer ou pas</li>
+<li>La rotation est cumulative: <code>box.Rotation + 90</code> pour tourner de 90° supplémentaires</li>
+<li><code>Task.Delay(100)</code> évite de surcharger le thread UI</li>
+</ul>
+<h2 is-upgraded>La méthode pour réagir au switch</h2>
+<pre><code>private void OnRotationToggled(object sender, ToggledEventArgs e)
+{
+    rotationActive = e.Value;
+}
+</code></pre>
+<p>Cette méthode est appelée quand l&#39;utilisateur change l&#39;état du switch. Elle met simplement à jour la variable <code>rotationActive</code>, et la boucle <code>RotateContinuously()</code> réagira automatiquement.</p>
+<h2 is-upgraded>Les méthodes pour le déplacement</h2>
+<pre><code>private async void OnMoveLeft(object sender, EventArgs e)
+{
+    currentX -= 50;
+    await box.TranslateTo(currentX, 0, animationSpeed);
+}
+
+private async void OnMoveRight(object sender, EventArgs e)
+{
+    currentX += 50;
+    await box.TranslateTo(currentX, 0, animationSpeed);
+}
+</code></pre>
+<p><strong>Fonctionnement:</strong></p>
+<ul>
+<li><code>OnMoveLeft</code>: Décrémente la position X de 50 pixels puis anime le déplacement</li>
+<li><code>OnMoveRight</code>: Incrémente la position X de 50 pixels puis anime le déplacement</li>
+<li><code>TranslateTo(x, y, duration)</code>: API MAUI pour animer une translation</li>
+<li>Les animations utilisent <code>animationSpeed</code> pour respecter la vitesse choisie</li>
+</ul>
+<h2 is-upgraded>La méthode pour ajuster la vitesse</h2>
+<pre><code>private void OnSpeedChanged(object sender, ValueChangedEventArgs e)
+{
+    // Inversion: slider à 50 = vitesse max (100ms), slider à 1 = vitesse min (500ms)
+    animationSpeed = (uint)(51 - e.NewValue) * 10;
+
+    // Mise à jour du label pour afficher la valeur du slider
+    speedLabel.Text = $&#34;Speed {(int)e.NewValue}&#34;;
+}
+</code></pre>
+<p><strong>Explication du calcul:</strong></p>
+<ul>
+<li>Le slider va de 1 à 50</li>
+<li><code>(51 - e.NewValue)</code> inverse la valeur: slider=50 → 1, slider=1 → 50</li>
+<li>Multiplier par 10 donne: slider=50 → 10ms (rapide), slider=1 → 500ms (lent)</li>
+<li>Plus le slider est élevé, plus l&#39;animation est rapide</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="1">
+        <p>Suite à cet exercice, les compétences suivantes ont été travaillées:</p>
+<ul>
+<li>Animer un élément graphique avec une <strong>rotation continue</strong> et une <strong>translation</strong></li>
+<li>Utiliser l&#39;approche <strong>code-behind</strong> pour gérer les animations</li>
+<li>Implémenter des gestionnaires d&#39;événements (Clicked, Toggled, ValueChanged)</li>
+<li>Utiliser les APIs d&#39;animation MAUI (<code>RotateTo</code>, <code>TranslateTo</code>)</li>
+<li>Gérer l&#39;asynchronisme avec async/await pour les animations</li>
+<li>Créer une boucle d&#39;animation continue avec <code>while(true)</code> et <code>Task.Delay()</code></li>
+<li>Contrôler la vitesse des animations dynamiquement avec un Slider</li>
+<li>Manipuler les contrôles XAML depuis le code-behind (Label, Switch, Slider)</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
