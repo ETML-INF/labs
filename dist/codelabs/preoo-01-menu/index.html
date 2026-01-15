@@ -1,0 +1,653 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Menu Console Pré-OO</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="preoo-01-menu"
+                  title="Menu Console Pré-OO"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="2">
+        <p>Ce tutorial présente une approche progressive pour créer un menu console en C#, en partant d&#39;une version très simple jusqu&#39;à une version interactive avec navigation au clavier.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>Nous allons créer le menu principal d&#39;un jeu vidéo fictif avec les options suivantes :</p>
+<ul>
+<li><strong>Play</strong> : Lancer une partie</li>
+<li><strong>Options</strong> : Configurer le jeu</li>
+<li><strong>Highscores</strong> : Voir les meilleurs scores</li>
+<li><strong>Quit</strong> : Quitter le jeu</li>
+</ul>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 4 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Afficher un menu basique avec <code>Console.Write</code> et <code>Console.ReadLine</code></li>
+<li>Utiliser un tableau pour stocker et afficher les options</li>
+<li>Structurer le code avec des fonctions préfixées <code>Menu_</code></li>
+<li>Créer une navigation interactive avec les touches fléchées</li>
+</ol>
+<aside class="special"><p>Cette approche &#34;pré-orientée objet&#34; prépare le terrain pour comprendre les classes et objets plus tard.</p>
+</aside>
+<google-codelab-survey survey-id="preoo-01-menu-1">
+<h4>Avez-vous déjà créé un menu console ?</h4>
+<paper-radio-group>
+<paper-radio-button>Oui, plusieurs fois</paper-radio-button>
+<paper-radio-button>Une fois ou deux</paper-radio-button>
+<paper-radio-button>Jamais, c&#39;est ma première fois</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Menu basique" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer un menu simple en utilisant uniquement <code>Console.WriteLine</code> et <code>Console.ReadLine</code>.</p>
+<p class="image-container"><img alt="menu-cw" src="img\6e0a0ce54e83c727.gif"></p>
+<h2 is-upgraded>Créer le projet</h2>
+<p>Créez un nouveau projet <strong>Console App</strong> dans Visual Studio nommé <strong>GameMenu</strong>.</p>
+<h2 is-upgraded>Code initial</h2>
+<p>Remplacez le contenu de <code>Program.cs</code> par :</p>
+<pre><code>Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
+Console.WriteLine(&#34;&#34;);
+Console.WriteLine(&#34;1. Play&#34;);
+Console.WriteLine(&#34;2. Options&#34;);
+Console.WriteLine(&#34;3. Highscores&#34;);
+Console.WriteLine(&#34;4. Quit&#34;);
+Console.WriteLine(&#34;&#34;);
+Console.Write(&#34;Enter your choice (1-4): &#34;);
+
+string? input = Console.ReadLine();
+
+if (input == &#34;1&#34;)
+{
+    Console.WriteLine(&#34;Starting game...&#34;);
+}
+else if (input == &#34;2&#34;)
+{
+    Console.WriteLine(&#34;Opening options...&#34;);
+}
+else if (input == &#34;3&#34;)
+{
+    Console.WriteLine(&#34;Showing highscores...&#34;);
+}
+else if (input == &#34;4&#34;)
+{
+    Console.WriteLine(&#34;Goodbye!&#34;);
+}
+else
+{
+    Console.WriteLine(&#34;Invalid choice!&#34;);
+}
+
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Test</h2>
+<p>Lancer l&#39;application et tester les différentes options.</p>
+<h2 is-upgraded>Analyse</h2>
+<p>Cette version fonctionne mais présente plusieurs problèmes :</p>
+<ul>
+<li>Le code est répétitif (chaque <code>WriteLine</code> pour afficher une option)</li>
+<li>Ajouter une option nécessite de modifier plusieurs lignes</li>
+<li>Le code n&#39;est pas réutilisable</li>
+</ul>
+<aside class="warning"><p>Cette approche ne passe pas à l&#39;échelle : imaginez un menu avec 20 options !</p>
+</aside>
+<h2 is-upgraded>Switch</h2>
+<p>Modifier le code en utilisant l&#39;instruction <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-switch-statement" target="_blank">switch</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Utiliser un tableau" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Stocker les options dans un tableau pour centraliser les données et simplifier l&#39;affichage.</p>
+<h2 is-upgraded>Code amélioré</h2>
+<p>Remplacez le contenu de <code>Program.cs</code> :</p>
+<pre><code>// Menu options stored in an array
+string[] menuOptions = new string []{ &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; };
+
+// Display title
+Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
+Console.WriteLine(&#34;&#34;);
+
+// Display menu options using a loop
+for (int i = 0; i &lt; menuOptions.Length; i++)
+{
+    Console.WriteLine($&#34;{i + 1}. {menuOptions[i]}&#34;);
+}
+
+Console.WriteLine(&#34;&#34;);
+Console.Write($&#34;Enter your choice (1-{menuOptions.Length}): &#34;);
+
+// Get user input
+string? input = Console.ReadLine();
+
+// Validate and process choice
+if (int.TryParse(input, out int choice) &amp;&amp; choice &gt;= 1 &amp;&amp; choice &lt;= menuOptions.Length)
+{
+    string selectedOption = menuOptions[choice - 1];
+    Console.WriteLine($&#34;You selected: {selectedOption}&#34;);
+
+    // Handle the selection
+    switch (choice)
+    {
+        case 1:
+            Console.WriteLine(&#34;Starting game...&#34;);
+            break;
+        case 2:
+            Console.WriteLine(&#34;Opening options...&#34;);
+            break;
+        case 3:
+            Console.WriteLine(&#34;Showing highscores...&#34;);
+            break;
+        case 4:
+            Console.WriteLine(&#34;Goodbye!&#34;);
+            break;
+    }
+}
+else
+{
+    Console.WriteLine(&#34;Invalid choice!&#34;);
+}
+
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Améliorations</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Options écrites en dur</p>
+</td><td colspan="1" rowspan="1"><p>Options dans un tableau</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Boucle manuelle implicite</p>
+</td><td colspan="1" rowspan="1"><p>Boucle <code>for</code> explicite</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Validation manuelle</p>
+</td><td colspan="1" rowspan="1"><p><code>int.TryParse</code> pour valider</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Ajouter une option</h2>
+<p>Pour ajouter une nouvelle option, il suffit maintenant de modifier le tableau :</p>
+<pre><code>string[] menuOptions = { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Credits&#34;, &#34;Quit&#34; };
+</code></pre>
+<aside class="special"><p>Le tableau centralise les données : une seule modification pour ajouter une option à l&#39;affichage !</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Structurer avec des fonctions" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Organiser le code en fonctions préfixées par <code>Menu_</code> pour une meilleure lisibilité et réutilisabilité.</p>
+<h2 is-upgraded>Pourquoi des fonctions ?</h2>
+<p>Les fonctions permettent de :</p>
+<ul>
+<li><strong>Séparer les responsabilités</strong> : chaque fonction fait une seule chose</li>
+<li><strong>Réutiliser le code</strong> : appeler une fonction plusieurs fois</li>
+<li><strong>Faciliter les tests</strong> : tester chaque fonction indépendamment</li>
+<li><strong>Préparer l&#39;OO</strong> : les fonctions deviendront des méthodes de classe</li>
+</ul>
+<h2 is-upgraded>Code structuré</h2>
+<p>Remplacez le contenu de <code>Program.cs</code> :</p>
+<pre><code>// Global array to store menu options
+string[] options = Array.Empty&lt;string&gt;();
+
+// Main program
+Menu_Init();
+Menu_Show();
+int choice = Menu_GetUserChoice();
+Menu_HandleChoice(choice);
+
+Console.ReadKey();
+
+// ============ MENU FUNCTIONS ============
+
+void Menu_Init()
+{
+    options = new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; };
+}
+
+void Menu_AddOption(string option)
+{
+    // Create a new array with one more slot
+    string[] newOptions = new string[options.Length + 1];
+
+    // Copy existing options
+    for (int i = 0; i &lt; options.Length; i++)
+    {
+        newOptions[i] = options[i];
+    }
+
+    // Add new option at the end
+    newOptions[options.Length] = option;
+
+    // Replace old array
+    options = newOptions;
+}
+
+void Menu_Show()
+{
+    Console.Clear();
+    Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
+    Console.WriteLine(&#34;&#34;);
+
+    for (int i = 0; i &lt; options.Length; i++)
+    {
+        Console.WriteLine($&#34;  {i + 1}. {options[i]}&#34;);
+    }
+
+    Console.WriteLine(&#34;&#34;);
+}
+
+int Menu_GetUserChoice()
+{
+    Console.Write($&#34;Enter your choice (1-{options.Length}): &#34;);
+    string? input = Console.ReadLine();
+
+    if (int.TryParse(input, out int choice) &amp;&amp; choice &gt;= 1 &amp;&amp; choice &lt;= options.Length)
+    {
+        return choice;
+    }
+
+    return -1; // Invalid choice
+}
+
+void Menu_HandleChoice(int choice)
+{
+    if (choice == -1)
+    {
+        Console.WriteLine(&#34;Invalid choice!&#34;);
+        return;
+    }
+
+    string selectedOption = options[choice - 1];
+    Console.WriteLine($&#34;You selected: {selectedOption}&#34;);
+
+    switch (selectedOption)
+    {
+        case &#34;Play&#34;:
+            Console.WriteLine(&#34;Starting game...&#34;);
+            break;
+        case &#34;Options&#34;:
+            Console.WriteLine(&#34;Opening options...&#34;);
+            break;
+        case &#34;Highscores&#34;:
+            Console.WriteLine(&#34;Showing highscores...&#34;);
+            break;
+        case &#34;Quit&#34;:
+            Console.WriteLine(&#34;Goodbye!&#34;);
+            break;
+        default:
+            Console.WriteLine($&#34;Action for &#39;{selectedOption}&#39; not implemented.&#34;);
+            break;
+    }
+}
+</code></pre>
+<h2 is-upgraded>Les fonctions expliquées</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_Init()</code></p>
+</td><td colspan="1" rowspan="1"><p>Initialise le tableau avec les options par défaut</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_AddOption(string)</code></p>
+</td><td colspan="1" rowspan="1"><p>Ajoute une option au menu</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_Show()</code></p>
+</td><td colspan="1" rowspan="1"><p>Affiche le menu à l&#39;écran</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_GetUserChoice()</code></p>
+</td><td colspan="1" rowspan="1"><p>Lit et valide le choix de l&#39;utilisateur</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_HandleChoice(int)</code></p>
+</td><td colspan="1" rowspan="1"><p>Exécute l&#39;action correspondant au choix</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Amélioration du redimensionnement</h2>
+<p>En se basant sur la théorie du cours, simplifier le code lorsq&#39;on ajoute une option au tableau...</p>
+<h2 is-upgraded>Test avec ajout dynamique</h2>
+<p>Modifiez le programme principal pour tester l&#39;ajout d&#39;options :</p>
+<pre><code>Menu_Init();
+Menu_AddOption(&#34;Credits&#34;);  // Add a new option
+Menu_AddOption(&#34;Tutorial&#34;); // Add another option
+Menu_Show();
+int choice = Menu_GetUserChoice();
+Menu_HandleChoice(choice);
+
+Console.ReadKey();
+</code></pre>
+<aside class="special"><p>Le préfixe <code>Menu_</code> permet de regrouper visuellement les fonctions liées au menu. En POO, elles deviendront les méthodes d&#39;une classe <code>Menu</code>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Navigation au clavier" duration="20">
+        <h2 is-upgraded>Objectif</h2>
+<p>Remplacer la saisie de numéro par une navigation avec les touches fléchées et une mise en surbrillance de l&#39;option sélectionnée.</p>
+<p class="image-container"><img alt="alt text" src="img\1ad1f7f503984efb.gif"></p>
+<h2 is-upgraded>Concept</h2>
+<ul>
+<li>L&#39;utilisateur utilise <strong>↑</strong> et <strong>↓</strong> pour naviguer</li>
+<li>L&#39;option sélectionnée est <strong>mise en surbrillance</strong> (couleur inversée)</li>
+<li>La touche <strong>Enter</strong> valide le choix</li>
+<li>Le menu se rafraîchit à chaque déplacement</li>
+</ul>
+<h2 is-upgraded>Code final</h2>
+<p>Remplacez entièrement <code>Program.cs</code> :</p>
+<pre><code>// Global variables
+string[] options = Array.Empty&lt;string&gt;();
+int selectedIndex = 0;
+
+// Main program
+Menu_Init();
+int choice = Menu_RunInteractive();
+Menu_HandleChoice(choice);
+
+Console.ReadKey();
+
+// ============ MENU FUNCTIONS ============
+
+void Menu_Init()
+{
+    options = new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; };
+    selectedIndex = 0;
+}
+
+void Menu_AddOption(string option)
+{
+    string[] newOptions = new string[options.Length + 1];
+
+    for (int i = 0; i &lt; options.Length; i++)
+    {
+        newOptions[i] = options[i];
+    }
+
+    newOptions[options.Length] = option;
+    options = newOptions;
+}
+
+void Menu_ShowInteractive()
+{
+    Console.Clear();
+    Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
+    Console.WriteLine(&#34;&#34;);
+    Console.WriteLine(&#34;Use ↑↓ arrows to navigate, Enter to select&#34;);
+    Console.WriteLine(&#34;&#34;);
+
+    for (int i = 0; i &lt; options.Length; i++)
+    {
+        if (i == selectedIndex)
+        {
+            // Highlight selected option
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($&#34;  &gt; {options[i]} &lt;  &#34;);
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.WriteLine($&#34;    {options[i]}    &#34;);
+        }
+    }
+
+    Console.WriteLine(&#34;&#34;);
+}
+
+int Menu_RunInteractive()
+{
+    ConsoleKey key;
+
+    do
+    {
+        Menu_ShowInteractive();
+
+        // Read key without displaying it
+        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+        key = keyInfo.Key;
+
+        // Handle navigation
+        if (key == ConsoleKey.UpArrow)
+        {
+            selectedIndex--;
+            if (selectedIndex &lt; 0)
+            {
+                selectedIndex = options.Length - 1; // Wrap to bottom
+            }
+        }
+        else if (key == ConsoleKey.DownArrow)
+        {
+            selectedIndex++;
+            if (selectedIndex &gt;= options.Length)
+            {
+                selectedIndex = 0; // Wrap to top
+            }
+        }
+
+    } while (key != ConsoleKey.Enter);
+
+    return selectedIndex + 1; // Return 1-based choice
+}
+
+int Menu_GetUserChoice()
+{
+    Console.Write($&#34;Enter your choice (1-{options.Length}): &#34;);
+    string? input = Console.ReadLine();
+
+    if (int.TryParse(input, out int choice) &amp;&amp; choice &gt;= 1 &amp;&amp; choice &lt;= options.Length)
+    {
+        return choice;
+    }
+
+    return -1;
+}
+
+void Menu_HandleChoice(int choice)
+{
+    if (choice == -1 || choice &lt; 1 || choice &gt; options.Length)
+    {
+        Console.WriteLine(&#34;Invalid choice!&#34;);
+        return;
+    }
+
+    string selectedOption = options[choice - 1];
+
+    Console.Clear();
+    Console.WriteLine($&#34;&gt;&gt;&gt; {selectedOption.ToUpper()} &lt;&lt;&lt;&#34;);
+    Console.WriteLine(&#34;&#34;);
+
+    switch (selectedOption)
+    {
+        case &#34;Play&#34;:
+            Console.WriteLine(&#34;Starting game...&#34;);
+            Console.WriteLine(&#34;Loading level 1...&#34;);
+            break;
+        case &#34;Options&#34;:
+            Console.WriteLine(&#34;=== OPTIONS ===&#34;);
+            Console.WriteLine(&#34;Sound: ON&#34;);
+            Console.WriteLine(&#34;Music: ON&#34;);
+            Console.WriteLine(&#34;Difficulty: Normal&#34;);
+            break;
+        case &#34;Highscores&#34;:
+            Console.WriteLine(&#34;=== HIGHSCORES ===&#34;);
+            Console.WriteLine(&#34;1. AAA - 10000&#34;);
+            Console.WriteLine(&#34;2. BBB - 8500&#34;);
+            Console.WriteLine(&#34;3. CCC - 7200&#34;);
+            break;
+        case &#34;Quit&#34;:
+            Console.WriteLine(&#34;Thanks for playing!&#34;);
+            Console.WriteLine(&#34;Goodbye!&#34;);
+            break;
+        default:
+            Console.WriteLine($&#34;Action for &#39;{selectedOption}&#39; not implemented.&#34;);
+            break;
+    }
+}
+</code></pre>
+<h2 is-upgraded>Éléments clés</h2>
+<h3 is-upgraded>Console.ReadKey(true)</h3>
+<p>Le paramètre <code>true</code> empêche l&#39;affichage du caractère saisi :</p>
+<pre><code>ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+</code></pre>
+<h3 is-upgraded>Changement de couleurs</h3>
+<pre><code>Console.BackgroundColor = ConsoleColor.White;
+Console.ForegroundColor = ConsoleColor.Black;
+Console.WriteLine(&#34;Texte en surbrillance&#34;);
+Console.ResetColor(); // Important : remettre les couleurs par défaut
+</code></pre>
+<h3 is-upgraded>Navigation circulaire</h3>
+<pre><code>// En haut de la liste, aller en bas
+if (selectedIndex &lt; 0)
+{
+    selectedIndex = options.Length - 1;
+}
+
+// En bas de la liste, aller en haut
+if (selectedIndex &gt;= options.Length)
+{
+    selectedIndex = 0;
+}
+</code></pre>
+<aside class="special"><p>Cette version offre une expérience utilisateur bien meilleure !</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations possibles" duration="5">
+        <h2 is-upgraded>Idées pour aller plus loin</h2>
+<p>Voici quelques améliorations que vous pouvez implémenter :</p>
+<h3 is-upgraded>1. Ajouter des sons</h3>
+<pre><code>// Play a beep when navigating
+Console.Beep(800, 50); // frequency, duration in ms
+</code></pre>
+<h3 is-upgraded>2. Personnaliser les couleurs</h3>
+<pre><code>void Menu_SetColors(ConsoleColor background, ConsoleColor foreground)
+{
+    Console.BackgroundColor = background;
+    Console.ForegroundColor = foreground;
+}
+</code></pre>
+<h3 is-upgraded>3. Ajouter un titre ASCII art</h3>
+<pre><code>void Menu_ShowTitle()
+{
+    Console.WriteLine(@&#34;
+   _____ _    _ _____  ______ _____
+  / ____| |  | |  __ \|  ____|  __ \
+ | (___ | |  | | |__) | |__  | |__) |
+  \___ \| |  | |  ___/|  __| |  _  /
+  ____) | |__| | |    | |____| | \ \
+ |_____/ \____/|_|    |______|_|  \_\
+
+   _____          __  __ ______
+  / ____|   /\   |  \/  |  ____|
+ | |  __   /  \  | \  / | |__
+ | | |_ | / /\ \ | |\/| |  __|
+ | |__| |/ ____ \| |  | | |____
+  \_____/_/    \_\_|  |_|______|
+    &#34;);
+}
+</code></pre>
+<h3 is-upgraded>4. Boucle de menu complète</h3>
+<pre><code>bool running = true;
+
+while (running)
+{
+    Menu_Init();
+    int choice = Menu_RunInteractive();
+
+    if (options[choice - 1] == &#34;Quit&#34;)
+    {
+        running = false;
+    }
+    else
+    {
+        Menu_HandleChoice(choice);
+        Console.WriteLine(&#34;\nPress any key to return to menu...&#34;);
+        Console.ReadKey(true);
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <h2 is-upgraded>Récapitulatif des étapes</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p>Console.Write/Read</p>
+</td><td colspan="1" rowspan="1"><p>Simple, direct</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p>Tableau</p>
+</td><td colspan="1" rowspan="1"><p>Centralisation des données</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3</p>
+</td><td colspan="1" rowspan="1"><p>Fonctions Menu_</p>
+</td><td colspan="1" rowspan="1"><p>Organisation, réutilisabilité</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>4</p>
+</td><td colspan="1" rowspan="1"><p>Navigation clavier</p>
+</td><td colspan="1" rowspan="1"><p>Expérience utilisateur</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Spoiler alert: vers la POO</h2>
+<p>Ce code est prêt pour être transformé en classe...</p>
+<pre><code>// Les fonctions Menu_* deviendront des méthodes
+// Les variables globales deviendront des attributs
+public class Menu
+{
+    private string[] options;
+    private int selectedIndex;
+
+    public void Init() { ... }
+    public void AddOption(string option) { ... }
+    public void Show() { ... }
+    public int GetUserChoice() { ... }
+    // etc.
+}
+</code></pre>
+<aside class="special"><p>Félicitations ! Vous avez créé un menu console professionnel en partant de zéro. Ces concepts vous serviront pour n&#39;importe quelle application console.</p>
+</aside>
+<google-codelab-survey survey-id="preoo-01-menu-2">
+<h4>Quelle étape avez-vous trouvée la plus intéressante ?</h4>
+<paper-radio-group>
+<paper-radio-button>Étape 1 : La base avec Console.Write</paper-radio-button>
+<paper-radio-button>Étape 2 : L&#39;utilisation du tableau</paper-radio-button>
+<paper-radio-button>Étape 3 : La structuration en fonctions</paper-radio-button>
+<paper-radio-button>Étape 4 : La navigation interactive</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

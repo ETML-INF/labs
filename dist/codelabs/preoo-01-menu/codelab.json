@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-01-15T07:32:51+01:00",
+  "id": "preoo-01-menu",
+  "duration": 64,
+  "title": "Menu Console Pré-OO",
+  "summary": "menu console pré-orienté objet",
+  "source": "preoo-01-menu.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "preoo-01-menu"
+}
