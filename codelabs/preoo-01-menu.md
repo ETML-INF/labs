@@ -57,7 +57,7 @@ Créez un nouveau projet **Console App** dans Visual Studio nommé **GameMenu**.
 
 ### Code initial
 
-Remplacez le contenu de `Program.cs` par :
+Adapter le contenu de `Program.cs` avec la proposition suivante :
 
 ```csharp
 Console.WriteLine("=== SUPER GAME ===");
@@ -107,10 +107,10 @@ Cette version fonctionne mais présente plusieurs problèmes :
 - Le code n'est pas réutilisable
 
 Negative
-: Cette approche ne passe pas à l'échelle : imaginez un menu avec 20 options !
+: Cette approche ne passe pas très bien à l'échelle : imaginez un menu avec 20 options !
 
 ### Switch
-Modifier le code en utilisant l'instruction [switch](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-switch-statement)
+Adapter le code en utilisant l'instruction [switch](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-switch-statement)
 
 ## Étape 2 : Utiliser un tableau
 Duration: 0:10:00
@@ -121,7 +121,7 @@ Stocker les options dans un tableau pour centraliser les données et simplifier 
 
 ### Code amélioré
 
-Remplacez le contenu de `Program.cs` :
+Adapter le contenu de `Program.cs` selon la version suivante :
 
 ```csharp
 // Menu options stored in an array
@@ -210,7 +210,7 @@ Les fonctions permettent de :
 
 ### Code structuré
 
-Remplacez le contenu de `Program.cs` :
+Adapter le contenu de `Program.cs` selon la proposition suivante :
 
 ```csharp
 // Global array to store menu options
@@ -319,11 +319,11 @@ void Menu_HandleChoice(int choice)
 | `Menu_HandleChoice(int)` | Exécute l'action correspondant au choix |
 
 ### Amélioration du redimensionnement
-En se basant sur la théorie du cours, simplifier le code lorsq'on ajoute une option au tableau...
+En se basant sur la théorie du cours, simplifier le code lorsq'on ajoute une option au tableau... (Array.Resize et/ou Array.Copy)
 
 ### Test avec ajout dynamique
 
-Modifiez le programme principal pour tester l'ajout d'options :
+Modifier le programme principal pour tester l'ajout d'options :
 
 ```csharp
 Menu_Init();
@@ -357,7 +357,7 @@ Remplacer la saisie de numéro par une navigation avec les touches fléchées et
 
 ### Code final
 
-Remplacez entièrement `Program.cs` :
+Adapter `Program.cs` comme suit :
 
 ```csharp
 // Global variables
@@ -553,7 +553,7 @@ Duration: 0:05:00
 
 ### Idées pour aller plus loin
 
-Voici quelques améliorations que vous pouvez implémenter :
+Voici quelques améliorations à implémenter :
 
 #### 1. Ajouter des sons
 
