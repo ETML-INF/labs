@@ -66,7 +66,7 @@
 <h2 is-upgraded>Créer le projet</h2>
 <p>Créez un nouveau projet <strong>Console App</strong> dans Visual Studio nommé <strong>GameMenu</strong>.</p>
 <h2 is-upgraded>Code initial</h2>
-<p>Remplacez le contenu de <code>Program.cs</code> par :</p>
+<p>Adapter le contenu de <code>Program.cs</code> avec la proposition suivante :</p>
 <pre><code>Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
 Console.WriteLine(&#34;&#34;);
 Console.WriteLine(&#34;1. Play&#34;);
@@ -110,10 +110,10 @@ Console.ReadKey();
 <li>Ajouter une option nécessite de modifier plusieurs lignes</li>
 <li>Le code n&#39;est pas réutilisable</li>
 </ul>
-<aside class="warning"><p>Cette approche ne passe pas à l&#39;échelle : imaginez un menu avec 20 options !</p>
+<aside class="warning"><p>Cette approche ne passe pas très bien à l&#39;échelle : imaginez un menu avec 20 options !</p>
 </aside>
 <h2 is-upgraded>Switch</h2>
-<p>Modifier le code en utilisant l&#39;instruction <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-switch-statement" target="_blank">switch</a></p>
+<p>Adapter le code en utilisant l&#39;instruction <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-switch-statement" target="_blank">switch</a></p>
 
 
       </google-codelab-step>
@@ -122,7 +122,7 @@ Console.ReadKey();
         <h2 is-upgraded>Objectif</h2>
 <p>Stocker les options dans un tableau pour centraliser les données et simplifier l&#39;affichage.</p>
 <h2 is-upgraded>Code amélioré</h2>
-<p>Remplacez le contenu de <code>Program.cs</code> :</p>
+<p>Adapter le contenu de <code>Program.cs</code> selon la version suivante :</p>
 <pre><code>// Menu options stored in an array
 string[] menuOptions = new string []{ &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; };
 
@@ -207,7 +207,7 @@ Console.ReadKey();
 <li><strong>Préparer l&#39;OO</strong> : les fonctions deviendront des méthodes de classe</li>
 </ul>
 <h2 is-upgraded>Code structuré</h2>
-<p>Remplacez le contenu de <code>Program.cs</code> :</p>
+<p>Adapter le contenu de <code>Program.cs</code> selon la proposition suivante :</p>
 <pre><code>// Global array to store menu options
 string[] options = Array.Empty&lt;string&gt;();
 
@@ -322,9 +322,9 @@ void Menu_HandleChoice(int choice)
 </td></tr>
 </table>
 <h2 is-upgraded>Amélioration du redimensionnement</h2>
-<p>En se basant sur la théorie du cours, simplifier le code lorsq&#39;on ajoute une option au tableau...</p>
+<p>En se basant sur la théorie du cours, simplifier le code lorsq&#39;on ajoute une option au tableau... (Array.Resize et/ou Array.Copy)</p>
 <h2 is-upgraded>Test avec ajout dynamique</h2>
-<p>Modifiez le programme principal pour tester l&#39;ajout d&#39;options :</p>
+<p>Modifier le programme principal pour tester l&#39;ajout d&#39;options :</p>
 <pre><code>Menu_Init();
 Menu_AddOption(&#34;Credits&#34;);  // Add a new option
 Menu_AddOption(&#34;Tutorial&#34;); // Add another option
@@ -352,7 +352,7 @@ Console.ReadKey();
 <li>Le menu se rafraîchit à chaque déplacement</li>
 </ul>
 <h2 is-upgraded>Code final</h2>
-<p>Remplacez entièrement <code>Program.cs</code> :</p>
+<p>Adapter <code>Program.cs</code> comme suit :</p>
 <pre><code>// Global variables
 string[] options = Array.Empty&lt;string&gt;();
 int selectedIndex = 0;
@@ -534,7 +534,7 @@ if (selectedIndex &gt;= options.Length)
     
       <google-codelab-step label="Bonus : Améliorations possibles" duration="5">
         <h2 is-upgraded>Idées pour aller plus loin</h2>
-<p>Voici quelques améliorations que vous pouvez implémenter :</p>
+<p>Voici quelques améliorations à implémenter :</p>
 <h3 is-upgraded>1. Ajouter des sons</h3>
 <pre><code>// Play a beep when navigating
 Console.Beep(800, 50); // frequency, duration in ms
