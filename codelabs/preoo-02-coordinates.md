@@ -738,7 +738,7 @@ while (!raceFinished)
 // ========== FIN DE COURSE ==========
 Console.SetCursorPosition(0, screenHeight + 4);
 Console.ForegroundColor = snailColors[winner % snailColors.Length];
-Console.WriteLine($"🏆 {snailNames[winner]} WINS THE RACE!");
+Console.WriteLine($"{snailNames[winner]} WINS THE RACE!");
 Console.ResetColor();
 Console.ReadKey();
 
@@ -1007,12 +1007,12 @@ Console.SetCursorPosition(0, screenHeight + 7);
 if (winner == playerSnailIndex)
 {
     Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("🎉 VICTORY! Your snail won the race!");
+    Console.WriteLine("VICTORY! Your snail won the race!");
 }
 else if (winner >= 0)
 {
     Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine($"💔 {snailNames[winner]} won. Better luck next time!");
+    Console.WriteLine($"{snailNames[winner]} won. Better luck next time!");
 }
 else
 {
