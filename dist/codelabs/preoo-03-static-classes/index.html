@@ -1,0 +1,995 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Du Code aux Classes Statiques</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="preoo-03-static-classes"
+                  title="Du Code aux Classes Statiques"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial vous guide dans la transformation de code &#34;en vrac&#34; vers une architecture organisée avec des <strong>classes statiques</strong>. Vous apprendrez à créer des fichiers de classe et à refactoriser du code existant.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>Vous avez développé une course d&#39;escargots avec des fonctions préfixées (<code>Snail_Draw</code>, <code>Race_DrawTrack</code>, etc.). Ce code fonctionne, mais il est temps de le professionnaliser en utilisant des <strong>classes statiques</strong>.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers ce tutorial, vous apprendrez à :</p>
+<ol type="1">
+<li>Identifier les groupes logiques de fonctions (préfixes)</li>
+<li>Créer un fichier de classe</li>
+<li>Transformer des fonctions préfixées en méthodes de classe statique</li>
+<li>Organiser le code avec des namespaces</li>
+<li>Utiliser <code>using</code> pour importer des namespaces</li>
+</ol>
+<h2 is-upgraded>Prérequis</h2>
+<ul>
+<li>Avoir complété le tutorial &#34;Coordonnées 2D - Le Jeu de l&#39;Escargot&#34;</li>
+<li>Connaître les bases des fonctions en C#</li>
+</ul>
+<aside class="special"><p>Ce tutorial fait le pont entre le code procédural et la Programmation Orientée Objet. C&#39;est une étape fondamentale !</p>
+</aside>
+<google-codelab-survey survey-id="preoo-03-static-classes-1">
+<h4>Comment organisez-vous votre code actuellement ?</h4>
+<paper-radio-group>
+<paper-radio-button>Tout dans Program.cs</paper-radio-button>
+<paper-radio-button>J&#39;utilise des fonctions mais sans organisation particulière</paper-radio-button>
+<paper-radio-button>J&#39;utilise des préfixes pour regrouper mes fonctions</paper-radio-button>
+<paper-radio-button>J&#39;utilise déjà des classes</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Point de départ : le code actuel" duration="5">
+        <h2 is-upgraded>Le code de la course d&#39;escargots</h2>
+<p>Voici une version simplifiée de la course d&#39;escargots avec des fonctions préfixées. Ce sera le point de départ.</p>
+<p>Si un projet avec une course d&#39;escargots fonctionnelle n&#39;est pas disponible, créer un nouveau projet <strong>Console App</strong> nommé <strong>SnailRaceRefactoring</strong> et copier ce code dans <code>Program.cs</code> (ou adapter le code existant selon l&#39;exemple) :</p>
+<pre><code>// ========== DONNÉES GLOBALES ==========
+int numberOfSnails = 3;
+int screenWidth = 50;
+int startX = 2;
+int finishX = screenWidth - 3;
+
+int[] snailX = new int[3];
+int[] snailY = new int[3];
+int[] snailEnergy = new int[3];
+string[] snailNames = { &#34;Turbo&#34;, &#34;Speedy&#34;, &#34;Flash&#34; };
+ConsoleColor[] snailColors = { ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Magenta };
+
+Random random = new Random();
+
+// ========== PROGRAMME PRINCIPAL ==========
+Console.Clear();
+Console.CursorVisible = false;
+
+Race_Init();
+Race_DrawTrack();
+Race_DrawAllSnails();
+
+Console.SetCursorPosition(0, 12);
+Console.WriteLine(&#34;Appuyez sur ENTER pour lancer la course !&#34;);
+Console.ReadLine();
+
+// Boucle de course
+bool raceFinished = false;
+int winner = -1;
+
+while (!raceFinished)
+{
+    for (int i = 0; i &lt; numberOfSnails; i++)
+    {
+        if (random.Next(100) &lt; snailEnergy[i])
+        {
+            Snail_Clear(snailX[i], snailY[i]);
+            snailX[i]++;
+            Snail_Draw(snailX[i], snailY[i], snailColors[i]);
+
+            snailEnergy[i] -= random.Next(1, 4);
+            if (snailEnergy[i] &lt; 10) snailEnergy[i] = 10;
+        }
+
+        if (snailX[i] &gt;= finishX)
+        {
+            winner = i;
+            raceFinished = true;
+            break;
+        }
+    }
+
+    Race_ShowEnergy();
+    Thread.Sleep(100);
+}
+
+Console.SetCursorPosition(0, 14);
+Console.ForegroundColor = snailColors[winner];
+Console.WriteLine($&#34;{snailNames[winner]} a gagné la course !&#34;);
+Console.ResetColor();
+Console.ReadKey();
+
+// ========== FONCTIONS RACE_ ==========
+
+void Race_Init()
+{
+    for (int i = 0; i &lt; numberOfSnails; i++)
+    {
+        snailX[i] = startX;
+        snailY[i] = 2 + i * 2;
+        snailEnergy[i] = 100;
+    }
+}
+
+void Race_DrawTrack()
+{
+    for (int i = 0; i &lt; numberOfSnails; i++)
+    {
+        int y = 2 + i * 2;
+
+        Console.SetCursorPosition(startX - 1, y);
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(&#34;|&#34;);
+
+        for (int x = startX; x &lt; finishX; x++)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(&#34;.&#34;);
+        }
+
+        Console.SetCursorPosition(finishX, y);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write(&#34;|&#34;);
+    }
+    Console.ResetColor();
+}
+
+void Race_DrawAllSnails()
+{
+    for (int i = 0; i &lt; numberOfSnails; i++)
+    {
+        Snail_Draw(snailX[i], snailY[i], snailColors[i]);
+    }
+}
+
+void Race_ShowEnergy()
+{
+    Console.SetCursorPosition(0, 10);
+    for (int i = 0; i &lt; numberOfSnails; i++)
+    {
+        Console.ForegroundColor = snailColors[i];
+        string bar = new string(&#39;#&#39;, snailEnergy[i] / 10);
+        string empty = new string(&#39;-&#39;, 10 - snailEnergy[i] / 10);
+        Console.Write($&#34;{snailNames[i],6}[{bar}{empty}] &#34;);
+    }
+    Console.ResetColor();
+}
+
+// ========== FONCTIONS SNAIL_ ==========
+
+void Snail_Draw(int x, int y, ConsoleColor color)
+{
+    Console.SetCursorPosition(x, y);
+    Console.ForegroundColor = color;
+    Console.Write(&#34;@&#34;);
+    Console.ResetColor();
+}
+
+void Snail_Clear(int x, int y)
+{
+    Console.SetCursorPosition(x, y);
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.Write(&#34;.&#34;);
+    Console.ResetColor();
+}
+</code></pre>
+<h2 is-upgraded>Tester le code</h2>
+<p>Lancer l&#39;application pour vérifier que tout fonctionne.</p>
+<h2 is-upgraded>Observation des préfixes</h2>
+<p>On remarque que les fonctions sont organisées avec des préfixes :</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Race_</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Race_Init</code>, <code>Race_DrawTrack</code>, <code>Race_DrawAllSnails</code>, <code>Race_ShowEnergy</code></p>
+</td><td colspan="1" rowspan="1"><p>Gestion de la course</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snail_</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail_Draw</code>, <code>Snail_Clear</code></p>
+</td><td colspan="1" rowspan="1"><p>Affichage des escargots</p>
+</td></tr>
+</table>
+<aside class="special"><p>Ces préfixes indiquent des <strong>groupes logiques</strong> de fonctions. Chaque préfixe deviendra une <strong>classe</strong> !</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Créer la classe Snail" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Transformer les fonctions <code>Snail_*</code> en méthodes d&#39;une classe statique <code>Snail</code>.</p>
+<h2 is-upgraded>Créer un nouveau fichier de classe</h2>
+<p>Dans l&#39;IDE :</p>
+<ol type="1">
+<li>Clic droit sur le projet <strong>SnailRaceRefactoring</strong> dans l&#39;Explorateur de solutions</li>
+<li>Sélectionner <strong>Ajouter</strong> &gt; <strong>Classe...</strong></li>
+<li>Nommer le fichier <code>Snail.cs</code></li>
+<li>Cliquer sur <strong>Ajouter</strong></li>
+</ol>
+<p class="image-container"><img alt="add-class" src="img\a577e990a178c0f2.png"></p>
+<p>L&#39;IDE crée un fichier avec ce contenu par défaut :</p>
+<pre><code>namespace SnailRaceRefactoring
+{
+    internal class Snail
+    {
+    }
+}
+</code></pre>
+<h2 is-upgraded>Transformer en classe statique</h2>
+<p>Modifier le fichier <code>Snail.cs</code> comme suit :</p>
+<pre><code>namespace SnailRaceRefactoring
+{
+    static class Snail
+    {
+        public static void Draw(int x, int y, ConsoleColor color)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = color;
+            Console.Write(&#34;@&#34;);
+            Console.ResetColor();
+        }
+
+        public static void Clear(int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(&#34;.&#34;);
+            Console.ResetColor();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Analyse des changements</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>void Snail_Draw(...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public static void Draw(...)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonction &#34;en vrac&#34; dans Program.cs</p>
+</td><td colspan="1" rowspan="1"><p>Méthode dans la classe <code>Snail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Appel : <code>Snail_Draw(x, y, color)</code></p>
+</td><td colspan="1" rowspan="1"><p>Appel : <code>Snail.Draw(x, y, color)</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Les mots-clés importants</h2>
+<ul>
+<li><code>static class</code> : La classe ne peut pas être instanciée (pas de <code>new Snail()</code>)</li>
+<li><code>public</code> : La méthode est accessible depuis l&#39;extérieur de la classe</li>
+<li><code>static</code> : La méthode appartient à la classe, pas à une instance</li>
+</ul>
+<h2 is-upgraded>Mettre à jour Program.cs</h2>
+<p>Dans <code>Program.cs</code>, remplacer les appels aux anciennes fonctions :</p>
+<p><strong>Avant :</strong></p>
+<pre><code>Snail_Draw(snailX[i], snailY[i], snailColors[i]);
+Snail_Clear(snailX[i], snailY[i]);
+</code></pre>
+<p><strong>Après :</strong></p>
+<pre><code>Snail.Draw(snailX[i], snailY[i], snailColors[i]);
+Snail.Clear(snailX[i], snailY[i]);
+</code></pre>
+<h2 is-upgraded>Supprimer les anciennes fonctions</h2>
+<p>Supprimer les fonctions <code>Snail_Draw</code> et <code>Snail_Clear</code> de <code>Program.cs</code> (elles sont maintenant dans <code>Snail.cs</code>).</p>
+<h2 is-upgraded>Tester</h2>
+<p>Compiler et exécuter. Le programme doit fonctionner exactement comme avant !</p>
+<aside class="special"><p>Félicitations ! Vous avez créé votre première classe statique. Le préfixe <code>Snail_</code> est devenu le nom de la classe <code>Snail</code>, et les fonctions sont devenues des méthodes.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Créer la classe Race" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Transformer les fonctions <code>Race_*</code> en méthodes d&#39;une classe statique <code>Race</code>.</p>
+<h2 is-upgraded>Le défi des données</h2>
+<p>Les fonctions <code>Race_*</code> utilisent des variables globales :</p>
+<ul>
+<li><code>numberOfSnails</code>, <code>screenWidth</code>, <code>startX</code>, <code>finishX</code></li>
+<li><code>snailX[]</code>, <code>snailY[]</code>, <code>snailEnergy[]</code>, <code>snailNames[]</code>, <code>snailColors[]</code></li>
+</ul>
+<p>Ces variables doivent être déplacées dans la classe <code>Race</code>.</p>
+<h2 is-upgraded>Créer le fichier Race.cs</h2>
+<ol type="1">
+<li>Clic droit sur le projet &gt; <strong>Ajouter</strong> &gt; <strong>Classe...</strong></li>
+<li>Nommer le fichier <code>Race.cs</code></li>
+<li>Cliquer sur <strong>Ajouter</strong></li>
+</ol>
+<h2 is-upgraded>Contenu de Race.cs</h2>
+<pre><code>namespace SnailRaceRefactoring
+{
+    static class Race
+    {
+        // ========== DONNÉES DE LA COURSE ==========
+        public static int NumberOfSnails = 3;
+        public static int ScreenWidth = 50;
+        public static int StartX = 2;
+        public static int FinishX = ScreenWidth - 3;
+
+        public static int[] SnailX = new int[3];
+        public static int[] SnailY = new int[3];
+        public static int[] SnailEnergy = new int[3];
+        public static string[] SnailNames = { &#34;Turbo&#34;, &#34;Speedy&#34;, &#34;Flash&#34; };
+        public static ConsoleColor[] SnailColors = {
+            ConsoleColor.Yellow,
+            ConsoleColor.Cyan,
+            ConsoleColor.Magenta
+        };
+
+        // ========== MÉTHODES ==========
+
+        public static void Init()
+        {
+            for (int i = 0; i &lt; NumberOfSnails; i++)
+            {
+                SnailX[i] = StartX;
+                SnailY[i] = 2 + i * 2;
+                SnailEnergy[i] = 100;
+            }
+        }
+
+        public static void DrawTrack()
+        {
+            for (int i = 0; i &lt; NumberOfSnails; i++)
+            {
+                int y = 2 + i * 2;
+
+                Console.SetCursorPosition(StartX - 1, y);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(&#34;|&#34;);
+
+                for (int x = StartX; x &lt; FinishX; x++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(&#34;.&#34;);
+                }
+
+                Console.SetCursorPosition(FinishX, y);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(&#34;|&#34;);
+            }
+            Console.ResetColor();
+        }
+
+        public static void DrawAllSnails()
+        {
+            for (int i = 0; i &lt; NumberOfSnails; i++)
+            {
+                Snail.Draw(SnailX[i], SnailY[i], SnailColors[i]);
+            }
+        }
+
+        public static void ShowEnergy()
+        {
+            Console.SetCursorPosition(0, 10);
+            for (int i = 0; i &lt; NumberOfSnails; i++)
+            {
+                Console.ForegroundColor = SnailColors[i];
+                string bar = new string(&#39;#&#39;, SnailEnergy[i] / 10);
+                string empty = new string(&#39;-&#39;, 10 - SnailEnergy[i] / 10);
+                Console.Write($&#34;{SnailNames[i],6}[{bar}{empty}] &#34;);
+            }
+            Console.ResetColor();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Observations importantes</h2>
+<ol type="1">
+<li><strong>Les données sont dans la classe</strong> : Les tableaux et variables sont devenus des champs <code>public static</code></li>
+<li><strong>Accès aux données</strong> : Les méthodes accèdent directement aux champs (ex: <code>SnailX[i]</code> au lieu de <code>snailX[i]</code>)</li>
+<li><strong>Utilisation de Snail</strong> : <code>DrawAllSnails()</code> appelle <code>Snail.Draw()</code> - les classes peuvent s&#39;utiliser mutuellement !</li>
+</ol>
+<h2 is-upgraded>Conventions de nommage</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Champ public statique</p>
+</td><td colspan="1" rowspan="1"><p>PascalCase</p>
+</td><td colspan="1" rowspan="1"><p><code>SnailX</code>, <code>NumberOfSnails</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Méthode publique</p>
+</td><td colspan="1" rowspan="1"><p>PascalCase</p>
+</td><td colspan="1" rowspan="1"><p><code>DrawTrack()</code>, <code>Init()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Variable locale</p>
+</td><td colspan="1" rowspan="1"><p>camelCase</p>
+</td><td colspan="1" rowspan="1"><p><code>int y = ...</code></p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Nettoyer Program.cs" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Simplifier <code>Program.cs</code> en utilisant les nouvelles classes.</p>
+<h2 is-upgraded>Le nouveau Program.cs</h2>
+<p>Remplacer tout le contenu de <code>Program.cs</code> par :</p>
+<pre><code>// Programme principal - Course d&#39;escargots
+Console.Clear();
+Console.CursorVisible = false;
+
+Race.Init();
+Race.DrawTrack();
+Race.DrawAllSnails();
+
+Console.SetCursorPosition(0, 12);
+Console.WriteLine(&#34;Appuyez sur ENTER pour lancer la course !&#34;);
+Console.ReadLine();
+
+// Boucle de course
+Random random = new Random();
+bool raceFinished = false;
+int winner = -1;
+
+while (!raceFinished)
+{
+    for (int i = 0; i &lt; Race.NumberOfSnails; i++)
+    {
+        if (random.Next(100) &lt; Race.SnailEnergy[i])
+        {
+            Snail.Clear(Race.SnailX[i], Race.SnailY[i]);
+            Race.SnailX[i]++;
+            Snail.Draw(Race.SnailX[i], Race.SnailY[i], Race.SnailColors[i]);
+
+            Race.SnailEnergy[i] -= random.Next(1, 4);
+            if (Race.SnailEnergy[i] &lt; 10) Race.SnailEnergy[i] = 10;
+        }
+
+        if (Race.SnailX[i] &gt;= Race.FinishX)
+        {
+            winner = i;
+            raceFinished = true;
+            break;
+        }
+    }
+
+    Race.ShowEnergy();
+    Thread.Sleep(100);
+}
+
+Console.SetCursorPosition(0, 14);
+Console.ForegroundColor = Race.SnailColors[winner];
+Console.WriteLine($&#34;{Race.SnailNames[winner]} a gagné la course !&#34;);
+Console.ResetColor();
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Comparaison avant/après</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Variables globales dans Program.cs</p>
+</td><td colspan="1" rowspan="1"><p>Données dans <code>Race</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Race_Init()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Race.Init()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snail_Draw(...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(...)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snailX[i]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Race.SnailX[i]</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonctions en vrac</p>
+</td><td colspan="1" rowspan="1"><p>Méthodes organisées dans des classes</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Structure du projet</h2>
+<p>Le projet devrait maintenant ressembler à ceci :</p>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs      // Programme principal (simplifié)
+├── Race.cs         // Classe Race (données + logique de course)
+└── Snail.cs        // Classe Snail (affichage escargot)
+</code></pre>
+<h2 is-upgraded>Tester</h2>
+<p>Compiler et exécuter. Le programme doit fonctionner exactement comme avant !</p>
+<aside class="special"><p>Le code est maintenant <strong>organisé</strong> en classes. Chaque classe a une responsabilité claire : <code>Snail</code> gère l&#39;affichage des escargots, <code>Race</code> gère la course.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Introduction des namespaces" duration="10">
+        <h2 is-upgraded>Pourquoi des namespaces ?</h2>
+<p>Imaginons un autre projet avec une classe <code>Race</code> pour des courses de voitures. Il y aurait un conflit de noms !</p>
+<p>Les <strong>namespaces</strong> permettent d&#39;organiser les classes et d&#39;éviter ces conflits.</p>
+<h2 is-upgraded>Structure avec namespace</h2>
+<p>Actuellement, l&#39;IDE a créé le namespace <code>SnailRaceRefactoring</code>. Organisons mieux avec un sous-namespace.</p>
+<h2 is-upgraded>Modifier Snail.cs</h2>
+<pre><code>namespace SnailRaceRefactoring.Game
+{
+    static class Snail
+    {
+        public static void Draw(int x, int y, ConsoleColor color)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = color;
+            Console.Write(&#34;@&#34;);
+            Console.ResetColor();
+        }
+
+        public static void Clear(int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(&#34;.&#34;);
+            Console.ResetColor();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Modifier Race.cs</h2>
+<pre><code>namespace SnailRaceRefactoring.Game
+{
+    static class Race
+    {
+        // ... tout le contenu reste identique ...
+    }
+}
+</code></pre>
+<h2 is-upgraded>Le problème : Program.cs ne compile plus !</h2>
+<p>Après ces modifications, <code>Program.cs</code> affiche des erreurs :</p>
+<pre><code>CS0103: The name &#39;Race&#39; does not exist in the current context
+CS0103: The name &#39;Snail&#39; does not exist in the current context
+</code></pre>
+<h2 is-upgraded>Solution : utiliser <code>using</code></h2>
+<p>Ajouter cette ligne <strong>au début</strong> de <code>Program.cs</code> :</p>
+<pre><code>using SnailRaceRefactoring.Game;
+
+// Programme principal - Course d&#39;escargots
+Console.Clear();
+Console.CursorVisible = false;
+
+Race.Init();
+// ... reste du code ...
+</code></pre>
+<h2 is-upgraded>Alternative : nom complet</h2>
+<p>Sans <code>using</code>, il faudrait écrire le nom complet partout :</p>
+<pre><code>// Sans using : nom complet obligatoire
+SnailRaceRefactoring.Game.Race.Init();
+SnailRaceRefactoring.Game.Snail.Draw(x, y, color);
+</code></pre>
+<p>C&#39;est long et répétitif ! Le <code>using</code> permet d&#39;utiliser les noms courts.</p>
+<h2 is-upgraded>Tester</h2>
+<p>Compiler et exécuter. Tout doit fonctionner !</p>
+<aside class="special"><p>Le <code>using</code> importe un <strong>namespace</strong>, pas une classe. Ainsi <code>using SnailRaceRefactoring.Game;</code> permet d&#39;accéder à toutes les classes de ce namespace.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 5 : Aligner dossiers et namespaces" duration="10">
+        <h2 is-upgraded>Le problème</h2>
+<p>À la compilation, un <strong>avertissement</strong> (warning) peut apparaître :</p>
+<pre><code>IDE0130: Namespace &#34;SnailRaceRefactoring.Game&#34; does not match folder structure,
+expected &#34;SnailRaceRefactoring&#34;
+</code></pre>
+<h2 is-upgraded>La convention .NET</h2>
+<p>En .NET, il existe une convention importante :</p>
+<p><strong>Le namespace doit correspondre à l&#39;arborescence des dossiers du projet.</strong></p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SnailRaceRefactoring</code></p>
+</td><td colspan="1" rowspan="1"><p><code>/Snail.cs</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SnailRaceRefactoring.Game</code></p>
+</td><td colspan="1" rowspan="1"><p><code>/Game/Snail.cs</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SnailRaceRefactoring.Game.AI</code></p>
+</td><td colspan="1" rowspan="1"><p><code>/Game/AI/Snail.cs</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Créer le dossier Game</h2>
+<p>Pour respecter cette convention :</p>
+<ol type="1">
+<li>Clic droit sur le projet &gt; <strong>Ajouter</strong> &gt; <strong>Nouveau dossier</strong></li>
+<li>Nommer le dossier <code>Game</code></li>
+<li><strong>Glisser-déposer</strong> les fichiers <code>Snail.cs</code> et <code>Race.cs</code> dans ce dossier</li>
+</ol>
+<h2 is-upgraded>Structure après réorganisation</h2>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs                    // namespace: SnailRaceRefactoring (ou aucun)
+└── Game/
+    ├── Race.cs                   // namespace: SnailRaceRefactoring.Game
+    └── Snail.cs                  // namespace: SnailRaceRefactoring.Game
+</code></pre>
+<h2 is-upgraded>Pourquoi c&#39;est important ?</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Navigation facile</strong></p>
+</td><td colspan="1" rowspan="1"><p>Le dossier reflète l&#39;organisation logique</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Pas d&#39;avertissements</strong></p>
+</td><td colspan="1" rowspan="1"><p>L&#39;IDE ne se plaint plus</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Standard de l&#39;industrie</strong></p>
+</td><td colspan="1" rowspan="1"><p>Tous les développeurs .NET suivent cette convention</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Refactoring automatique</strong></p>
+</td><td colspan="1" rowspan="1"><p>L&#39;IDE peut renommer le namespace si on déplace un fichier</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Astuce : création automatique</h2>
+<p>Lors de la création d&#39;une classe dans un dossier, l&#39;IDE propose automatiquement le bon namespace :</p>
+<ul>
+<li>Créer une classe dans <code>/Game/</code> → namespace <code>SnailRaceRefactoring.Game</code></li>
+<li>Créer une classe dans <code>/Display/</code> → namespace <code>SnailRaceRefactoring.Display</code></li>
+</ul>
+<aside class="warning"><p>Attention : déplacer un fichier ne change <strong>pas</strong> automatiquement son namespace ! Il faut le modifier manuellement (ou utiliser le refactoring de l&#39;IDE).</p>
+</aside>
+<h2 is-upgraded>Vérification</h2>
+<p>Compiler le projet. Les avertissements IDE0130 devraient avoir disparu.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 6 : Créer une classe SuperConsole" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer une classe utilitaire pour simplifier l&#39;affichage coloré dans la console.</p>
+<h2 is-upgraded>Observation du code répétitif</h2>
+<p>Dans notre code, nous avons souvent ce pattern :</p>
+<pre><code>Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine(&#34;Texte vert&#34;);
+Console.ResetColor();
+</code></pre>
+<p>Trois lignes pour afficher du texte coloré, c&#39;est beaucoup !</p>
+<h2 is-upgraded>Créer le dossier Display et SuperConsole.cs</h2>
+<p>Comme pour <code>Game</code>, créons un dossier pour le namespace <code>Display</code> :</p>
+<ol type="1">
+<li>Clic droit sur le projet &gt; <strong>Ajouter</strong> &gt; <strong>Nouveau dossier</strong></li>
+<li>Nommer le dossier <code>Display</code></li>
+<li>Clic droit sur le dossier <code>Display</code> &gt; <strong>Ajouter</strong> &gt; <strong>Classe...</strong></li>
+<li>Nommer le fichier <code>SuperConsole.cs</code></li>
+</ol>
+<p>L&#39;IDE propose automatiquement le namespace <code>SnailRaceRefactoring.Display</code>.</p>
+<p>Modifier le contenu :</p>
+<pre><code>namespace SnailRaceRefactoring.Display
+{
+    static class SuperConsole
+    {
+        /// &lt;summary&gt;
+        /// Affiche du texte coloré avec retour à la ligne
+        /// &lt;/summary&gt;
+        public static void WriteLineColor(string text, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche du texte coloré sans retour à la ligne
+        /// &lt;/summary&gt;
+        public static void WriteColor(string text, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(text);
+            Console.ResetColor();
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche un message de succès (vert)
+        /// &lt;/summary&gt;
+        public static void WriteSuccess(string text)
+        {
+            WriteLineColor(text, ConsoleColor.Green);
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche un message d&#39;erreur (rouge)
+        /// &lt;/summary&gt;
+        public static void WriteError(string text)
+        {
+            WriteLineColor(text, ConsoleColor.Red);
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche un message d&#39;avertissement (jaune)
+        /// &lt;/summary&gt;
+        public static void WriteWarning(string text)
+        {
+            WriteLineColor(text, ConsoleColor.Yellow);
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche du texte à une position précise
+        /// &lt;/summary&gt;
+        public static void WriteAt(int x, int y, string text)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(text);
+        }
+
+        /// &lt;summary&gt;
+        /// Affiche du texte coloré à une position précise
+        /// &lt;/summary&gt;
+        public static void WriteAtColor(int x, int y, string text, ConsoleColor color)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = color;
+            Console.Write(text);
+            Console.ResetColor();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Observer le namespace différent</h2>
+<p><code>SuperConsole</code> est dans <code>SnailRaceRefactoring.Display</code>, pas dans <code>SnailRaceRefactoring.Game</code>. C&#39;est une classe d&#39;affichage générique, pas spécifique au jeu.</p>
+<h2 is-upgraded>Utiliser SuperConsole</h2>
+<p>Modifier <code>Program.cs</code> pour utiliser la nouvelle classe :</p>
+<pre><code>using SnailRaceRefactoring.Game;
+using SnailRaceRefactoring.Display;
+
+// Programme principal - Course d&#39;escargots
+Console.Clear();
+Console.CursorVisible = false;
+
+Race.Init();
+Race.DrawTrack();
+Race.DrawAllSnails();
+
+SuperConsole.WriteAt(0, 12, &#34;Appuyez sur ENTER pour lancer la course !&#34;);
+Console.ReadLine();
+
+// ... boucle de course ...
+
+// À la fin, remplacer l&#39;affichage du gagnant :
+SuperConsole.WriteAt(0, 14, &#34;&#34;);
+SuperConsole.WriteLineColor($&#34;{Race.SnailNames[winner]} a gagné la course !&#34;, Race.SnailColors[winner]);
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Structure finale du projet</h2>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs           // Programme principal
+├── Game/
+│   ├── Race.cs          // namespace SnailRaceRefactoring.Game
+│   └── Snail.cs         // namespace SnailRaceRefactoring.Game
+└── Display/
+    └── SuperConsole.cs  // namespace SnailRaceRefactoring.Display
+</code></pre>
+<aside class="special"><p>Les dossiers <code>Game/</code> et <code>Display/</code> correspondent aux namespaces. C&#39;est la convention standard en .NET, comme expliqué à l&#39;étape 5.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Exercice : Refactoriser la classe Snail" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Améliorer la classe <code>Snail</code> en utilisant <code>SuperConsole</code>.</p>
+<h2 is-upgraded>Instructions</h2>
+<ol type="1">
+<li>Dans <code>Snail.cs</code>, ajouter le <code>using</code> nécessaire</li>
+<li>Remplacer le code d&#39;affichage par des appels à <code>SuperConsole</code></li>
+</ol>
+<h2 is-upgraded>Solution</h2>
+<pre><code>using SnailRaceRefactoring.Display;
+
+namespace SnailRaceRefactoring.Game
+{
+    static class Snail
+    {
+        public static void Draw(int x, int y, ConsoleColor color)
+        {
+            SuperConsole.WriteAtColor(x, y, &#34;@&#34;, color);
+        }
+
+        public static void Clear(int x, int y)
+        {
+            SuperConsole.WriteAtColor(x, y, &#34;.&#34;, ConsoleColor.DarkGray);
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Analyse</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>4 lignes pour <code>Draw</code></p>
+</td><td colspan="1" rowspan="1"><p>1 ligne avec <code>SuperConsole</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Code dupliqué (couleur + reset)</p>
+</td><td colspan="1" rowspan="1"><p>Logique centralisée dans <code>SuperConsole</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Bonus : Refactoriser Race</h2>
+<p>Appliquer le même principe à la classe <code>Race</code> pour utiliser <code>SuperConsole</code> dans <code>DrawTrack()</code> et <code>ShowEnergy()</code>.</p>
+<aside class="special"><p>Les classes peuvent s&#39;utiliser mutuellement ! <code>Snail</code> utilise <code>SuperConsole</code>, <code>Race</code> utilise <code>Snail</code> et <code>SuperConsole</code>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Comprendre les erreurs courantes" duration="10">
+        <h2 is-upgraded>Erreur 1 : Classe non trouvée</h2>
+<pre><code>CS0103: The name &#39;SuperConsole&#39; does not exist in the current context
+</code></pre>
+<p><strong>Cause</strong> : Le <code>using</code> du namespace est manquant.</p>
+<p><strong>Solution</strong> : Ajouter <code>using SnailRaceRefactoring.Display;</code> en haut du fichier.</p>
+<h2 is-upgraded>Erreur 2 : Using sur une classe</h2>
+<pre><code>using SnailRaceRefactoring.Display.SuperConsole;  // ERREUR!
+</code></pre>
+<pre><code>CS0138: A &#39;using&#39; directive can only be applied to namespaces
+</code></pre>
+<p><strong>Cause</strong> : <code>using</code> s&#39;applique aux <strong>namespaces</strong>, pas aux classes.</p>
+<p><strong>Solution</strong> : Utiliser le namespace : <code>using SnailRaceRefactoring.Display;</code></p>
+<h2 is-upgraded>Erreur 3 : Méthode non accessible</h2>
+<pre><code>CS0122: &#39;Snail.Draw(...)&#39; is inaccessible due to its protection level
+</code></pre>
+<p><strong>Cause</strong> : La méthode n&#39;est pas <code>public</code>.</p>
+<p><strong>Solution</strong> : Ajouter <code>public</code> devant la méthode : <code>public static void Draw(...)</code></p>
+<h2 is-upgraded>Erreur 4 : Appel sans static</h2>
+<pre><code>Snail s = new Snail();  // ERREUR si Snail est static class
+</code></pre>
+<pre><code>CS0712: Cannot create an instance of the static class &#39;Snail&#39;
+</code></pre>
+<p><strong>Cause</strong> : On ne peut pas instancier une classe statique.</p>
+<p><strong>Solution</strong> : Appeler directement sur la classe : <code>Snail.Draw(...)</code></p>
+<h2 is-upgraded>Erreur 5 : Using du parent n&#39;importe pas les enfants</h2>
+<pre><code>using SnailRaceRefactoring;  // N&#39;importe PAS Game ni Display !
+
+Race.Init();  // ERREUR: Race non trouvée
+</code></pre>
+<p><strong>Cause</strong> : <code>using SnailRaceRefactoring</code> n&#39;importe pas automatiquement les sous-namespaces.</p>
+<p><strong>Solution</strong> : Importer explicitement : <code>using SnailRaceRefactoring.Game;</code></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : using static" duration="5">
+        <h2 is-upgraded>Aller encore plus loin</h2>
+<p>C# permet d&#39;importer les <strong>membres statiques</strong> d&#39;une classe avec <code>using static</code> :</p>
+<pre><code>using static System.Console;
+using static SnailRaceRefactoring.Display.SuperConsole;
+
+// Plus besoin de préfixe !
+Clear();                              // au lieu de Console.Clear()
+CursorVisible = false;                // au lieu de Console.CursorVisible
+WriteSuccess(&#34;Partie terminée !&#34;);    // au lieu de SuperConsole.WriteSuccess()
+</code></pre>
+<h2 is-upgraded>Comparaison</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Effacer l&#39;écran</p>
+</td><td colspan="1" rowspan="1"><p><code>Console.Clear();</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Clear();</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Afficher un succès</p>
+</td><td colspan="1" rowspan="1"><p><code>SuperConsole.WriteSuccess(&#34;OK&#34;);</code></p>
+</td><td colspan="1" rowspan="1"><p><code>WriteSuccess(&#34;OK&#34;);</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Avantages et inconvénients</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Code plus court</p>
+</td><td colspan="1" rowspan="1"><p>Moins explicite (d&#39;où vient <code>Clear</code> ?)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Moins de répétition</p>
+</td><td colspan="1" rowspan="1"><p>Risque de confusion entre méthodes</p>
+</td></tr>
+</table>
+<aside class="warning"><p>Attention : <code>using static</code> s&#39;applique à une <strong>classe</strong>, pas un namespace. <code>using static System;</code> est invalide !</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Ce que vous avez appris</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Classe statique</strong></p>
+</td><td colspan="1" rowspan="1"><p>Conteneur pour données et méthodes, sans instanciation</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Méthode statique</strong></p>
+</td><td colspan="1" rowspan="1"><p>Fonction qui appartient à la classe (pas à une instance)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>public</strong></p>
+</td><td colspan="1" rowspan="1"><p>Rend un membre accessible depuis l&#39;extérieur</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>namespace</strong></p>
+</td><td colspan="1" rowspan="1"><p>Organise les classes et évite les conflits de noms</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>using</strong></p>
+</td><td colspan="1" rowspan="1"><p>Importe un namespace pour utiliser les noms courts</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Dossiers = NS</strong></p>
+</td><td colspan="1" rowspan="1"><p>Les dossiers doivent refléter la structure des namespaces</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Progression réalisée</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonctions préfixées</p>
+</td><td colspan="1" rowspan="1"><p><code>void Snail_Draw(...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail_Draw(x, y, c)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Classe statique</p>
+</td><td colspan="1" rowspan="1"><p><code>static class Snail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, c)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Avec namespace</p>
+</td><td colspan="1" rowspan="1"><p><code>namespace Game { static class Snail }</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Game.Snail.Draw(x, y, c)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Avec using</p>
+</td><td colspan="1" rowspan="1"><p><code>using Game;</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, c)</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Structure finale</h2>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs                    // Point d&#39;entrée
+├── Game/
+│   ├── Race.cs                   // Logique de course
+│   └── Snail.cs                  // Affichage escargot
+└── Display/
+    └── SuperConsole.cs           // Utilitaires console
+</code></pre>
+<h2 is-upgraded>Correspondance avec .NET</h2>
+<p>Vous utilisiez déjà des classes statiques sans le savoir :</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>SuperConsole.WriteSuccess()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Console.WriteLine()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>namespace SnailRaceRefactoring.Display</code></p>
+</td><td colspan="1" rowspan="1"><p><code>namespace System</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>using SnailRaceRefactoring.Display;</code></p>
+</td><td colspan="1" rowspan="1"><p><code>using System;</code></p>
+</td></tr>
+</table>
+<aside class="special"><p>Félicitations ! Vous avez transformé du code procédural en code orienté objet avec des classes statiques. C&#39;est la première étape vers la POO complète !</p>
+</aside>
+<h2 is-upgraded>Prochaine étape</h2>
+<p>Dans le prochain tutorial, vous découvrirez les classes <strong>non statiques</strong> qui permettent de créer des <strong>instances</strong> (objets) avec leurs propres données. Chaque escargot deviendra un objet <code>Snail</code> avec ses propres coordonnées et énergie !</p>
+<google-codelab-survey survey-id="preoo-03-static-classes-2">
+<h4>Quelle partie avez-vous trouvée la plus utile ?</h4>
+<paper-radio-group>
+<paper-radio-button>Créer un fichier de classe</paper-radio-button>
+<paper-radio-button>Transformer des fonctions en méthodes statiques</paper-radio-button>
+<paper-radio-button>Comprendre les namespaces</paper-radio-button>
+<paper-radio-button>Aligner les dossiers et les namespaces</paper-radio-button>
+<paper-radio-button>Utiliser le mot-clé using</paper-radio-button>
+<paper-radio-button>Créer une classe utilitaire (SuperConsole)</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
