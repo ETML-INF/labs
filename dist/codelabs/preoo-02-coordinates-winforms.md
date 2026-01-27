@@ -1,6 +1,6 @@
 author: Jonathan Melly
 summary: système de coordonnées 2D en Windows Forms C#
-id: preoo-03-coordinates-winforms
+id: preoo-02-coordinates-winforms
 categories: csharp,dev,winforms
 tags: ict
 environments: Web

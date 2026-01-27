@@ -1,0 +1,895 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Coordonnées 2D Windows Forms - Course d&#39;Escargots</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="preoo-02-coordinates-winforms"
+                  title="Coordonnées 2D Windows Forms - Course d&#39;Escargots"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="2">
+        <p>Ce tutorial présente le système de coordonnées 2D en C# Windows Forms (.NET 8+) à travers la création d&#39;une course d&#39;escargots animée.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>Nous allons créer un jeu graphique où :</p>
+<ul>
+<li>Plusieurs escargots font la course automatiquement</li>
+<li>Le joueur peut encourager son escargot avec la barre d&#39;espace</li>
+<li>L&#39;affichage utilise le double-buffering pour une animation fluide</li>
+</ul>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 4 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Comprendre le système de coordonnées en Windows Forms</li>
+<li>Dessiner des formes avec <code>Graphics</code> (Rectangle, String, Point)</li>
+<li>Utiliser <code>BufferedGraphics</code> pour une animation fluide</li>
+<li>Créer une course animée avec interaction clavier</li>
+</ol>
+<h2 is-upgraded>Prérequis</h2>
+<ul>
+<li>Visual Studio 2022 avec support .NET 8</li>
+<li>Connaissances de base en C#</li>
+</ul>
+<aside class="warning"><p><strong>Rappel important !</strong> Comme en console, le système de coordonnées a son origine en <strong>haut à gauche</strong> et l&#39;axe Y est <strong>inversé</strong> (Y augmente vers le bas).</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Projet et coordonnées" duration="15">
+        <h2 is-upgraded>Créer le projet</h2>
+<ol type="1">
+<li>Ouvrir Visual Studio</li>
+<li><strong>Create a new project</strong></li>
+<li>Chercher <strong>Windows Forms App</strong> (pas &#34;Windows Forms App (.NET Framework)&#34; !)</li>
+<li>Sélectionner <strong>Windows Forms App</strong> avec l&#39;icône C#</li>
+<li>Nommer le projet <strong>SnailRace</strong></li>
+<li>Choisir <strong>.NET 8.0+</strong> comme framework</li>
+</ol>
+<h2 is-upgraded>Le système de coordonnées</h2>
+<p>En Windows Forms, comme en console :</p>
+<pre><code>(0,0)─────────────────→ X
+  │
+  │    ┌─────────┐
+  │    │  Form   │
+  │    │         │
+  │    └─────────┘
+  ↓
+  Y
+</code></pre>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>X</strong></p>
+</td><td colspan="1" rowspan="1"><p>Distance depuis le bord <strong>gauche</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Y</strong></p>
+</td><td colspan="1" rowspan="1"><p>Distance depuis le bord <strong>haut</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>(0,0)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Coin <strong>supérieur gauche</strong></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Premier dessin</h2>
+<p>Ouvrir <code>Form1.cs</code> et remplacer tout le contenu par :</p>
+<pre><code>namespace SnailRace;
+
+public partial class Form1 : Form
+{
+    public Form1()
+    {
+        InitializeComponent();
+
+        // Configuration de la fenêtre
+        this.Text = &#34;Snail Race - Coordonnées 2D&#34;;
+        this.Size = new Size(800, 400);
+        this.BackColor = Color.Black;
+
+        // Événement pour dessiner
+        this.Paint += Form1_Paint;
+    }
+
+    private void Form1_Paint(object? sender, PaintEventArgs e)
+    {
+        Graphics g = e.Graphics;
+
+        // Point A en haut à gauche (près de l&#39;origine)
+        g.FillEllipse(Brushes.Red, 10, 10, 20, 20);
+        g.DrawString(&#34;A (10,10)&#34;, this.Font, Brushes.White, 35, 10);
+
+        // Point B en haut à droite
+        g.FillEllipse(Brushes.Green, 700, 10, 20, 20);
+        g.DrawString(&#34;B (700,10)&#34;, this.Font, Brushes.White, 640, 10);
+
+        // Point C en bas à gauche
+        g.FillEllipse(Brushes.Blue, 10, 300, 20, 20);
+        g.DrawString(&#34;C (10,300)&#34;, this.Font, Brushes.White, 35, 300);
+
+        // Point D en bas à droite
+        g.FillEllipse(Brushes.Yellow, 700, 300, 20, 20);
+        g.DrawString(&#34;D (700,300)&#34;, this.Font, Brushes.White, 620, 300);
+
+        // Lignes pour montrer les axes
+        g.DrawLine(Pens.Gray, 0, 0, 780, 0);    // Axe X (haut)
+        g.DrawLine(Pens.Gray, 0, 0, 0, 380);    // Axe Y (gauche)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Résultat attendu</h2>
+<p class="image-container"><img alt="coordinates" src="img\a80afc5e126364fe.png"></p>
+<h2 is-upgraded>Comprendre les paramètres</h2>
+<pre><code>g.FillEllipse(Brushes.Red, 10, 10, 20, 20);
+//                         X   Y   W   H
+//                         │   │   │   └── Hauteur
+//                         │   │   └────── Largeur
+//                         │   └────────── Y (depuis le haut)
+//                         └────────────── X (depuis la gauche)
+</code></pre>
+<aside class="special"><p>En Windows Forms, les méthodes de dessin utilisent toujours l&#39;ordre <strong>(X, Y, Width, Height)</strong> pour les rectangles et ellipses.</p>
+</aside>
+<h2 is-upgraded>Exercice</h2>
+<p>Modifier le code pour dessiner un rectangle au centre de la fenêtre (environ 400, 180).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Dessiner l&#39;escargot" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer une fonction pour dessiner un escargot à une position donnée.</p>
+<h2 is-upgraded>Structure de l&#39;escargot</h2>
+<p>Notre escargot sera composé de :</p>
+<ul>
+<li>Un <strong>rectangle</strong> pour le corps</li>
+<li>Un <strong>cercle</strong> pour la coquille</li>
+<li>Du <strong>texte</strong> pour le numéro<pre><code>┌───┐
+│ 1 ├──●
+└───┘
+Corps  Coquille
+</code></pre>
+</li>
+</ul>
+<h2 is-upgraded>Code avec fonction de dessin</h2>
+<pre><code>namespace SnailRace;
+
+public partial class Form1 : Form
+{
+    // Taille de l&#39;escargot
+    const int SNAIL_WIDTH = 40;
+    const int SNAIL_HEIGHT = 25;
+
+    public Form1()
+    {
+        InitializeComponent();
+
+        this.Text = &#34;Snail Race&#34;;
+        this.Size = new Size(800, 400);
+        this.BackColor = Color.FromArgb(30, 30, 30);
+
+        this.Paint += Form1_Paint;
+    }
+
+    private void Form1_Paint(object? sender, PaintEventArgs e)
+    {
+        Graphics g = e.Graphics;
+
+        // Dessiner plusieurs escargots à différentes positions
+        DrawSnail(g, 50, 50, 1, Color.Yellow);
+        DrawSnail(g, 50, 100, 2, Color.Cyan);
+        DrawSnail(g, 50, 150, 3, Color.Magenta);
+        DrawSnail(g, 50, 200, 4, Color.Lime);
+    }
+
+    private void DrawSnail(Graphics g, int x, int y, int number, Color color)
+    {
+        // Corps (rectangle)
+        using (Brush bodyBrush = new SolidBrush(color))
+        {
+            g.FillRectangle(bodyBrush, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+        }
+
+        // Contour du corps
+        using (Pen outlinePen = new Pen(Color.White, 1))
+        {
+            g.DrawRectangle(outlinePen, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+        }
+
+        // Coquille (cercle à droite du corps)
+        int shellX = x + SNAIL_WIDTH - 5;
+        int shellY = y + 2;
+        int shellSize = SNAIL_HEIGHT - 4;
+
+        using (Brush shellBrush = new SolidBrush(Color.FromArgb(150, color)))
+        {
+            g.FillEllipse(shellBrush, shellX, shellY, shellSize, shellSize);
+        }
+        g.DrawEllipse(Pens.White, shellX, shellY, shellSize, shellSize);
+
+        // Numéro de l&#39;escargot
+        using (Font font = new Font(&#34;Arial&#34;, 10, FontStyle.Bold))
+        {
+            string text = number.ToString();
+            SizeF textSize = g.MeasureString(text, font);
+            float textX = x + (SNAIL_WIDTH - textSize.Width) / 2;
+            float textY = y + (SNAIL_HEIGHT - textSize.Height) / 2;
+            g.DrawString(text, font, Brushes.Black, textX, textY);
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Points importants</h2>
+<h3 is-upgraded>1. Le mot-clé <code>using</code></h3>
+<pre><code>using (Brush bodyBrush = new SolidBrush(color))
+{
+    g.FillRectangle(bodyBrush, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+}
+</code></pre>
+<p>Les objets graphiques (Brush, Pen, Font) consomment des ressources. Le <code>using</code> garantit leur libération automatique.</p>
+<h3 is-upgraded>2. Centrer du texte</h3>
+<pre><code>SizeF textSize = g.MeasureString(text, font);
+float textX = x + (SNAIL_WIDTH - textSize.Width) / 2;
+float textY = y + (SNAIL_HEIGHT - textSize.Height) / 2;
+</code></pre>
+<p><code>MeasureString</code> permet de connaître la taille du texte avant de le dessiner.</p>
+<h2 is-upgraded>Exercice</h2>
+<p>Ajouter deux &#34;antennes&#34; à l&#39;escargot avec <code>g.DrawLine()</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Animation avec BufferedGraphics" duration="20">
+        <h2 is-upgraded>Objectif</h2>
+<p>Animer les escargots avec un affichage fluide grâce au double-buffering.</p>
+<h2 is-upgraded>Problème du scintillement</h2>
+<p>Sans double-buffering, l&#39;animation scintille car :</p>
+<ol type="1">
+<li>L&#39;écran est effacé (devient noir brièvement)</li>
+<li>Les éléments sont redessinés un par un</li>
+<li>L&#39;œil perçoit ces changements rapides</li>
+</ol>
+<h2 is-upgraded>Solution : BufferedGraphics</h2>
+<p>Le double-buffering dessine d&#39;abord dans une <strong>image en mémoire</strong>, puis affiche l&#39;image complète d&#39;un coup.</p>
+<pre><code>┌──────────┐     ┌────────────┐
+│  Buffer  │ ──► │  Écran     │
+│ (dessin) │     │(affichage) │
+└──────────┘     └────────────┘
+</code></pre>
+<h2 is-upgraded>Code avec animation</h2>
+<pre><code>namespace SnailRace;
+
+public partial class Form1 : Form
+{
+    // Configuration
+    const int SNAIL_WIDTH = 40;
+    const int SNAIL_HEIGHT = 25;
+    const int NUM_SNAILS = 4;
+    const int TRACK_START = 60;
+    const int TRACK_END = 700;
+
+    // Données des escargots (tableaux parallèles)
+    int[] snailX = new int[NUM_SNAILS];
+    int[] snailY = new int[NUM_SNAILS];
+    int[] snailEnergy = new int[NUM_SNAILS];
+    Color[] snailColors = { Color.Yellow, Color.Cyan, Color.Magenta, Color.Lime };
+
+    // Double buffering
+    BufferedGraphicsContext context;
+    BufferedGraphics buffer;
+
+    // Animation
+    System.Windows.Forms.Timer gameTimer;
+    Random random = new Random();
+    bool raceStarted = false;
+
+    public Form1()
+    {
+        InitializeComponent();
+
+        this.Text = &#34;Snail Race - Press SPACE to start&#34;;
+        this.Size = new Size(800, 300);
+        this.BackColor = Color.FromArgb(30, 30, 30);
+        this.DoubleBuffered = true;  // Active aussi le double-buffering du Form
+
+        // Initialiser les escargots
+        for (int i = 0; i &lt; NUM_SNAILS; i++)
+        {
+            snailX[i] = TRACK_START;
+            snailY[i] = 50 + i * 50;  // Espacement vertical
+            snailEnergy[i] = 100;
+        }
+
+        // Configurer le double-buffering manuel
+        context = BufferedGraphicsManager.Current;
+        context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+
+        // Timer pour l&#39;animation (60 FPS environ)
+        gameTimer = new System.Windows.Forms.Timer();
+        gameTimer.Interval = 16;  // ~60 FPS
+        gameTimer.Tick += GameTimer_Tick;
+
+        // Événements
+        this.Paint += Form1_Paint;
+        this.KeyDown += Form1_KeyDown;
+        this.Resize += Form1_Resize;
+    }
+
+    private void Form1_Resize(object? sender, EventArgs e)
+    {
+        // Recréer le buffer si la fenêtre change de taille
+        context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+    }
+
+    private void Form1_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Space)
+        {
+            if (!raceStarted)
+            {
+                raceStarted = true;
+                gameTimer.Start();
+                this.Text = &#34;Snail Race - GO!&#34;;
+            }
+        }
+
+        if (e.KeyCode == Keys.R)
+        {
+            // Reset
+            ResetRace();
+        }
+    }
+
+    private void ResetRace()
+    {
+        gameTimer.Stop();
+        raceStarted = false;
+
+        for (int i = 0; i &lt; NUM_SNAILS; i++)
+        {
+            snailX[i] = TRACK_START;
+            snailEnergy[i] = 100;
+        }
+
+        this.Text = &#34;Snail Race - Press SPACE to start&#34;;
+        this.Invalidate();
+    }
+
+    private void GameTimer_Tick(object? sender, EventArgs e)
+    {
+        bool raceFinished = false;
+        int winner = -1;
+
+        // Déplacer chaque escargot
+        for (int i = 0; i &lt; NUM_SNAILS; i++)
+        {
+            // Probabilité d&#39;avancer basée sur l&#39;énergie
+            if (random.Next(100) &lt; snailEnergy[i])
+            {
+                snailX[i] += random.Next(1, 4);  // Avance de 1-3 pixels
+
+                // Fatigue
+                snailEnergy[i] -= random.Next(1, 3);
+                if (snailEnergy[i] &lt; 10) snailEnergy[i] = 10;
+            }
+
+            // Vérifier victoire
+            if (snailX[i] &gt;= TRACK_END)
+            {
+                raceFinished = true;
+                winner = i;
+                break;
+            }
+        }
+
+        // Redessiner
+        this.Invalidate();
+
+        if (raceFinished)
+        {
+            gameTimer.Stop();
+            this.Text = $&#34;Snail {winner + 1} WINS! Press R to restart&#34;;
+        }
+    }
+
+    private void Form1_Paint(object? sender, PaintEventArgs e)
+    {
+        // Créer le buffer
+        buffer = context.Allocate(e.Graphics, this.ClientRectangle);
+        Graphics g = buffer.Graphics;
+
+        // Effacer avec la couleur de fond
+        g.Clear(this.BackColor);
+
+        // Activer l&#39;anti-aliasing pour un rendu plus lisse
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+        // Dessiner les pistes
+        DrawTracks(g);
+
+        // Dessiner les escargots
+        for (int i = 0; i &lt; NUM_SNAILS; i++)
+        {
+            DrawSnail(g, snailX[i], snailY[i], i + 1, snailColors[i]);
+            DrawEnergyBar(g, i);
+        }
+
+        // Dessiner la ligne d&#39;arrivée
+        DrawFinishLine(g);
+
+        // Afficher le buffer sur l&#39;écran
+        buffer.Render(e.Graphics);
+        buffer.Dispose();
+    }
+
+    private void DrawTracks(Graphics g)
+    {
+        using (Pen trackPen = new Pen(Color.FromArgb(60, 60, 60), 30))
+        {
+            for (int i = 0; i &lt; NUM_SNAILS; i++)
+            {
+                int y = snailY[i] + SNAIL_HEIGHT / 2;
+                g.DrawLine(trackPen, TRACK_START, y, TRACK_END, y);
+            }
+        }
+
+        // Ligne de départ
+        using (Pen startPen = new Pen(Color.White, 3))
+        {
+            g.DrawLine(startPen, TRACK_START, 40, TRACK_START, 40 + NUM_SNAILS * 50);
+        }
+    }
+
+    private void DrawFinishLine(Graphics g)
+    {
+        // Damier d&#39;arrivée
+        int squareSize = 10;
+        for (int row = 0; row &lt; (NUM_SNAILS * 50) / squareSize; row++)
+        {
+            for (int col = 0; col &lt; 2; col++)
+            {
+                bool isWhite = (row + col) % 2 == 0;
+                Brush brush = isWhite ? Brushes.White : Brushes.Black;
+                g.FillRectangle(brush,
+                    TRACK_END + col * squareSize,
+                    40 + row * squareSize,
+                    squareSize, squareSize);
+            }
+        }
+    }
+
+    private void DrawEnergyBar(Graphics g, int snailIndex)
+    {
+        int barX = 10;
+        int barY = snailY[snailIndex] + 5;
+        int barWidth = 40;
+        int barHeight = 15;
+
+        // Fond de la barre
+        g.FillRectangle(Brushes.DarkGray, barX, barY, barWidth, barHeight);
+
+        // Niveau d&#39;énergie
+        int energyWidth = (int)(barWidth * snailEnergy[snailIndex] / 100.0);
+        Color energyColor = snailEnergy[snailIndex] &gt; 50 ? Color.LimeGreen :
+                           snailEnergy[snailIndex] &gt; 25 ? Color.Orange : Color.Red;
+
+        using (Brush energyBrush = new SolidBrush(energyColor))
+        {
+            g.FillRectangle(energyBrush, barX, barY, energyWidth, barHeight);
+        }
+
+        // Contour
+        g.DrawRectangle(Pens.White, barX, barY, barWidth, barHeight);
+    }
+
+    private void DrawSnail(Graphics g, int x, int y, int number, Color color)
+    {
+        // Corps
+        using (Brush bodyBrush = new SolidBrush(color))
+        {
+            g.FillRectangle(bodyBrush, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+        }
+        g.DrawRectangle(Pens.White, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+
+        // Coquille
+        int shellX = x + SNAIL_WIDTH - 5;
+        int shellY = y + 2;
+        int shellSize = SNAIL_HEIGHT - 4;
+
+        using (Brush shellBrush = new SolidBrush(Color.FromArgb(180, color)))
+        {
+            g.FillEllipse(shellBrush, shellX, shellY, shellSize, shellSize);
+        }
+        g.DrawEllipse(Pens.White, shellX, shellY, shellSize, shellSize);
+
+        // Numéro
+        using (Font font = new Font(&#34;Arial&#34;, 9, FontStyle.Bold))
+        {
+            string text = number.ToString();
+            SizeF textSize = g.MeasureString(text, font);
+            float textX = x + (SNAIL_WIDTH - textSize.Width) / 2;
+            float textY = y + (SNAIL_HEIGHT - textSize.Height) / 2;
+            g.DrawString(text, font, Brushes.Black, textX, textY);
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Points clés du BufferedGraphics</h2>
+<pre><code>// 1. Créer le contexte (une fois)
+context = BufferedGraphicsManager.Current;
+
+// 2. Dans Paint, allouer un buffer
+buffer = context.Allocate(e.Graphics, this.ClientRectangle);
+Graphics g = buffer.Graphics;
+
+// 3. Dessiner dans le buffer
+g.Clear(this.BackColor);
+// ... tous les dessins ...
+
+// 4. Afficher le buffer d&#39;un coup
+buffer.Render(e.Graphics);
+buffer.Dispose();
+</code></pre>
+<h2 is-upgraded>Le Timer pour l&#39;animation</h2>
+<pre><code>gameTimer = new System.Windows.Forms.Timer();
+gameTimer.Interval = 16;  // Millisecondes entre chaque tick
+gameTimer.Tick += GameTimer_Tick;  // Fonction appelée à chaque tick
+gameTimer.Start();  // Démarre l&#39;animation
+</code></pre>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>16 ms</p>
+</td><td colspan="1" rowspan="1"><p>~60 FPS</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>33 ms</p>
+</td><td colspan="1" rowspan="1"><p>~30 FPS</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>100 ms</p>
+</td><td colspan="1" rowspan="1"><p>10 FPS</p>
+</td></tr>
+</table>
+<aside class="special"><p><code>this.Invalidate()</code> demande au système de redessiner le formulaire, ce qui déclenche l&#39;événement <code>Paint</code>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Interaction joueur" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Permettre au joueur d&#39;encourager son escargot pendant la course.</p>
+<h2 is-upgraded>Mécaniques ajoutées</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>SPACE (avant course)</p>
+</td><td colspan="1" rowspan="1"><p>Démarrer la course</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>SPACE (pendant course)</p>
+</td><td colspan="1" rowspan="1"><p>Booster l&#39;escargot du joueur</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>R</p>
+</td><td colspan="1" rowspan="1"><p>Recommencer</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Code final avec interaction</h2>
+<p>Modifier les parties suivantes du code :</p>
+<pre><code>// Ajouter cette variable en haut de la classe
+int playerSnailIndex = 0;  // Le joueur contrôle l&#39;escargot 0
+int boostCooldown = 0;     // Temps avant de pouvoir rebooster
+
+// Modifier Form1_KeyDown
+private void Form1_KeyDown(object? sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.Space)
+    {
+        if (!raceStarted)
+        {
+            // Démarrer la course
+            raceStarted = true;
+            gameTimer.Start();
+            this.Text = &#34;Snail Race - SPACE to boost!&#34;;
+        }
+        else if (boostCooldown &lt;= 0)
+        {
+            // Booster l&#39;escargot du joueur
+            snailEnergy[playerSnailIndex] += 15;
+            if (snailEnergy[playerSnailIndex] &gt; 100)
+                snailEnergy[playerSnailIndex] = 100;
+
+            boostCooldown = 10;  // Cooldown de 10 frames
+        }
+    }
+
+    if (e.KeyCode == Keys.R)
+    {
+        ResetRace();
+    }
+}
+
+// Modifier GameTimer_Tick pour gérer le cooldown
+private void GameTimer_Tick(object? sender, EventArgs e)
+{
+    // Réduire le cooldown
+    if (boostCooldown &gt; 0) boostCooldown--;
+
+    bool raceFinished = false;
+    int winner = -1;
+
+    for (int i = 0; i &lt; NUM_SNAILS; i++)
+    {
+        if (random.Next(100) &lt; snailEnergy[i])
+        {
+            snailX[i] += random.Next(1, 4);
+            snailEnergy[i] -= random.Next(1, 3);
+            if (snailEnergy[i] &lt; 10) snailEnergy[i] = 10;
+        }
+
+        if (snailX[i] &gt;= TRACK_END)
+        {
+            raceFinished = true;
+            winner = i;
+            break;
+        }
+    }
+
+    this.Invalidate();
+
+    if (raceFinished)
+    {
+        gameTimer.Stop();
+        string result = (winner == playerSnailIndex) ? &#34;YOU WIN!&#34; : $&#34;Snail {winner + 1} wins...&#34;;
+        this.Text = $&#34;{result} Press R to restart&#34;;
+    }
+}
+
+// Modifier ResetRace
+private void ResetRace()
+{
+    gameTimer.Stop();
+    raceStarted = false;
+    boostCooldown = 0;
+
+    for (int i = 0; i &lt; NUM_SNAILS; i++)
+    {
+        snailX[i] = TRACK_START;
+        snailEnergy[i] = 100;
+    }
+
+    this.Text = &#34;Snail Race - Press SPACE to start&#34;;
+    this.Invalidate();
+}
+</code></pre>
+<h2 is-upgraded>Mettre en évidence l&#39;escargot du joueur</h2>
+<p>Modifier <code>DrawSnail</code> pour marquer l&#39;escargot du joueur :</p>
+<pre><code>private void DrawSnail(Graphics g, int x, int y, int number, Color color, bool isPlayer = false)
+{
+    // Indicateur &#34;YOU&#34; pour le joueur
+    if (isPlayer)
+    {
+        using (Font smallFont = new Font(&#34;Arial&#34;, 7))
+        {
+            g.DrawString(&#34;YOU&#34;, smallFont, Brushes.White, x, y - 12);
+        }
+
+        // Contour plus épais pour le joueur
+        using (Pen playerPen = new Pen(Color.Gold, 3))
+        {
+            g.DrawRectangle(playerPen, x - 2, y - 2, SNAIL_WIDTH + 4, SNAIL_HEIGHT + 4);
+        }
+    }
+
+    // Corps
+    using (Brush bodyBrush = new SolidBrush(color))
+    {
+        g.FillRectangle(bodyBrush, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+    }
+    g.DrawRectangle(Pens.White, x, y, SNAIL_WIDTH, SNAIL_HEIGHT);
+
+    // ... reste du code identique ...
+}
+</code></pre>
+<p>Et modifier l&#39;appel dans <code>Form1_Paint</code> :</p>
+<pre><code>for (int i = 0; i &lt; NUM_SNAILS; i++)
+{
+    bool isPlayer = (i == playerSnailIndex);
+    DrawSnail(g, snailX[i], snailY[i], i + 1, snailColors[i], isPlayer);
+    DrawEnergyBar(g, i);
+}
+</code></pre>
+<h2 is-upgraded>Afficher l&#39;indicateur de boost</h2>
+<p>Ajouter dans <code>Form1_Paint</code> après les escargots :</p>
+<pre><code>// Indicateur de boost disponible
+if (raceStarted)
+{
+    string boostText = boostCooldown &gt; 0 ? $&#34;Boost: {boostCooldown}&#34; : &#34;BOOST READY!&#34;;
+    Color boostColor = boostCooldown &gt; 0 ? Color.Gray : Color.LimeGreen;
+
+    using (Font boostFont = new Font(&#34;Arial&#34;, 12, FontStyle.Bold))
+    using (Brush boostBrush = new SolidBrush(boostColor))
+    {
+        g.DrawString(boostText, boostFont, boostBrush, 10, this.ClientSize.Height - 30);
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations possibles" duration="5">
+        <h2 is-upgraded>1. Ajouter des points avec DrawPoint</h2>
+<p>Windows Forms n&#39;a pas de <code>DrawPoint</code> direct, mais on peut utiliser <code>FillRectangle</code> avec 1x1 pixel ou <code>FillEllipse</code> :</p>
+<pre><code>// Point simple (1 pixel)
+g.FillRectangle(Brushes.White, x, y, 1, 1);
+
+// Point visible (petit cercle)
+void DrawPoint(Graphics g, int x, int y, Color color, int size = 4)
+{
+    using (Brush brush = new SolidBrush(color))
+    {
+        g.FillEllipse(brush, x - size/2, y - size/2, size, size);
+    }
+}
+</code></pre>
+<h2 is-upgraded>2. Trail derrière l&#39;escargot</h2>
+<pre><code>// Ajouter un tableau pour stocker les positions précédentes
+Queue&lt;Point&gt;[] snailTrails = new Queue&lt;Point&gt;[NUM_SNAILS];
+
+// Dans l&#39;initialisation
+for (int i = 0; i &lt; NUM_SNAILS; i++)
+{
+    snailTrails[i] = new Queue&lt;Point&gt;();
+}
+
+// Dans GameTimer_Tick, avant de déplacer
+snailTrails[i].Enqueue(new Point(snailX[i], snailY[i]));
+if (snailTrails[i].Count &gt; 10) snailTrails[i].Dequeue();
+
+// Dans le dessin
+void DrawTrail(Graphics g, int snailIndex, Color color)
+{
+    int alpha = 50;
+    foreach (Point p in snailTrails[snailIndex])
+    {
+        using (Brush trailBrush = new SolidBrush(Color.FromArgb(alpha, color)))
+        {
+            g.FillEllipse(trailBrush, p.X + 20, p.Y + 10, 8, 8);
+        }
+        alpha += 15;
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Confettis de victoire</h2>
+<pre><code>void DrawConfetti(Graphics g, int winnerIndex)
+{
+    for (int i = 0; i &lt; 50; i++)
+    {
+        int x = random.Next(this.ClientSize.Width);
+        int y = random.Next(this.ClientSize.Height);
+        Color c = Color.FromArgb(random.Next(256), random.Next(256), random.Next(256));
+
+        using (Brush brush = new SolidBrush(c))
+        {
+            g.FillRectangle(brush, x, y, 5, 5);
+        }
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Coordonnées : Console vs Windows Forms</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Origine</p>
+</td><td colspan="1" rowspan="1"><p>(0,0) haut-gauche</p>
+</td><td colspan="1" rowspan="1"><p>(0,0) haut-gauche</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Unité</p>
+</td><td colspan="1" rowspan="1"><p>Caractères</p>
+</td><td colspan="1" rowspan="1"><p>Pixels</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Y augmente</p>
+</td><td colspan="1" rowspan="1"><p>Vers le bas</p>
+</td><td colspan="1" rowspan="1"><p>Vers le bas</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Positionnement</p>
+</td><td colspan="1" rowspan="1"><p><code>SetCursorPosition(x,y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Paramètres (x, y)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Dessin</p>
+</td><td colspan="1" rowspan="1"><p>Caractères ASCII</p>
+</td><td colspan="1" rowspan="1"><p><code>Graphics.Draw*</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Méthodes Graphics principales</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>FillRectangle(brush, x, y, w, h)</code></p>
+</td><td colspan="1" rowspan="1"><p>Rectangle plein</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DrawRectangle(pen, x, y, w, h)</code></p>
+</td><td colspan="1" rowspan="1"><p>Contour rectangle</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>FillEllipse(brush, x, y, w, h)</code></p>
+</td><td colspan="1" rowspan="1"><p>Ellipse/cercle plein</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DrawEllipse(pen, x, y, w, h)</code></p>
+</td><td colspan="1" rowspan="1"><p>Contour ellipse</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DrawString(text, font, brush, x, y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Texte</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DrawLine(pen, x1, y1, x2, y2)</code></p>
+</td><td colspan="1" rowspan="1"><p>Ligne</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Points clés</h2>
+<ol type="1">
+<li><strong>Coordonnées</strong> : Toujours (X, Y) avec Y inversé par rapport aux maths</li>
+<li><strong>BufferedGraphics</strong> : Essentiel pour une animation fluide</li>
+<li><strong>Timer</strong> : Utiliser <code>System.Windows.Forms.Timer</code> pour les jeux simples</li>
+<li><strong>Invalidate()</strong> : Déclenche le redessin du formulaire</li>
+<li><strong>using</strong> : Libérer les ressources graphiques (Brush, Pen, Font)</li>
+</ol>
+<aside class="special"><p>Ces concepts sont la base de tout développement de jeux 2D, que ce soit en Windows Forms, WPF, Unity, ou d&#39;autres frameworks !</p>
+</aside>
+<h2 is-upgraded>Vers la POO</h2>
+<pre><code>public class Snail
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Energy { get; set; }
+    public Color Color { get; set; }
+
+    public void Draw(Graphics g) { ... }
+    public void Move(Random random) { ... }
+    public void Boost() { ... }
+}
+
+public class Race
+{
+    private List&lt;Snail&gt; snails;
+    private BufferedGraphics buffer;
+
+    public void Update() { ... }
+    public void Draw(Graphics g) { ... }
+}
+</code></pre>
+<google-codelab-survey survey-id="preoo-02-coordinates-winforms-1">
+<h4>Quelle partie avez-vous trouvée la plus intéressante ?</h4>
+<paper-radio-group>
+<paper-radio-button>Les méthodes de dessin (DrawRectangle, FillEllipse...)</paper-radio-button>
+<paper-radio-button>Le double-buffering pour l&#39;animation</paper-radio-button>
+<paper-radio-button>Le Timer et la boucle de jeu</paper-radio-button>
+<paper-radio-button>L&#39;interaction clavier pendant le jeu</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
