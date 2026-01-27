@@ -8,7 +8,7 @@ status: Published
 feedback link: https://git.section-inf.ch/jmy/labs/issues
 analytics account: UA-170792591-1
 
-# Du Code aux Classes Statiques
+# Du Code basique aux Classes Statiques
 
 ## Vue d'ensemble
 Duration: 0:03:00
