@@ -22,9 +22,9 @@ Vous avez développé une course d'escargots avec des fonctions préfixées (`Sn
 ### Objectifs
 
 À travers ce tutorial, vous apprendrez à :
-1. Identifier les groupes logiques de fonctions (préfixes)
+1. Identifier les groupes logiques de fonctions **et de variables** (préfixes)
 2. Créer un fichier de classe
-3. Transformer des fonctions préfixées en méthodes de classe statique
+3. Transformer des fonctions préfixées en **méthodes** et des variables globales en **champs** de classe statique
 4. Organiser le code avec des namespaces
 5. Utiliser `using` pour importer des namespaces
 
@@ -206,8 +206,10 @@ On remarque que les fonctions sont organisées avec des préfixes :
 | `Race_`  | `Race_Init`, `Race_DrawTrack`, `Race_DrawAllSnails`, `Race_ShowEnergy` | Gestion de la course    |
 | `Snail_` | `Snail_Draw`, `Snail_Clear`                                            | Affichage des escargots |
 
+On remarque aussi que les **variables globales** (`snailX`, `snailY`, `snailEnergy`, `snailNames`, `snailColors`, etc.) sont utilisées principalement par les fonctions `Race_*`. Ces variables et ces fonctions forment un groupe logique qui devrait être réuni.
+
 Positive
-: Ces préfixes indiquent des **groupes logiques** de fonctions. Chaque préfixe deviendra une **classe** !
+: Ces préfixes indiquent des **groupes logiques** de fonctions. Chaque préfixe deviendra une **classe**, et les variables associées deviendront des **champs** de cette classe !
 
 ## Étape 1 : Créer la classe Snail
 Duration: 0:10:00
@@ -274,11 +276,13 @@ namespace SnailRaceRefactoring
 | Fonction "en vrac" dans Program.cs            | Méthode dans la classe `Snail`                     |
 | Appel : `Snail_Draw(x, y, color)`             | Appel : `Snail.Draw(x, y, color)`                  |
 
+Remarque : la classe `Snail` ne contient ici que des **méthodes** (pas de variables/champs). C'est normal : toutes les données des escargots (`snailX`, `snailNames`, etc.) sont liées à la course et seront déplacées dans la classe `Race` à l'étape suivante.
+
 ### Les mots-clés importants
 
 - **`static class`** : La classe ne peut pas être instanciée (pas de `new Snail()`)
-- **`public`** : La méthode est accessible depuis l'extérieur de la classe
-- **`static`** : La méthode appartient à la classe, pas à une instance
+- **`public`** : Le membre (méthode ou champ) est accessible depuis l'extérieur de la classe
+- **`static`** : Le membre appartient à la classe, pas à une instance
 
 ### Mettre à jour Program.cs
 
@@ -316,11 +320,11 @@ Transformer les fonctions `Race_*` en méthodes d'une classe statique `Race`.
 
 ### Le défi des données
 
-Les fonctions `Race_*` utilisent des variables globales :
+Contrairement à `Snail` (qui n'avait que des méthodes), les fonctions `Race_*` utilisent des **variables globales** :
 - `numberOfSnails`, `screenWidth`, `startX`, `finishX`
 - `snailX[]`, `snailY[]`, `snailEnergy[]`, `snailNames[]`, `snailColors[]`
 
-Ces variables doivent être déplacées dans la classe `Race`.
+Ces variables et ces fonctions forment un groupe logique : elles doivent être **regroupées** dans la classe `Race`. Les variables globales deviennent des **champs statiques** (`static`) de la classe.
 
 ### Créer le fichier Race.cs
 
@@ -413,9 +417,10 @@ namespace SnailRaceRefactoring
 
 ### Observations importantes
 
-1. **Les données sont dans la classe** : Les tableaux et variables sont devenus des champs `public static`
-2. **Accès aux données** : Les méthodes accèdent directement aux champs (ex: `SnailX[i]` au lieu de `snailX[i]`)
-3. **Utilisation de Snail** : `DrawAllSnails()` appelle `Snail.Draw()` - les classes peuvent s'utiliser mutuellement !
+1. **Les variables sont devenues des champs** : Les variables globales (`snailX`, `numberOfSnails`, etc.) sont maintenant des champs `public static` de la classe. Elles sont rangées avec les méthodes qui les utilisent
+2. **Terminologie** : dans une classe, une variable s'appelle un **champ** (*field*) et une fonction s'appelle une **méthode** (*method*)
+3. **Accès aux données** : Les méthodes de la classe accèdent directement à ses champs (ex: `SnailX[i]` sans préfixe). Depuis l'extérieur, on écrit `Race.SnailX[i]`
+4. **Utilisation de Snail** : `DrawAllSnails()` appelle `Snail.Draw()` - les classes peuvent s'utiliser mutuellement !
 
 ### Conventions de nommage
 
@@ -489,13 +494,13 @@ Console.ReadKey();
 
 ### Comparaison avant/après
 
-| Avant                              | Après                                |
-| :--------------------------------- | :----------------------------------- |
-| Variables globales dans Program.cs | Données dans `Race`                  |
-| `Race_Init()`                      | `Race.Init()`                        |
-| `Snail_Draw(...)`                  | `Snail.Draw(...)`                    |
-| `snailX[i]`                        | `Race.SnailX[i]`                     |
-| Fonctions en vrac                  | Méthodes organisées dans des classes |
+| Avant                              | Après                                | Terminologie          |
+| :--------------------------------- | :----------------------------------- | :-------------------- |
+| `int[] snailX` (variable globale)  | `static int[] SnailX` (dans `Race`)  | Variable → **Champ**  |
+| `Race_Init()`                      | `Race.Init()`                        | Fonction → **Méthode**|
+| `Snail_Draw(...)`                  | `Snail.Draw(...)`                    | Fonction → **Méthode**|
+| `snailX[i]` (accès direct)        | `Race.SnailX[i]` (via la classe)     | Accès qualifié        |
+| Fonctions et variables en vrac     | Organisées ensemble dans des classes | Regroupement logique  |
 
 ### Structure du projet
 
@@ -513,7 +518,7 @@ SnailRaceRefactoring/
 Compiler et exécuter. Le programme doit fonctionner exactement comme avant !
 
 Positive
-: Le code est maintenant **organisé** en classes. Chaque classe a une responsabilité claire : `Snail` gère l'affichage des escargots, `Race` gère la course.
+: Le code est maintenant **organisé** en classes. Les variables globales sont devenues des **champs** de `Race`, et les fonctions sont devenues des **méthodes**. Chaque classe a une responsabilité claire : `Snail` gère l'affichage des escargots, `Race` gère les données et la logique de la course.
 
 ## Étape 4 : Introduction des namespaces
 Duration: 0:10:00
@@ -975,23 +980,24 @@ Duration: 0:03:00
 
 ### Ce que vous avez appris
 
-| Concept               | Description                                                   |
-| :-------------------- | :------------------------------------------------------------ |
-| **Classe statique**   | Conteneur pour données et méthodes, sans instanciation        |
-| **Méthode statique**  | Fonction qui appartient à la classe (pas à une instance)      |
-| **public**            | Rend un membre accessible depuis l'extérieur                  |
-| **namespace**         | Organise les classes et évite les conflits de noms            |
-| **using**             | Importe un namespace pour utiliser les noms courts            |
-| **Dossiers = NS**     | Les dossiers doivent refléter la structure des namespaces     |
+| Concept               | Description                                                            |
+| :-------------------- | :--------------------------------------------------------------------- |
+| **Classe statique**   | Conteneur pour **champs** (données) et **méthodes** (actions), sans instanciation |
+| **Champ statique**    | Variable qui appartient à la classe (ex: `Race.SnailX`)               |
+| **Méthode statique**  | Fonction qui appartient à la classe (ex: `Race.Init()`)               |
+| **public**            | Rend un membre (champ ou méthode) accessible depuis l'extérieur       |
+| **namespace**         | Organise les classes et évite les conflits de noms                    |
+| **using**             | Importe un namespace pour utiliser les noms courts                    |
+| **Dossiers = NS**     | Les dossiers doivent refléter la structure des namespaces             |
 
 ### Progression réalisée
 
-| Étape               | Organisation                            | Appel                      |
-| :------------------ | :-------------------------------------- | :------------------------- |
-| Fonctions préfixées | `void Snail_Draw(...)`                  | `Snail_Draw(x, y, c)`      |
-| Classe statique     | `static class Snail`                    | `Snail.Draw(x, y, c)`      |
-| Avec namespace      | `namespace Game { static class Snail }` | `Game.Snail.Draw(x, y, c)` |
-| Avec using          | `using Game;`                           | `Snail.Draw(x, y, c)`      |
+| Étape               | Fonctions                               | Variables                              |
+| :------------------ | :-------------------------------------- | :------------------------------------- |
+| Fonctions préfixées | `void Snail_Draw(...)`                  | `int[] snailX` (globales)              |
+| Classe statique     | `static class Race { Init()... }`       | `static int[] SnailX` (champs)         |
+| Avec namespace      | `namespace Game { static class Race }`  | champs dans la classe, dans le NS      |
+| Avec using          | `using Game;` → `Race.Init()`           | `using Game;` → `Race.SnailX[i]`       |
 
 ### Structure finale
 
@@ -1016,7 +1022,7 @@ Vous utilisiez déjà des classes statiques sans le savoir :
 | `using SnailRaceRefactoring.Display;`    | `using System;`       |
 
 Positive
-: Félicitations ! Vous avez transformé du code procédural en code orienté objet avec des classes statiques. C'est la première étape vers la POO complète !
+: Félicitations ! Vous avez transformé du code procédural en code orienté objet avec des classes statiques. Fonctions **et** variables sont maintenant regroupées dans des classes. C'est la première étape vers la POO complète !
 
 ### Prochaine étape
 

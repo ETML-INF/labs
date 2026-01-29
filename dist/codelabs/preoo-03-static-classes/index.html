@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Du Code aux Classes Statiques</title>
+  <title>Du Code basique aux Classes Statiques</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
@@ -23,7 +23,7 @@
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid="UA-170792591-1"
                   id="preoo-03-static-classes"
-                  title="Du Code aux Classes Statiques"
+                  title="Du Code basique aux Classes Statiques"
                   environment="web"
                   feedback-link="https://git.section-inf.ch/jmy/labs/issues">
     
@@ -34,9 +34,9 @@
 <h2 is-upgraded>Objectifs</h2>
 <p>À travers ce tutorial, vous apprendrez à :</p>
 <ol type="1">
-<li>Identifier les groupes logiques de fonctions (préfixes)</li>
+<li>Identifier les groupes logiques de fonctions <strong>et de variables</strong> (préfixes)</li>
 <li>Créer un fichier de classe</li>
-<li>Transformer des fonctions préfixées en méthodes de classe statique</li>
+<li>Transformer des fonctions préfixées en <strong>méthodes</strong> et des variables globales en <strong>champs</strong> de classe statique</li>
 <li>Organiser le code avec des namespaces</li>
 <li>Utiliser <code>using</code> pour importer des namespaces</li>
 </ol>
@@ -216,7 +216,8 @@ void Snail_Clear(int x, int y)
 </td><td colspan="1" rowspan="1"><p>Affichage des escargots</p>
 </td></tr>
 </table>
-<aside class="special"><p>Ces préfixes indiquent des <strong>groupes logiques</strong> de fonctions. Chaque préfixe deviendra une <strong>classe</strong> !</p>
+<p>On remarque aussi que les <strong>variables globales</strong> (<code>snailX</code>, <code>snailY</code>, <code>snailEnergy</code>, <code>snailNames</code>, <code>snailColors</code>, etc.) sont utilisées principalement par les fonctions <code>Race_*</code>. Ces variables et ces fonctions forment un groupe logique qui devrait être réuni.</p>
+<aside class="special"><p>Ces préfixes indiquent des <strong>groupes logiques</strong> de fonctions. Chaque préfixe deviendra une <strong>classe</strong>, et les variables associées deviendront des <strong>champs</strong> de cette classe !</p>
 </aside>
 
 
@@ -279,11 +280,12 @@ void Snail_Clear(int x, int y)
 </td><td colspan="1" rowspan="1"><p>Appel : <code>Snail.Draw(x, y, color)</code></p>
 </td></tr>
 </table>
+<p>Remarque : la classe <code>Snail</code> ne contient ici que des <strong>méthodes</strong> (pas de variables/champs). C&#39;est normal : toutes les données des escargots (<code>snailX</code>, <code>snailNames</code>, etc.) sont liées à la course et seront déplacées dans la classe <code>Race</code> à l&#39;étape suivante.</p>
 <h2 is-upgraded>Les mots-clés importants</h2>
 <ul>
 <li><code>static class</code> : La classe ne peut pas être instanciée (pas de <code>new Snail()</code>)</li>
-<li><code>public</code> : La méthode est accessible depuis l&#39;extérieur de la classe</li>
-<li><code>static</code> : La méthode appartient à la classe, pas à une instance</li>
+<li><code>public</code> : Le membre (méthode ou champ) est accessible depuis l&#39;extérieur de la classe</li>
+<li><code>static</code> : Le membre appartient à la classe, pas à une instance</li>
 </ul>
 <h2 is-upgraded>Mettre à jour Program.cs</h2>
 <p>Dans <code>Program.cs</code>, remplacer les appels aux anciennes fonctions :</p>
@@ -309,12 +311,12 @@ Snail.Clear(snailX[i], snailY[i]);
         <h2 is-upgraded>Objectif</h2>
 <p>Transformer les fonctions <code>Race_*</code> en méthodes d&#39;une classe statique <code>Race</code>.</p>
 <h2 is-upgraded>Le défi des données</h2>
-<p>Les fonctions <code>Race_*</code> utilisent des variables globales :</p>
+<p>Contrairement à <code>Snail</code> (qui n&#39;avait que des méthodes), les fonctions <code>Race_*</code> utilisent des <strong>variables globales</strong> :</p>
 <ul>
 <li><code>numberOfSnails</code>, <code>screenWidth</code>, <code>startX</code>, <code>finishX</code></li>
 <li><code>snailX[]</code>, <code>snailY[]</code>, <code>snailEnergy[]</code>, <code>snailNames[]</code>, <code>snailColors[]</code></li>
 </ul>
-<p>Ces variables doivent être déplacées dans la classe <code>Race</code>.</p>
+<p>Ces variables et ces fonctions forment un groupe logique : elles doivent être <strong>regroupées</strong> dans la classe <code>Race</code>. Les variables globales deviennent des <strong>champs statiques</strong> (<code>static</code>) de la classe.</p>
 <h2 is-upgraded>Créer le fichier Race.cs</h2>
 <ol type="1">
 <li>Clic droit sur le projet &gt; <strong>Ajouter</strong> &gt; <strong>Classe...</strong></li>
@@ -403,8 +405,9 @@ Snail.Clear(snailX[i], snailY[i]);
 </code></pre>
 <h2 is-upgraded>Observations importantes</h2>
 <ol type="1">
-<li><strong>Les données sont dans la classe</strong> : Les tableaux et variables sont devenus des champs <code>public static</code></li>
-<li><strong>Accès aux données</strong> : Les méthodes accèdent directement aux champs (ex: <code>SnailX[i]</code> au lieu de <code>snailX[i]</code>)</li>
+<li><strong>Les variables sont devenues des champs</strong> : Les variables globales (<code>snailX</code>, <code>numberOfSnails</code>, etc.) sont maintenant des champs <code>public static</code> de la classe. Elles sont rangées avec les méthodes qui les utilisent</li>
+<li><strong>Terminologie</strong> : dans une classe, une variable s&#39;appelle un <strong>champ</strong> (<em>field</em>) et une fonction s&#39;appelle une <strong>méthode</strong> (<em>method</em>)</li>
+<li><strong>Accès aux données</strong> : Les méthodes de la classe accèdent directement à ses champs (ex: <code>SnailX[i]</code> sans préfixe). Depuis l&#39;extérieur, on écrit <code>Race.SnailX[i]</code></li>
 <li><strong>Utilisation de Snail</strong> : <code>DrawAllSnails()</code> appelle <code>Snail.Draw()</code> - les classes peuvent s&#39;utiliser mutuellement !</li>
 </ol>
 <h2 is-upgraded>Conventions de nommage</h2>
@@ -484,20 +487,25 @@ Console.ReadKey();
 <h2 is-upgraded>Comparaison avant/après</h2>
 <table>
 <tr></tr>
-<tr><td colspan="1" rowspan="1"><p>Variables globales dans Program.cs</p>
-</td><td colspan="1" rowspan="1"><p>Données dans <code>Race</code></p>
+<tr><td colspan="1" rowspan="1"><p><code>int[] snailX</code> (variable globale)</p>
+</td><td colspan="1" rowspan="1"><p><code>static int[] SnailX</code> (dans <code>Race</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Variable → <strong>Champ</strong></p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><code>Race_Init()</code></p>
 </td><td colspan="1" rowspan="1"><p><code>Race.Init()</code></p>
+</td><td colspan="1" rowspan="1"><p>Fonction → <strong>Méthode</strong></p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><code>Snail_Draw(...)</code></p>
 </td><td colspan="1" rowspan="1"><p><code>Snail.Draw(...)</code></p>
+</td><td colspan="1" rowspan="1"><p>Fonction → <strong>Méthode</strong></p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p><code>snailX[i]</code></p>
-</td><td colspan="1" rowspan="1"><p><code>Race.SnailX[i]</code></p>
+<tr><td colspan="1" rowspan="1"><p><code>snailX[i]</code> (accès direct)</p>
+</td><td colspan="1" rowspan="1"><p><code>Race.SnailX[i]</code> (via la classe)</p>
+</td><td colspan="1" rowspan="1"><p>Accès qualifié</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Fonctions en vrac</p>
-</td><td colspan="1" rowspan="1"><p>Méthodes organisées dans des classes</p>
+<tr><td colspan="1" rowspan="1"><p>Fonctions et variables en vrac</p>
+</td><td colspan="1" rowspan="1"><p>Organisées ensemble dans des classes</p>
+</td><td colspan="1" rowspan="1"><p>Regroupement logique</p>
 </td></tr>
 </table>
 <h2 is-upgraded>Structure du projet</h2>
@@ -509,7 +517,7 @@ Console.ReadKey();
 </code></pre>
 <h2 is-upgraded>Tester</h2>
 <p>Compiler et exécuter. Le programme doit fonctionner exactement comme avant !</p>
-<aside class="special"><p>Le code est maintenant <strong>organisé</strong> en classes. Chaque classe a une responsabilité claire : <code>Snail</code> gère l&#39;affichage des escargots, <code>Race</code> gère la course.</p>
+<aside class="special"><p>Le code est maintenant <strong>organisé</strong> en classes. Les variables globales sont devenues des <strong>champs</strong> de <code>Race</code>, et les fonctions sont devenues des <strong>méthodes</strong>. Chaque classe a une responsabilité claire : <code>Snail</code> gère l&#39;affichage des escargots, <code>Race</code> gère les données et la logique de la course.</p>
 </aside>
 
 
@@ -904,13 +912,16 @@ WriteSuccess(&#34;Partie terminée !&#34;);    // au lieu de SuperConsole.WriteS
 <table>
 <tr></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>Classe statique</strong></p>
-</td><td colspan="1" rowspan="1"><p>Conteneur pour données et méthodes, sans instanciation</p>
+</td><td colspan="1" rowspan="1"><p>Conteneur pour <strong>champs</strong> (données) et <strong>méthodes</strong> (actions), sans instanciation</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Champ statique</strong></p>
+</td><td colspan="1" rowspan="1"><p>Variable qui appartient à la classe (ex: <code>Race.SnailX</code>)</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>Méthode statique</strong></p>
-</td><td colspan="1" rowspan="1"><p>Fonction qui appartient à la classe (pas à une instance)</p>
+</td><td colspan="1" rowspan="1"><p>Fonction qui appartient à la classe (ex: <code>Race.Init()</code>)</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>public</strong></p>
-</td><td colspan="1" rowspan="1"><p>Rend un membre accessible depuis l&#39;extérieur</p>
+</td><td colspan="1" rowspan="1"><p>Rend un membre (champ ou méthode) accessible depuis l&#39;extérieur</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>namespace</strong></p>
 </td><td colspan="1" rowspan="1"><p>Organise les classes et évite les conflits de noms</p>
@@ -927,19 +938,19 @@ WriteSuccess(&#34;Partie terminée !&#34;);    // au lieu de SuperConsole.WriteS
 <tr></tr>
 <tr><td colspan="1" rowspan="1"><p>Fonctions préfixées</p>
 </td><td colspan="1" rowspan="1"><p><code>void Snail_Draw(...)</code></p>
-</td><td colspan="1" rowspan="1"><p><code>Snail_Draw(x, y, c)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>int[] snailX</code> (globales)</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>Classe statique</p>
-</td><td colspan="1" rowspan="1"><p><code>static class Snail</code></p>
-</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, c)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>static class Race { Init()... }</code></p>
+</td><td colspan="1" rowspan="1"><p><code>static int[] SnailX</code> (champs)</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>Avec namespace</p>
-</td><td colspan="1" rowspan="1"><p><code>namespace Game { static class Snail }</code></p>
-</td><td colspan="1" rowspan="1"><p><code>Game.Snail.Draw(x, y, c)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>namespace Game { static class Race }</code></p>
+</td><td colspan="1" rowspan="1"><p>champs dans la classe, dans le NS</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>Avec using</p>
-</td><td colspan="1" rowspan="1"><p><code>using Game;</code></p>
-</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, c)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>using Game;</code> → <code>Race.Init()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>using Game;</code> → <code>Race.SnailX[i]</code></p>
 </td></tr>
 </table>
 <h2 is-upgraded>Structure finale</h2>
@@ -965,7 +976,7 @@ WriteSuccess(&#34;Partie terminée !&#34;);    // au lieu de SuperConsole.WriteS
 </td><td colspan="1" rowspan="1"><p><code>using System;</code></p>
 </td></tr>
 </table>
-<aside class="special"><p>Félicitations ! Vous avez transformé du code procédural en code orienté objet avec des classes statiques. C&#39;est la première étape vers la POO complète !</p>
+<aside class="special"><p>Félicitations ! Vous avez transformé du code procédural en code orienté objet avec des classes statiques. Fonctions <strong>et</strong> variables sont maintenant regroupées dans des classes. C&#39;est la première étape vers la POO complète !</p>
 </aside>
 <h2 is-upgraded>Prochaine étape</h2>
 <p>Dans le prochain tutorial, vous découvrirez les classes <strong>non statiques</strong> qui permettent de créer des <strong>instances</strong> (objets) avec leurs propres données. Chaque escargot deviendra un objet <code>Snail</code> avec ses propres coordonnées et énergie !</p>
