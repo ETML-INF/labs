@@ -1,0 +1,778 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Course d&#39;Escargots OO : des classes statiques aux instances</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-02-snail"
+                  title="Course d&#39;Escargots OO : des classes statiques aux instances"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial reprend la course d&#39;escargots du codelab <strong>preoo-03-static-classes</strong> et la transforme en code orienté objet avec des <strong>instances</strong>.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>À la fin du codelab précédent, le code était organisé en classes statiques :</p>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs
+├── Game/
+│   ├── Race.cs          // static class Race (données + logique)
+│   └── Snail.cs         // static class Snail (Draw/Clear)
+└── Display/
+    └── SuperConsole.cs  // static class SuperConsole
+</code></pre>
+<p>La classe <code>Race</code> contient des <strong>tableaux parallèles</strong> (<code>SnailX[]</code>, <code>SnailY[]</code>, <code>SnailEnergy[]</code>, <code>SnailNames[]</code>, <code>SnailColors[]</code>) pour gérer les escargots. Ça fonctionne, mais c&#39;est fragile et difficile à étendre.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 5 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Identifier le problème des tableaux parallèles</li>
+<li>Créer une classe <code>Snail</code> instanciable avec un constructeur</li>
+<li>Ajouter des méthodes d&#39;instance (Move, Draw, Erase)</li>
+<li>Remplacer les tableaux parallèles par un tableau d&#39;objets <code>Snail[]</code></li>
+<li>Simplifier la boucle de course</li>
+</ol>
+<aside class="special"><p>Ce codelab est le passage clé de la formation : vous allez voir concrètement pourquoi les instances sont plus puissantes que les tableaux parallèles.</p>
+</aside>
+<google-codelab-survey survey-id="oo-02-snail-1">
+<h4>Comment trouvez-vous les tableaux parallèles ?</h4>
+<paper-radio-group>
+<paper-radio-button>Pratiques mais un peu fragiles</paper-radio-button>
+<paper-radio-button>Difficiles à maintenir</paper-radio-button>
+<paper-radio-button>Je n&#39;ai jamais eu de problème avec</paper-radio-button>
+<paper-radio-button>Je ne sais pas ce que c&#39;est</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Le problème" duration="5">
+        <h2 is-upgraded>Rappel du code actuel dans Race.cs</h2>
+<p>La classe <code>Race</code> contient 5 tableaux parallèles pour gérer 3 escargots :</p>
+<pre><code>static class Race
+{
+    public static int NumberOfSnails = 3;
+
+    public static int[] SnailX = new int[3];
+    public static int[] SnailY = new int[3];
+    public static int[] SnailEnergy = new int[3];
+    public static string[] SnailNames = { &#34;Turbo&#34;, &#34;Speedy&#34;, &#34;Flash&#34; };
+    public static ConsoleColor[] SnailColors = {
+        ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Magenta
+    };
+    // ...
+}
+</code></pre>
+<h2 is-upgraded>Pourquoi c&#39;est problématique ?</h2>
+<p>Pour accéder aux données de l&#39;escargot <code>i</code>, il faut fouiller dans <strong>5 tableaux</strong> :</p>
+<pre><code>// Tout ça concerne le MÊME escargot !
+Race.SnailX[i]
+Race.SnailY[i]
+Race.SnailEnergy[i]
+Race.SnailNames[i]
+Race.SnailColors[i]
+</code></pre>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Données éclatées</p>
+</td><td colspan="1" rowspan="1"><p>5 tableaux pour décrire un escargot</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Indices fragiles</p>
+</td><td colspan="1" rowspan="1"><p>Se tromper d&#39;indice = bug silencieux</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Pas extensible</p>
+</td><td colspan="1" rowspan="1"><p>Ajouter un champ (vitesse max ?) = 1 tableau de plus</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonctions lourdes</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(Race.SnailX[i], Race.SnailY[i], Race.SnailColors[i])</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>L&#39;objectif</h2>
+<p>Chaque escargot devrait être un <strong>objet</strong> qui transporte ses propres données :</p>
+<pre><code>// Au lieu de 5 tableaux...
+snails[i].Move(step, 0);
+snails[i].Draw();
+// L&#39;escargot connaît sa position, sa couleur, son énergie !
+</code></pre>
+<aside class="warning"><p>Avec les tableaux parallèles, si on ajoute un 4e escargot, il faut modifier <strong>5 tableaux</strong> et s&#39;assurer que tous les indices restent cohérents. Avec des instances, il suffit d&#39;ajouter un objet au tableau.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Créer la classe Snail instanciable" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Transformer <code>Snail.cs</code> : passer d&#39;une classe statique avec juste Draw/Clear à une classe instanciable complète qui contient toutes les données d&#39;un escargot.</p>
+<h2 is-upgraded>Nouveau contenu de Snail.cs</h2>
+<p>Remplacer le contenu de <code>Snail.cs</code> par :</p>
+<pre><code>namespace SnailRaceRefactoring.Game
+{
+    class Snail
+    {
+        // Champs : chaque instance a ses propres valeurs
+        public int X;
+        public int Y;
+        public int Energy;
+        public string Name;
+        public ConsoleColor Color;
+
+        // Constructeur : initialise un escargot
+        public Snail(string name, ConsoleColor color)
+        {
+            this.Name = name;
+            this.Color = color;
+            this.X = 0;
+            this.Y = 0;
+            this.Energy = 100;
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Ce qui a changé</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>static class Snail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>class Snail</code> (instanciable)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Pas de données (juste Draw/Clear)</p>
+</td><td colspan="1" rowspan="1"><p>Champs <code>X</code>, <code>Y</code>, <code>Energy</code>, <code>Name</code>, <code>Color</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Pas de constructeur</p>
+</td><td colspan="1" rowspan="1"><p>Constructeur <code>Snail(name, color)</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Comprendre le constructeur</h2>
+<p>Le constructeur reçoit les données qui <strong>identifient</strong> l&#39;escargot (<code>name</code>, <code>color</code>). Les données de position (<code>X</code>, <code>Y</code>) et d&#39;énergie (<code>Energy</code>) sont initialisées à des valeurs par défaut car elles seront configurées au moment de la course.</p>
+<h2 is-upgraded>Le mot-clé <code>this</code></h2>
+<p><code>this</code> désigne l&#39;instance en cours de création :</p>
+<pre><code>public Snail(string name, ConsoleColor color)
+{
+    this.Name = name;    // this.Name = champ de l&#39;objet
+                         // name = paramètre du constructeur
+    this.Color = color;
+}
+</code></pre>
+<h2 is-upgraded>Tester la création d&#39;instances</h2>
+<p>Dans <code>Program.cs</code>, on peut maintenant écrire (juste pour tester, on intégrera dans la course plus tard) :</p>
+<pre><code>Snail turbo = new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow);
+Snail speedy = new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan);
+Snail flash = new Snail(&#34;Flash&#34;, ConsoleColor.Magenta);
+
+Console.WriteLine($&#34;{turbo.Name} a {turbo.Energy} d&#39;énergie&#34;);
+Console.WriteLine($&#34;{speedy.Name} a {speedy.Energy} d&#39;énergie&#34;);
+Console.WriteLine($&#34;{flash.Name} a {flash.Energy} d&#39;énergie&#34;);
+</code></pre>
+<p>Chaque escargot est <strong>indépendant</strong> : modifier <code>turbo.Energy</code> ne change pas <code>speedy.Energy</code>.</p>
+<aside class="special"><p>La classe <code>Snail</code> est maintenant un vrai &#34;moule&#34; : chaque <code>new Snail(...)</code> crée un escargot avec ses propres données.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Ajouter les méthodes d&#39;instance" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Ajouter les méthodes <code>Draw</code>, <code>Erase</code> et <code>Move</code> à la classe <code>Snail</code>. Ces méthodes utilisent les données de <strong>leur</strong> instance (via <code>this</code>).</p>
+<h2 is-upgraded>Snail.cs complet</h2>
+<pre><code>using SnailRaceRefactoring.Display;
+
+namespace SnailRaceRefactoring.Game
+{
+    class Snail
+    {
+        // Champs
+        public int X;
+        public int Y;
+        public int Energy;
+        public string Name;
+        public ConsoleColor Color;
+
+        // Constructeur
+        public Snail(string name, ConsoleColor color)
+        {
+            this.Name = name;
+            this.Color = color;
+            this.X = 0;
+            this.Y = 0;
+            this.Energy = 100;
+        }
+
+        // Dessiner l&#39;escargot à sa position
+        public void Draw()
+        {
+            SuperConsole.WriteAtColor(this.X, this.Y, &#34;@&#34;, this.Color);
+        }
+
+        // Effacer l&#39;escargot de sa position actuelle
+        public void Erase()
+        {
+            SuperConsole.WriteAtColor(this.X, this.Y, &#34;.&#34;, ConsoleColor.DarkGray);
+        }
+
+        // Déplacer l&#39;escargot
+        public void Move(int dx, int dy)
+        {
+            this.X = this.X + dx;
+            this.Y = this.Y + dy;
+        }
+
+        // Réduire l&#39;énergie
+        public void ReduceEnergy(int amount)
+        {
+            this.Energy = this.Energy - amount;
+            if (this.Energy &lt; 10)
+            {
+                this.Energy = 10;
+            }
+        }
+
+        // Afficher la barre d&#39;énergie
+        public void DrawEnergy(int displayX, int displayY)
+        {
+            Console.SetCursorPosition(displayX, displayY);
+            Console.ForegroundColor = this.Color;
+            string bar = new string(&#39;#&#39;, this.Energy / 10);
+            string empty = new string(&#39;-&#39;, 10 - this.Energy / 10);
+            Console.Write($&#34;{this.Name,6}[{bar}{empty}] &#34;);
+            Console.ResetColor();
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Analyse des méthodes</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Draw()</code></p>
+</td><td colspan="1" rowspan="1"><p>Dessine l&#39;escargot</p>
+</td><td colspan="1" rowspan="1"><p><code>this.X</code>, <code>this.Y</code>, <code>this.Color</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Erase()</code></p>
+</td><td colspan="1" rowspan="1"><p>Efface l&#39;escargot</p>
+</td><td colspan="1" rowspan="1"><p><code>this.X</code>, <code>this.Y</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Move(dx, dy)</code></p>
+</td><td colspan="1" rowspan="1"><p>Déplace l&#39;escargot</p>
+</td><td colspan="1" rowspan="1"><p><code>this.X</code>, <code>this.Y</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ReduceEnergy(amount)</code></p>
+</td><td colspan="1" rowspan="1"><p>Réduit l&#39;énergie (min 10)</p>
+</td><td colspan="1" rowspan="1"><p><code>this.Energy</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>DrawEnergy(x, y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Affiche la barre d&#39;énergie</p>
+</td><td colspan="1" rowspan="1"><p><code>this.Name</code>, <code>this.Energy</code>, <code>this.Color</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Avant / Après : appels</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snail.Draw(Race.SnailX[i], Race.SnailY[i], Race.SnailColors[i])</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snails[i].Draw()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snail.Clear(Race.SnailX[i], Race.SnailY[i])</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snails[i].Erase()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Race.SnailX[i]++</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snails[i].Move(1, 0)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Race.SnailEnergy[i] -= amount</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snails[i].ReduceEnergy(amount)</code></p>
+</td></tr>
+</table>
+<aside class="special"><p>Les appels sont beaucoup plus simples ! L&#39;escargot &#34;sait&#34; où il est et comment se dessiner. Plus besoin de passer position et couleur en paramètres.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Transformer la classe Race" duration="20">
+        <h2 is-upgraded>Objectif</h2>
+<p>Remplacer les tableaux parallèles dans <code>Race</code> par un <strong>tableau d&#39;objets</strong><code>Snail[]</code>.</p>
+<h2 is-upgraded>Nouveau contenu de Race.cs</h2>
+<pre><code>namespace SnailRaceRefactoring.Game
+{
+    static class Race
+    {
+        // Configuration de la piste
+        public static int ScreenWidth = 50;
+        public static int StartX = 2;
+        public static int FinishX = ScreenWidth - 3;
+
+        // Tableau d&#39;objets (remplace les 5 tableaux parallèles !)
+        public static Snail[] Snails = Array.Empty&lt;Snail&gt;();
+
+        public static void Init()
+        {
+            // Créer les escargots
+            Snails = new Snail[]
+            {
+                new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow),
+                new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan),
+                new Snail(&#34;Flash&#34;, ConsoleColor.Magenta)
+            };
+
+            // Positionner chaque escargot sur la piste
+            for (int i = 0; i &lt; Snails.Length; i++)
+            {
+                Snails[i].X = StartX;
+                Snails[i].Y = 2 + i * 2;
+                Snails[i].Energy = 100;
+            }
+        }
+
+        public static void DrawTrack()
+        {
+            for (int i = 0; i &lt; Snails.Length; i++)
+            {
+                int y = 2 + i * 2;
+
+                Console.SetCursorPosition(StartX - 1, y);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(&#34;|&#34;);
+
+                for (int x = StartX; x &lt; FinishX; x++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(&#34;.&#34;);
+                }
+
+                Console.SetCursorPosition(FinishX, y);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(&#34;|&#34;);
+            }
+            Console.ResetColor();
+        }
+
+        public static void DrawAllSnails()
+        {
+            foreach (Snail snail in Snails)
+            {
+                snail.Draw();
+            }
+        }
+
+        public static void ShowEnergy()
+        {
+            for (int i = 0; i &lt; Snails.Length; i++)
+            {
+                Snails[i].DrawEnergy(0, 10 + i);
+            }
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Ce qui a changé</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int[] SnailX = new int[3]</code></p>
+</td><td colspan="1" rowspan="1"><p>Supprimé (dans chaque <code>Snail</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int[] SnailY = new int[3]</code></p>
+</td><td colspan="1" rowspan="1"><p>Supprimé (dans chaque <code>Snail</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int[] SnailEnergy = new int[3]</code></p>
+</td><td colspan="1" rowspan="1"><p>Supprimé (dans chaque <code>Snail</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>string[] SnailNames = { ... }</code></p>
+</td><td colspan="1" rowspan="1"><p>Supprimé (dans chaque <code>Snail</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>ConsoleColor[] SnailColors = { ... }</code></p>
+</td><td colspan="1" rowspan="1"><p>Supprimé (dans chaque <code>Snail</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int NumberOfSnails = 3</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snails.Length</code> (calculé automatiquement)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>—</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail[] Snails</code> (un seul tableau !)</p>
+</td></tr>
+</table>
+<h2 is-upgraded>DrawAllSnails simplifié</h2>
+<p>Observez la méthode <code>DrawAllSnails</code> :</p>
+<pre><code>// Avant : il fallait passer toutes les données en paramètres
+Snail.Draw(SnailX[i], SnailY[i], SnailColors[i]);
+
+// Après : l&#39;escargot sait tout de lui-même
+snail.Draw();
+</code></pre>
+<p>Le <code>foreach</code> est possible car chaque <code>Snail</code> est un objet complet.</p>
+<h2 is-upgraded>Ajouter un 4e escargot ?</h2>
+<p>C&#39;est trivial — il suffit d&#39;ajouter une ligne dans <code>Init()</code> :</p>
+<pre><code>Snails = new Snail[]
+{
+    new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow),
+    new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan),
+    new Snail(&#34;Flash&#34;, ConsoleColor.Magenta),
+    new Snail(&#34;Rocket&#34;, ConsoleColor.Red)       // Nouveau !
+};
+</code></pre>
+<p>Aucun autre changement nécessaire : <code>Snails.Length</code> s&#39;adapte automatiquement, les boucles <code>foreach</code> fonctionnent.</p>
+<aside class="warning"><p>Avec les tableaux parallèles, ajouter un escargot nécessitait de modifier <strong>5 tableaux</strong> et la variable <code>NumberOfSnails</code>. Avec les instances, une seule ligne suffit.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 5 : Simplifier Program.cs" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Réécrire la boucle de course dans <code>Program.cs</code> en utilisant les instances.</p>
+<h2 is-upgraded>Nouveau Program.cs</h2>
+<pre><code>using SnailRaceRefactoring.Game;
+using SnailRaceRefactoring.Display;
+
+// Initialisation
+Console.Clear();
+Console.CursorVisible = false;
+
+Race.Init();
+Race.DrawTrack();
+Race.DrawAllSnails();
+
+SuperConsole.WriteAt(0, 12, &#34;Appuyez sur ENTER pour lancer la course !&#34;);
+Console.ReadLine();
+
+// Boucle de course
+Random random = new Random();
+bool raceFinished = false;
+Snail? winner = null;
+
+while (!raceFinished)
+{
+    foreach (Snail snail in Race.Snails)
+    {
+        // Tenter d&#39;avancer selon l&#39;énergie
+        if (random.Next(100) &lt; snail.Energy)
+        {
+            snail.Erase();
+            snail.Move(1, 0);
+            snail.Draw();
+
+            snail.ReduceEnergy(random.Next(1, 4));
+        }
+
+        // Vérifier si cet escargot a franchi la ligne
+        if (snail.X &gt;= Race.FinishX)
+        {
+            winner = snail;
+            raceFinished = true;
+            break;
+        }
+    }
+
+    Race.ShowEnergy();
+    Thread.Sleep(100);
+}
+
+// Afficher le gagnant
+Console.SetCursorPosition(0, 14);
+SuperConsole.WriteLineColor($&#34;{winner!.Name} a gagné la course !&#34;, winner.Color);
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Comparaison de la boucle de course</h2>
+<p><strong>Avant</strong> (tableaux parallèles) :</p>
+<pre><code>for (int i = 0; i &lt; Race.NumberOfSnails; i++)
+{
+    if (random.Next(100) &lt; Race.SnailEnergy[i])
+    {
+        Snail.Clear(Race.SnailX[i], Race.SnailY[i]);
+        Race.SnailX[i]++;
+        Snail.Draw(Race.SnailX[i], Race.SnailY[i], Race.SnailColors[i]);
+
+        Race.SnailEnergy[i] -= random.Next(1, 4);
+        if (Race.SnailEnergy[i] &lt; 10) Race.SnailEnergy[i] = 10;
+    }
+
+    if (Race.SnailX[i] &gt;= Race.FinishX)
+    {
+        winner = i;
+        // ...
+    }
+}
+</code></pre>
+<p><strong>Après</strong> (instances) :</p>
+<pre><code>foreach (Snail snail in Race.Snails)
+{
+    if (random.Next(100) &lt; snail.Energy)
+    {
+        snail.Erase();
+        snail.Move(1, 0);
+        snail.Draw();
+
+        snail.ReduceEnergy(random.Next(1, 4));
+    }
+
+    if (snail.X &gt;= Race.FinishX)
+    {
+        winner = snail;
+        // ...
+    }
+}
+</code></pre>
+<h2 is-upgraded>Les gains</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Variable gagnant</p>
+</td><td colspan="1" rowspan="1"><p><code>int winner = -1</code> (indice)</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail? winner = null</code> (objet)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Accès au nom du gagnant</p>
+</td><td colspan="1" rowspan="1"><p><code>Race.SnailNames[winner]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>winner.Name</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Boucle</p>
+</td><td colspan="1" rowspan="1"><p><code>for (int i = 0; ...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>foreach (Snail snail in ...)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Déplacement</p>
+</td><td colspan="1" rowspan="1"><p>3 lignes avec indices</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Move(1, 0)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Dessin</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, color)</code> (3 params)</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Draw()</code> (0 param)</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Tester</h2>
+<p>Compiler et exécuter. La course doit fonctionner exactement comme avant !</p>
+<h2 is-upgraded>Structure finale du projet</h2>
+<pre><code>SnailRaceRefactoring/
+├── Program.cs                    // Boucle de course simplifiée
+├── Game/
+│   ├── Race.cs                   // Piste + tableau Snail[]
+│   └── Snail.cs                  // Classe instanciable complète
+└── Display/
+    └── SuperConsole.cs           // Utilitaires console (inchangé)
+</code></pre>
+<aside class="special"><p>Le code est plus court, plus lisible et plus extensible. Chaque escargot est un objet autonome qui sait se dessiner, s&#39;effacer et se déplacer.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 6 : Comprendre les références" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Comprendre que les variables d&#39;objet contiennent des <strong>références</strong>, pas des copies — et les conséquences dans le code de la course.</p>
+<h2 is-upgraded><code>null</code> dans la course</h2>
+<p>Dans <code>Program.cs</code>, on a écrit :</p>
+<pre><code>Snail? winner = null;
+</code></pre>
+<p>Le <code>?</code> après <code>Snail</code> indique que la variable peut valoir <code>null</code> (ne pointer vers aucun objet). Au départ, on ne connaît pas le gagnant, donc <code>winner</code> ne pointe vers rien.</p>
+<p>À la fin de la course, <code>winner</code> pointe vers l&#39;escargot gagnant :</p>
+<pre><code>winner = snail;  // winner pointe maintenant vers le même objet que snail
+</code></pre>
+<p>Et on peut écrire :</p>
+<pre><code>SuperConsole.WriteLineColor($&#34;{winner!.Name} a gagné !&#34;, winner.Color);
+</code></pre>
+<p>Le <code>!</code> après <code>winner</code> dit au compilateur : &#34;je sais que ce n&#39;est pas null ici&#34;.</p>
+<aside class="warning"><p>Si <code>winner</code> est encore <code>null</code> à ce moment (aucun escargot n&#39;a gagné), on obtient une <code>NullReferenceException</code>. C&#39;est l&#39;erreur la plus fréquente en C# !</p>
+</aside>
+<h2 is-upgraded>Expérience : deux variables, un seul escargot</h2>
+<p>Ajouter ce code temporaire dans <code>Program.cs</code> après <code>Race.Init()</code> pour observer le comportement des références :</p>
+<pre><code>Snail a = Race.Snails[0];
+Snail b = Race.Snails[0];  // a et b pointent vers le MÊME objet
+
+b.X = 99;
+Console.WriteLine(a.X);  // Affiche 99 ! (même objet)
+</code></pre>
+<p>C&#39;est exactement ce qui se passe dans la boucle de course : quand on écrit <code>snail.Move(1, 0)</code> dans le <code>foreach</code>, la variable <code>snail</code> et <code>Race.Snails[i]</code> pointent vers le <strong>même</strong> objet. La modification est visible partout.</p>
+<h2 is-upgraded>Passer un escargot à une fonction</h2>
+<p>Créer une fonction utilitaire pour tester :</p>
+<pre><code>void Boost(Snail s)
+{
+    s.Energy = 100;
+}
+
+// Utilisation
+Boost(Race.Snails[0]);  // Remet l&#39;énergie de Turbo à 100
+Console.WriteLine(Race.Snails[0].Energy);  // Affiche 100
+</code></pre>
+<p>La fonction reçoit une <strong>référence</strong> vers l&#39;escargot : elle modifie l&#39;original, pas une copie. C&#39;est très différent d&#39;un <code>int</code> :</p>
+<pre><code>void DoubleScore(int score)
+{
+    score = score * 2;  // Modifie une COPIE locale
+}
+
+int points = 50;
+DoubleScore(points);
+Console.WriteLine(points);  // Affiche 50 (inchangé !)
+</code></pre>
+<h2 is-upgraded>Tableau récapitulatif</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int</code>, <code>double</code>, <code>bool</code></p>
+</td><td colspan="1" rowspan="1"><p>Copie la valeur</p>
+</td><td colspan="1" rowspan="1"><p>Copie (indépendante)</p>
+</td><td colspan="1" rowspan="1"><p><code>0</code>, <code>false</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snail</code>, <code>string[]</code>, tout <code>class</code></p>
+</td><td colspan="1" rowspan="1"><p>Copie la référence (même objet)</p>
+</td><td colspan="1" rowspan="1"><p>Référence (même objet)</p>
+</td><td colspan="1" rowspan="1"><p><code>null</code></p>
+</td></tr>
+</table>
+<aside class="special"><p>C&#39;est pour cela que <code>foreach (Snail snail in Race.Snails)</code> fonctionne : <code>snail</code> pointe vers le vrai escargot dans le tableau, et <code>snail.Move()</code> déplace réellement cet escargot.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations" duration="10">
+        <h2 is-upgraded>1. Ajouter une vitesse maximale par escargot</h2>
+<p>Chaque escargot peut avoir une vitesse différente :</p>
+<pre><code>class Snail
+{
+    // ... champs existants ...
+    public int MaxSpeed;
+
+    public Snail(string name, ConsoleColor color, int maxSpeed = 1)
+    {
+        // ... initialisations existantes ...
+        this.MaxSpeed = maxSpeed;
+    }
+}
+</code></pre>
+<p>Dans <code>Race.Init()</code> :</p>
+<pre><code>Snails = new Snail[]
+{
+    new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow, 2),     // Rapide
+    new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan, 1),      // Normal
+    new Snail(&#34;Flash&#34;, ConsoleColor.Magenta, 3)     // Très rapide
+};
+</code></pre>
+<p>Dans la boucle de course :</p>
+<pre><code>int step = random.Next(1, snail.MaxSpeed + 1);
+snail.Move(step, 0);
+</code></pre>
+<h2 is-upgraded>2. Ajouter un symbole personnalisé</h2>
+<p>Au lieu de <code>@</code> pour tous, chaque escargot affiche son propre symbole :</p>
+<pre><code>class Snail
+{
+    // ... champs existants ...
+    public string Symbol;
+
+    public Snail(string name, ConsoleColor color, string symbol = &#34;@&#34;)
+    {
+        // ...
+        this.Symbol = symbol;
+    }
+
+    public void Draw()
+    {
+        SuperConsole.WriteAtColor(this.X, this.Y, this.Symbol, this.Color);
+    }
+
+    public void Erase()
+    {
+        SuperConsole.WriteAtColor(this.X, this.Y, &#34;.&#34;, ConsoleColor.DarkGray);
+    }
+}
+</code></pre>
+<p>Utilisation :</p>
+<pre><code>Snails = new Snail[]
+{
+    new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow) { Symbol = &#34;🐌&#34; },
+    new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan) { Symbol = &#34;🐢&#34; },
+    new Snail(&#34;Flash&#34;, ConsoleColor.Magenta) { Symbol = &#34;🐇&#34; }
+};
+</code></pre>
+<h2 is-upgraded>3. Méthode ToString()</h2>
+<p>Ajouter une méthode pour afficher les infos de l&#39;escargot :</p>
+<pre><code>public override string ToString()
+{
+    return $&#34;{this.Name} (x={this.X}, y={this.Y}, energy={this.Energy})&#34;;
+}
+</code></pre>
+<p>Utilisation :</p>
+<pre><code>Console.WriteLine(turbo);  // Affiche : Turbo (x=5, y=2, energy=87)
+</code></pre>
+<h2 is-upgraded>4. Plusieurs courses</h2>
+<p>Puisque <code>Race</code> reste statique pour l&#39;instant, essayer de lancer <strong>plusieurs courses</strong> successives en réinitialisant avec <code>Race.Init()</code>. Observer que les escargots sont recréés à chaque fois.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Récapitulatif de la transformation</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Données escargot</p>
+</td><td colspan="1" rowspan="1"><p>5 tableaux parallèles</p>
+</td><td colspan="1" rowspan="1"><p>Champs dans chaque objet <code>Snail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Création</p>
+</td><td colspan="1" rowspan="1"><p>Remplir 5 tableaux à l&#39;indice <code>i</code></p>
+</td><td colspan="1" rowspan="1"><p><code>new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Accès</p>
+</td><td colspan="1" rowspan="1"><p><code>Race.SnailNames[i]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Name</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Dessin</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Draw(x, y, color)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Draw()</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ajout d&#39;un escargot</p>
+</td><td colspan="1" rowspan="1"><p>Modifier 5 tableaux + <code>NumberOfSnails</code></p>
+</td><td colspan="1" rowspan="1"><p>Ajouter un <code>new Snail(...)</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ajout d&#39;un champ</p>
+</td><td colspan="1" rowspan="1"><p>Créer un 6e tableau</p>
+</td><td colspan="1" rowspan="1"><p>Ajouter un champ à la classe</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Boucle</p>
+</td><td colspan="1" rowspan="1"><p><code>for</code> avec indices</p>
+</td><td colspan="1" rowspan="1"><p><code>foreach</code> sur les objets</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Concepts clés</h2>
+<ol type="1">
+<li><code>class</code> (sans <code>static</code>) = modèle pour créer des objets</li>
+<li><code>new</code> = créer une instance avec ses propres données</li>
+<li><strong>Constructeur</strong> = initialiser l&#39;objet à la création</li>
+<li><code>this</code> = désigne l&#39;instance courante</li>
+<li><strong>Méthodes d&#39;instance</strong> = agissent sur les données de leur objet</li>
+<li><strong>Tableau d&#39;objets</strong> = remplace les tableaux parallèles</li>
+</ol>
+<h2 is-upgraded>Spoiler : encapsulation</h2>
+<p>Pour l&#39;instant, tous les champs de <code>Snail</code> sont <code>public</code> : n&#39;importe quel code peut écrire <code>snail.Energy = 9999</code>. La prochaine étape introduira <code>private</code> et les <strong>propriétés</strong> pour protéger les données.</p>
+<aside class="special"><p>Félicitations ! Vous avez réalisé la transformation fondamentale de la POO. Chaque escargot est un objet autonome qui transporte ses données et son comportement. Le code est plus court, plus lisible et plus extensible.</p>
+</aside>
+<google-codelab-survey survey-id="oo-02-snail-2">
+<h4>Quel aspect de la transformation vous a le plus convaincu ?</h4>
+<paper-radio-group>
+<paper-radio-button>La simplification de la boucle de course (foreach + méthodes)</paper-radio-button>
+<paper-radio-button>La facilité d&#39;ajouter un escargot</paper-radio-button>
+<paper-radio-button>Le fait que Draw() n&#39;a plus besoin de paramètres</paper-radio-button>
+<paper-radio-button>Le remplacement de 5 tableaux par 1 seul</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

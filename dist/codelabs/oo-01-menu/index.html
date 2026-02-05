@@ -1,0 +1,503 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Menu Console OO : des fonctions aux instances</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-01-menu"
+                  title="Menu Console OO : des fonctions aux instances"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="2">
+        <p>Ce tutorial reprend le menu console créé dans le codelab <strong>preoo-01-menu</strong> (étape 4 avec navigation au clavier) et le transforme en une <strong>classe instanciable</strong>.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>Dans le codelab précédent, nous avions structuré le code avec des fonctions préfixées <code>Menu_</code> et des variables globales. Ce code fonctionne, mais il a une limitation : on ne peut avoir qu&#39;<strong>un seul menu</strong> à la fois.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 4 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Identifier les champs et méthodes dans le code existant</li>
+<li>Créer une classe <code>Menu</code> avec un constructeur</li>
+<li>Utiliser la classe dans <code>Program.cs</code></li>
+<li>Créer <strong>plusieurs menus</strong> indépendants</li>
+</ol>
+<aside class="special"><p>Ce codelab illustre le moment &#34;aha&#34; de la POO : quand on réalise que les instances permettent de réutiliser une classe pour créer plusieurs objets indépendants.</p>
+</aside>
+<google-codelab-survey survey-id="oo-01-menu-1">
+<h4>Quel est votre niveau avec les classes ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je connais les classes statiques</paper-radio-button>
+<paper-radio-button>J&#39;ai déjà utilisé des instances</paper-radio-button>
+<paper-radio-button>Je découvre les instances</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Rappel du code actuel" duration="5">
+        <h2 is-upgraded>Le code final de preoo-01-menu</h2>
+<p>Voici le code que nous avions à la fin du codelab précédent (étape 4 — navigation au clavier) :</p>
+<pre><code>// Variables globales
+string[] options = Array.Empty&lt;string&gt;();
+int selectedIndex = 0;
+
+// Programme principal
+Menu_Init();
+int choice = Menu_RunInteractive();
+Menu_HandleChoice(choice);
+Console.ReadKey();
+
+// ============ FONCTIONS MENU ============
+
+void Menu_Init()
+{
+    options = new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; };
+    selectedIndex = 0;
+}
+
+void Menu_ShowInteractive()
+{
+    Console.Clear();
+    Console.WriteLine(&#34;=== SUPER GAME ===&#34;);
+    Console.WriteLine(&#34;&#34;);
+    Console.WriteLine(&#34;Use arrows to navigate, Enter to select&#34;);
+    Console.WriteLine(&#34;&#34;);
+
+    for (int i = 0; i &lt; options.Length; i++)
+    {
+        if (i == selectedIndex)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($&#34;  &gt; {options[i]} &lt;  &#34;);
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.WriteLine($&#34;    {options[i]}    &#34;);
+        }
+    }
+
+    Console.WriteLine(&#34;&#34;);
+}
+
+int Menu_RunInteractive()
+{
+    ConsoleKey key;
+
+    do
+    {
+        Menu_ShowInteractive();
+
+        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+        key = keyInfo.Key;
+
+        if (key == ConsoleKey.UpArrow)
+        {
+            selectedIndex--;
+            if (selectedIndex &lt; 0)
+            {
+                selectedIndex = options.Length - 1;
+            }
+        }
+        else if (key == ConsoleKey.DownArrow)
+        {
+            selectedIndex++;
+            if (selectedIndex &gt;= options.Length)
+            {
+                selectedIndex = 0;
+            }
+        }
+
+    } while (key != ConsoleKey.Enter);
+
+    return selectedIndex;
+}
+
+void Menu_HandleChoice(int choice)
+{
+    Console.Clear();
+    Console.WriteLine($&#34;&gt;&gt;&gt; {options[choice].ToUpper()} &lt;&lt;&lt;&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Identifier ce qui deviendra quoi</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>string[] options</code></p>
+</td><td colspan="1" rowspan="1"><p>Champ de la classe</p>
+</td><td colspan="1" rowspan="1"><p><strong>Champ</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int selectedIndex</code></p>
+</td><td colspan="1" rowspan="1"><p>Champ de la classe</p>
+</td><td colspan="1" rowspan="1"><p><strong>Champ</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_Init()</code></p>
+</td><td colspan="1" rowspan="1"><p>Constructeur <code>Menu(...)</code></p>
+</td><td colspan="1" rowspan="1"><p><strong>Constructeur</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_ShowInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>ShowInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><strong>Méthode</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_RunInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>RunInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><strong>Méthode</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_HandleChoice(int)</code></p>
+</td><td colspan="1" rowspan="1"><p>reste dans <code>Program.cs</code></p>
+</td><td colspan="1" rowspan="1"><p>(logique du jeu)</p>
+</td></tr>
+</table>
+<aside class="special"><p>Le préfixe <code>Menu_</code> disparaît naturellement : quand la fonction est dans la classe <code>Menu</code>, écrire <code>Menu.Show()</code> suffit.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Créer la classe Menu" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer un fichier <code>Menu.cs</code> contenant la classe <code>Menu</code> instanciable.</p>
+<h2 is-upgraded>Créer le fichier Menu.cs</h2>
+<p>Ajouter un nouveau fichier <code>Menu.cs</code> au projet avec le contenu suivant :</p>
+<pre><code>class Menu
+{
+    // Champs (ex-variables globales)
+    string[] options;
+    int selectedIndex;
+
+    // Constructeur (ex-Menu_Init)
+    public Menu(string[] options)
+    {
+        this.options = options;
+        this.selectedIndex = 0;
+    }
+
+    // Méthode : afficher le menu (ex-Menu_ShowInteractive)
+    void ShowInteractive()
+    {
+        Console.Clear();
+        Console.WriteLine(&#34;Use arrows to navigate, Enter to select&#34;);
+        Console.WriteLine(&#34;&#34;);
+
+        for (int i = 0; i &lt; this.options.Length; i++)
+        {
+            if (i == this.selectedIndex)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine($&#34;  &gt; {this.options[i]} &lt;  &#34;);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine($&#34;    {this.options[i]}    &#34;);
+            }
+        }
+
+        Console.WriteLine(&#34;&#34;);
+    }
+
+    // Méthode : boucle interactive (ex-Menu_RunInteractive)
+    public int RunInteractive()
+    {
+        ConsoleKey key;
+
+        do
+        {
+            ShowInteractive();
+
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+            key = keyInfo.Key;
+
+            if (key == ConsoleKey.UpArrow)
+            {
+                this.selectedIndex--;
+                if (this.selectedIndex &lt; 0)
+                {
+                    this.selectedIndex = this.options.Length - 1;
+                }
+            }
+            else if (key == ConsoleKey.DownArrow)
+            {
+                this.selectedIndex++;
+                if (this.selectedIndex &gt;= this.options.Length)
+                {
+                    this.selectedIndex = 0;
+                }
+            }
+
+        } while (key != ConsoleKey.Enter);
+
+        return this.selectedIndex;
+    }
+}
+</code></pre>
+<h2 is-upgraded>Ce qui a changé</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>string[] options</code> (variable globale)</p>
+</td><td colspan="1" rowspan="1"><p><code>string[] options</code> (champ de la classe)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int selectedIndex</code> (variable globale)</p>
+</td><td colspan="1" rowspan="1"><p><code>int selectedIndex</code> (champ de la classe)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>void Menu_Init()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public Menu(string[] options)</code> (constructeur)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>void Menu_ShowInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>void ShowInteractive()</code> (méthode privée)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>int Menu_RunInteractive()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public int RunInteractive()</code> (méthode publique)</p>
+</td></tr>
+</table>
+<aside class="warning"><p><code>ShowInteractive</code> n&#39;a pas le mot-clé <code>public</code> car elle n&#39;est appelée que depuis <code>RunInteractive</code>, à l&#39;intérieur de la classe. C&#39;est un premier aperçu de l&#39;<strong>encapsulation</strong> (on cache les détails internes).</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Utiliser la classe dans Program.cs" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Modifier <code>Program.cs</code> pour utiliser la classe <code>Menu</code> au lieu des fonctions.</p>
+<h2 is-upgraded>Nouveau Program.cs</h2>
+<p>Remplacer le contenu de <code>Program.cs</code> par :</p>
+<pre><code>// Créer une instance de Menu
+Menu mainMenu = new Menu(new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; });
+
+// Lancer le menu interactif
+int choice = mainMenu.RunInteractive();
+
+// Gérer le choix
+Console.Clear();
+switch (choice)
+{
+    case 0:
+        Console.WriteLine(&#34;Starting game...&#34;);
+        break;
+    case 1:
+        Console.WriteLine(&#34;Opening options...&#34;);
+        break;
+    case 2:
+        Console.WriteLine(&#34;Showing highscores...&#34;);
+        break;
+    case 3:
+        Console.WriteLine(&#34;Goodbye!&#34;);
+        break;
+}
+
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Test</h2>
+<p>Lancer l&#39;application. Le comportement est identique à avant : navigation avec les flèches, sélection avec Enter.</p>
+<h2 is-upgraded>Comparaison</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_Init();</code></p>
+</td><td colspan="1" rowspan="1"><p><code>new Menu(new string[] { ... });</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Menu_RunInteractive();</code></p>
+</td><td colspan="1" rowspan="1"><p><code>mainMenu.RunInteractive();</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Variables globales (<code>options</code>, <code>selectedIndex</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Encapsulées dans l&#39;objet <code>mainMenu</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonctions &#34;en vrac&#34; dans Program.cs</p>
+</td><td colspan="1" rowspan="1"><p>Méthodes dans <code>Menu.cs</code></p>
+</td></tr>
+</table>
+<aside class="special"><p>Le code de <code>Program.cs</code> est beaucoup plus court et lisible. Toute la logique du menu est dans la classe <code>Menu</code>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Plusieurs menus" duration="15">
+        <h2 is-upgraded>Le moment &#34;aha&#34;</h2>
+<p>Voici l&#39;avantage décisif des instances. Créons un <strong>deuxième menu</strong> pour les options du jeu :</p>
+<pre><code>// Menu principal
+Menu mainMenu = new Menu(new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Highscores&#34;, &#34;Quit&#34; });
+
+int choice = mainMenu.RunInteractive();
+
+if (choice == 1) // Options sélectionné
+{
+    // Menu des options — un DEUXIÈME menu, indépendant !
+    Menu optionsMenu = new Menu(new string[] { &#34;Sound&#34;, &#34;Music&#34;, &#34;Difficulty&#34;, &#34;Back&#34; });
+
+    int optionChoice = optionsMenu.RunInteractive();
+
+    Console.Clear();
+    switch (optionChoice)
+    {
+        case 0:
+            Console.WriteLine(&#34;Sound settings...&#34;);
+            break;
+        case 1:
+            Console.WriteLine(&#34;Music settings...&#34;);
+            break;
+        case 2:
+            Console.WriteLine(&#34;Difficulty settings...&#34;);
+            break;
+        case 3:
+            Console.WriteLine(&#34;Back to main menu...&#34;);
+            break;
+    }
+}
+else if (choice == 3) // Quit
+{
+    Console.Clear();
+    Console.WriteLine(&#34;Goodbye!&#34;);
+}
+
+Console.ReadKey();
+</code></pre>
+<h2 is-upgraded>Pourquoi c&#39;est impossible avec des fonctions <code>Menu_*</code> ?</h2>
+<p>Avec l&#39;ancien code, <code>options</code> et <code>selectedIndex</code> étaient des <strong>variables globales</strong>. Lancer un deuxième menu aurait <strong>écrasé</strong> les données du premier.</p>
+<p>Avec les instances :</p>
+<ul>
+<li><code>mainMenu</code> a ses propres <code>options</code> et <code>selectedIndex</code></li>
+<li><code>optionsMenu</code> a ses propres <code>options</code> et <code>selectedIndex</code></li>
+<li>Les deux sont <strong>complètement indépendants</strong></li>
+</ul>
+<aside class="special"><p>C&#39;est la puissance des instances : une seule classe <code>Menu</code>, mais autant de menus différents que nécessaire !</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus" duration="10">
+        <h2 is-upgraded>1. Ajouter un titre personnalisé par menu</h2>
+<p>Ajoutez un champ <code>title</code> à la classe <code>Menu</code> et adaptez le constructeur :</p>
+<pre><code>class Menu
+{
+    string[] options;
+    int selectedIndex;
+    string title;
+
+    public Menu(string title, string[] options)
+    {
+        this.title = title;
+        this.options = options;
+        this.selectedIndex = 0;
+    }
+
+    void ShowInteractive()
+    {
+        Console.Clear();
+        Console.WriteLine($&#34;=== {this.title} ===&#34;);
+        Console.WriteLine(&#34;&#34;);
+        // ... reste du code
+    }
+
+    // ...
+}
+</code></pre>
+<p>Utilisation :</p>
+<pre><code>Menu mainMenu = new Menu(&#34;SUPER GAME&#34;, new string[] { &#34;Play&#34;, &#34;Options&#34;, &#34;Quit&#34; });
+Menu optionsMenu = new Menu(&#34;OPTIONS&#34;, new string[] { &#34;Sound&#34;, &#34;Music&#34;, &#34;Back&#34; });
+</code></pre>
+<h2 is-upgraded>2. Couleurs personnalisables par instance</h2>
+<p>Ajoutez des champs pour les couleurs de surbrillance :</p>
+<pre><code>class Menu
+{
+    // ... champs existants ...
+    ConsoleColor highlightBg;
+    ConsoleColor highlightFg;
+
+    public Menu(string title, string[] options,
+                ConsoleColor highlightBg = ConsoleColor.White,
+                ConsoleColor highlightFg = ConsoleColor.Black)
+    {
+        this.title = title;
+        this.options = options;
+        this.selectedIndex = 0;
+        this.highlightBg = highlightBg;
+        this.highlightFg = highlightFg;
+    }
+
+    // Utiliser this.highlightBg et this.highlightFg dans ShowInteractive
+}
+</code></pre>
+<p>Utilisation :</p>
+<pre><code>Menu mainMenu = new Menu(&#34;SUPER GAME&#34;, options, ConsoleColor.Cyan, ConsoleColor.Black);
+Menu optionsMenu = new Menu(&#34;OPTIONS&#34;, optOptions, ConsoleColor.Yellow, ConsoleColor.Black);
+</code></pre>
+<p>Chaque menu a ses propres couleurs !</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <h2 is-upgraded>Récapitulatif : fonctions → classe</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Variables globales <code>options</code>, <code>selectedIndex</code></p>
+</td><td colspan="1" rowspan="1"><p>Champs de la classe <code>Menu</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Fonctions <code>Menu_Init()</code>, <code>Menu_Show()</code></p>
+</td><td colspan="1" rowspan="1"><p>Constructeur + méthodes</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Préfixe <code>Menu_</code> pour regrouper</p>
+</td><td colspan="1" rowspan="1"><p>Classe <code>Menu</code> pour regrouper</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Un seul menu possible</p>
+</td><td colspan="1" rowspan="1"><p>Autant de menus que voulu</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Données accessibles partout</p>
+</td><td colspan="1" rowspan="1"><p>Données encapsulées dans l&#39;objet</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Ce qu&#39;on a appris</h2>
+<ol type="1">
+<li><code>class</code> (sans <code>static</code>) = modèle pour créer des objets</li>
+<li><code>new</code> = créer une instance avec ses propres données</li>
+<li><strong>Constructeur</strong> = initialiser l&#39;objet à la création</li>
+<li><code>this</code> = désigne l&#39;instance courante</li>
+<li><strong>Méthodes d&#39;instance</strong> = agissent sur les données de leur objet</li>
+</ol>
+<h2 is-upgraded>Spoiler : encapsulation</h2>
+<p>Pour l&#39;instant, les champs de <code>Menu</code> sont accessibles depuis l&#39;extérieur. La prochaine étape introduira les mots-clés <code>private</code> et <code>public</code> pour <strong>protéger</strong> les données de la classe.</p>
+<aside class="special"><p>Félicitations ! Vous avez transformé du code procédural en code orienté objet. La classe <code>Menu</code> est désormais réutilisable dans n&#39;importe quel projet.</p>
+</aside>
+<google-codelab-survey survey-id="oo-01-menu-2">
+<h4>Quel aspect des instances trouvez-vous le plus utile ?</h4>
+<paper-radio-group>
+<paper-radio-button>Pouvoir créer plusieurs objets indépendants</paper-radio-button>
+<paper-radio-button>Le constructeur pour initialiser proprement</paper-radio-button>
+<paper-radio-button>Les méthodes qui agissent sur leur propre objet</paper-radio-button>
+<paper-radio-button>La séparation en fichiers (Menu.cs / Program.cs)</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-01-30T22:51:31+01:00",
+  "id": "oo-01-menu",
+  "duration": 59,
+  "title": "Menu Console OO : des fonctions aux instances",
+  "summary": "menu console orienté objet avec instances",
+  "source": "oo-01-menu.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-01-menu"
+}

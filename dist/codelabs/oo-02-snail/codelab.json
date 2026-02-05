@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-01-30T23:24:44+01:00",
+  "id": "oo-02-snail",
+  "duration": 96,
+  "title": "Course d'Escargots OO : des classes statiques aux instances",
+  "summary": "Transformer la course d’escargots en instances",
+  "source": "oo-02-snail.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-02-snail"
+}
