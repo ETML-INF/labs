@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-02-03T07:53:43+01:00",
+  "id": "oo-03-encapsulation",
+  "duration": 66,
+  "title": "Encapsulation OO : protéger les données de Snail et Menu",
+  "summary": "Protéger les données avec private et les propriétés",
+  "source": "oo-03-encapsulation.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-03-encapsulation"
+}

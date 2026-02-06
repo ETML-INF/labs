@@ -1,0 +1,611 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Encapsulation OO : protéger les données de Snail et Menu</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-03-encapsulation"
+                  title="Encapsulation OO : protéger les données de Snail et Menu"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial reprend le code des codelabs <strong>oo-02-snail</strong> (escargot instanciable) et <strong>oo-01-menu</strong> (menu instanciable) et introduit l&#39;<strong>encapsulation</strong> : protéger les données internes avec <code>private</code> et contrôler l&#39;accès avec des <strong>propriétés</strong> C#.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>À la fin du codelab précédent, la classe <code>Snail</code> a des champs <code>public</code> :</p>
+<pre><code>class Snail
+{
+    public int X;
+    public int Y;
+    public int Energy;
+    public string Name;
+    public ConsoleColor Color;
+    // ...
+}
+</code></pre>
+<p>Le problème : <strong>n&#39;importe quel code peut modifier ces champs</strong> avec des valeurs absurdes.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 5 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Démontrer le problème des champs publics</li>
+<li>Utiliser <code>private</code> pour cacher les champs</li>
+<li>Ajouter des propriétés C# pour un accès contrôlé</li>
+<li>Écrire une propriété avec validation (full property)</li>
+<li>Encapsuler la classe <code>Menu</code> de la même manière</li>
+</ol>
+<aside class="special"><p>Ce codelab vous apprend à <strong>protéger vos données</strong>. Après cette étape, la triche sera impossible : <code>snail.Energy = 9999</code> ne compilera plus.</p>
+</aside>
+<google-codelab-survey survey-id="oo-03-encapsulation-1">
+<h4>Que pensez-vous des champs publics ?</h4>
+<paper-radio-group>
+<paper-radio-button>Pratiques, je ne vois pas le problème</paper-radio-button>
+<paper-radio-button>C&#39;est risqué, on devrait contrôler l&#39;accès</paper-radio-button>
+<paper-radio-button>Je ne sais pas ce que ça change</paper-radio-button>
+<paper-radio-button>J&#39;ai déjà eu des bugs à cause de ça</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Démontrer le problème" duration="5">
+        <h2 is-upgraded>Objectif</h2>
+<p>Montrer concrètement que les champs <code>public</code> permettent la triche.</p>
+<h2 is-upgraded>Code tricheur</h2>
+<p>Dans <code>Program.cs</code>, <strong>après</strong><code>Race.Init()</code> et <strong>avant</strong> la boucle de course, ajoutez ce code temporaire :</p>
+<pre><code>// === CODE TRICHEUR (temporaire) ===
+Snail tricheur = Race.Snails[0];
+
+// Triche 1 : énergie infinie
+tricheur.Energy = 9999;
+Console.WriteLine($&#34;{tricheur.Name} a {tricheur.Energy} d&#39;énergie !&#34;);
+
+// Triche 2 : victoire instantanée
+tricheur.X = Race.FinishX;
+Console.WriteLine($&#34;{tricheur.Name} est déjà à la ligne d&#39;arrivée !&#34;);
+// === FIN DU CODE TRICHEUR ===
+</code></pre>
+<h2 is-upgraded>Observer</h2>
+<p>Compilez et exécutez. Le premier escargot a 9999 d&#39;énergie et gagne instantanément.</p>
+<aside class="warning"><p>Ce code <strong>compile sans erreur</strong>. La méthode <code>ReduceEnergy()</code> limite l&#39;énergie à minimum 10, mais en écrivant directement <code>snail.Energy = 9999</code>, on <strong>contourne</strong> cette validation. C&#39;est le problème fondamental des champs <code>public</code>.</p>
+</aside>
+<h2 is-upgraded>Supprimer le code tricheur</h2>
+<p>Supprimez le code tricheur avant de continuer. Il a servi à démontrer le problème.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Passer les champs en 
+private" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Rendre les champs de <code>Snail</code> inaccessibles depuis l&#39;extérieur.</p>
+<h2 is-upgraded>Modifier Snail.cs</h2>
+<p>Remplacez <code>public</code> par <code>private</code> pour <strong>tous les champs</strong> :</p>
+<pre><code>class Snail
+{
+    // Tous les champs deviennent private
+    private int x;
+    private int y;
+    private int energy;
+    private string name;
+    private ConsoleColor color;
+
+    public Snail(string name, ConsoleColor color)
+    {
+        this.name = name;
+        this.color = color;
+        this.x = 0;
+        this.y = 0;
+        this.energy = 100;
+    }
+
+    // Les méthodes de la classe peuvent toujours accéder aux champs private
+    public void Draw()
+    {
+        SuperConsole.WriteAtColor(this.x, this.y, &#34;@&#34;, this.color);
+    }
+
+    public void Erase()
+    {
+        SuperConsole.WriteAtColor(this.x, this.y, &#34;.&#34;, ConsoleColor.DarkGray);
+    }
+
+    public void Move(int dx, int dy)
+    {
+        this.x = this.x + dx;
+        this.y = this.y + dy;
+    }
+
+    public void ReduceEnergy(int amount)
+    {
+        this.energy = this.energy - amount;
+        if (this.energy &lt; 10)
+        {
+            this.energy = 10;
+        }
+    }
+
+    public void DrawEnergy(int displayX, int displayY)
+    {
+        Console.SetCursorPosition(displayX, displayY);
+        Console.ForegroundColor = this.color;
+        string bar = new string(&#39;#&#39;, this.energy / 10);
+        string empty = new string(&#39;-&#39;, 10 - this.energy / 10);
+        Console.Write($&#34;{this.name,6}[{bar}{empty}] &#34;);
+        Console.ResetColor();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Observer les erreurs</h2>
+<p>Essayez de compiler. Vous obtenez de <strong>nombreuses erreurs</strong> dans <code>Program.cs</code> et <code>Race.cs</code> :</p>
+<pre><code>CS0122: &#39;Snail.energy&#39; is inaccessible due to its protection level
+CS0122: &#39;Snail.x&#39; is inaccessible due to its protection level
+CS0122: &#39;Snail.name&#39; is inaccessible due to its protection level
+</code></pre>
+<p>Partout où le code extérieur accède aux champs de <code>Snail</code>, le compilateur refuse.</p>
+<h2 is-upgraded>Les erreurs typiques</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snail.Energy</code></p>
+</td><td colspan="1" rowspan="1"><p>Program.cs (boucle de course)</p>
+</td><td colspan="1" rowspan="1"><p>Lecture du champ privé</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snail.X &gt;= Race.FinishX</code></p>
+</td><td colspan="1" rowspan="1"><p>Program.cs (test victoire)</p>
+</td><td colspan="1" rowspan="1"><p>Lecture du champ privé</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snails[i].X = StartX</code></p>
+</td><td colspan="1" rowspan="1"><p>Race.cs (<code>Init()</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Écriture du champ privé</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Snails[i].Y = 2 + i * 2</code></p>
+</td><td colspan="1" rowspan="1"><p>Race.cs (<code>Init()</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Écriture du champ privé</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>winner.Name</code></p>
+</td><td colspan="1" rowspan="1"><p>Program.cs (affichage gagnant)</p>
+</td><td colspan="1" rowspan="1"><p>Lecture du champ privé</p>
+</td></tr>
+</table>
+<aside class="special"><p>C&#39;est <strong>normal</strong> que ça ne compile plus ! On a protégé les données. L&#39;étape suivante va rétablir l&#39;accès de manière <strong>contrôlée</strong> avec des propriétés.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Ajouter des propriétés" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Rétablir l&#39;accès aux données via des <strong>propriétés C#</strong> avec le bon niveau de protection.</p>
+<h2 is-upgraded>Choix du niveau d&#39;accès pour chaque donnée</h2>
+<p>Avant de coder, réfléchissons à ce dont on a besoin :</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Name</code></p>
+</td><td colspan="1" rowspan="1"><p>Oui (affichage)</p>
+</td><td colspan="1" rowspan="1"><p>Non (ne change jamais)</p>
+</td><td colspan="1" rowspan="1"><p><code>{ get; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Color</code></p>
+</td><td colspan="1" rowspan="1"><p>Oui (affichage)</p>
+</td><td colspan="1" rowspan="1"><p>Non (ne change jamais)</p>
+</td><td colspan="1" rowspan="1"><p><code>{ get; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>X</code></p>
+</td><td colspan="1" rowspan="1"><p>Oui (test victoire)</p>
+</td><td colspan="1" rowspan="1"><p>Non (via <code>Move()</code>)</p>
+</td><td colspan="1" rowspan="1"><p><code>{ get; private set; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Y</code></p>
+</td><td colspan="1" rowspan="1"><p>Oui (possible)</p>
+</td><td colspan="1" rowspan="1"><p>Non (via <code>Move()</code>)</p>
+</td><td colspan="1" rowspan="1"><p><code>{ get; private set; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Energy</code></p>
+</td><td colspan="1" rowspan="1"><p>Oui (boucle course)</p>
+</td><td colspan="1" rowspan="1"><p>Non (via <code>ReduceEnergy()</code>)</p>
+</td><td colspan="1" rowspan="1"><p><code>{ get; private set; }</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Modifier Snail.cs</h2>
+<p>Ajoutez les propriétés au début de la classe, et supprimez les champs correspondants :</p>
+<pre><code>class Snail
+{
+    // Propriétés
+    public string Name { get; }
+    public ConsoleColor Color { get; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+    public int Energy { get; private set; }
+
+    // Constructeur
+    public Snail(string name, ConsoleColor color)
+    {
+        this.Name = name;
+        this.Color = color;
+        this.X = 0;
+        this.Y = 0;
+        this.Energy = 100;
+    }
+
+    public void Draw()
+    {
+        SuperConsole.WriteAtColor(this.X, this.Y, &#34;@&#34;, this.Color);
+    }
+
+    public void Erase()
+    {
+        SuperConsole.WriteAtColor(this.X, this.Y, &#34;.&#34;, ConsoleColor.DarkGray);
+    }
+
+    public void Move(int dx, int dy)
+    {
+        this.X = this.X + dx;
+        this.Y = this.Y + dy;
+    }
+
+    public void ReduceEnergy(int amount)
+    {
+        this.Energy = this.Energy - amount;
+        if (this.Energy &lt; 10)
+        {
+            this.Energy = 10;
+        }
+    }
+
+    public void DrawEnergy(int displayX, int displayY)
+    {
+        Console.SetCursorPosition(displayX, displayY);
+        Console.ForegroundColor = this.Color;
+        string bar = new string(&#39;#&#39;, this.Energy / 10);
+        string empty = new string(&#39;-&#39;, 10 - this.Energy / 10);
+        Console.Write($&#34;{this.Name,6}[{bar}{empty}] &#34;);
+        Console.ResetColor();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Ce qui a changé</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>private string name;</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public string Name { get; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>private int x;</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public int X { get; private set; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>private int energy;</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public int Energy { get; private set; }</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>this.name</code> dans les méthodes</p>
+</td><td colspan="1" rowspan="1"><p><code>this.Name</code> dans les méthodes</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Corriger Race.cs</h2>
+<p>Dans <code>Race.Init()</code>, l&#39;initialisation de <code>X</code> et <code>Y</code> utilise <code>private set</code>, ce qui est autorisé uniquement <strong>dans la classe </strong><code>Snail</code>. Il faut modifier le constructeur pour accepter la position :</p>
+<pre><code>// Constructeur mis à jour
+public Snail(string name, ConsoleColor color, int x, int y)
+{
+    this.Name = name;
+    this.Color = color;
+    this.X = x;
+    this.Y = y;
+    this.Energy = 100;
+}
+</code></pre>
+<p>Dans <code>Race.Init()</code> :</p>
+<pre><code>public static void Init()
+{
+    Snails = new Snail[]
+    {
+        new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow, StartX, 2),
+        new Snail(&#34;Speedy&#34;, ConsoleColor.Cyan, StartX, 4),
+        new Snail(&#34;Flash&#34;, ConsoleColor.Magenta, StartX, 6)
+    };
+}
+</code></pre>
+<h2 is-upgraded>Compiler et tester</h2>
+<p>Le code devrait maintenant compiler. La lecture des propriétés fonctionne (<code>snail.Energy</code>, <code>snail.X</code>, <code>snail.Name</code>), mais l&#39;écriture directe est interdite :</p>
+<pre><code>snail.Energy = 9999;  // ERREUR de compilation !
+snail.X = 50;         // ERREUR de compilation !
+snail.Name = &#34;Hack&#34;;  // ERREUR de compilation !
+</code></pre>
+<aside class="special"><p>La course fonctionne exactement comme avant, mais les données sont protégées. La triche n&#39;est plus possible.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Propriété avec validation" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Ajouter une <strong>validation</strong> dans la propriété <code>Energy</code> pour garantir qu&#39;elle reste toujours dans la plage [10, 100].</p>
+<h2 is-upgraded>Full property pour Energy</h2>
+<p>Remplacez l&#39;auto-propriété <code>Energy</code> par une <strong>full property</strong> avec un champ privé :</p>
+<pre><code>class Snail
+{
+    private int _energy;  // Convention Microsoft : préfixe _
+
+    public string Name { get; }
+    public ConsoleColor Color { get; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+
+    public int Energy
+    {
+        get { return _energy; }
+        private set
+        {
+            if (value &lt; 10)
+                _energy = 10;
+            else if (value &gt; 100)
+                _energy = 100;
+            else
+                _energy = value;
+        }
+    }
+
+    public Snail(string name, ConsoleColor color, int x, int y)
+    {
+        Name = name;
+        Color = color;
+        X = x;
+        Y = y;
+        Energy = 100;  // Passe par la propriété → validé
+    }
+
+    // ...
+}
+</code></pre>
+<p><strong>Convention </strong><code>_</code> : Microsoft recommande le préfixe underscore (<code>_energy</code>) pour les champs privés. Cela évite la confusion avec les propriétés (<code>Energy</code>) et rend <code>this.</code> inutile.</p>
+<h2 is-upgraded>Simplifier ReduceEnergy</h2>
+<p>Puisque la validation est dans la propriété, la méthode <code>ReduceEnergy</code> n&#39;a plus besoin de vérifier :</p>
+<pre><code>public void ReduceEnergy(int amount)
+{
+    this.Energy = this.Energy - amount;  // La propriété gère la limite
+}
+</code></pre>
+<p>Si <code>Energy</code> vaut 20 et <code>amount</code> vaut 15, la propriété reçoit <code>value = 5</code>, qui est inférieur à 10, donc <code>energy</code> est mis à 10. La validation est <strong>centralisée</strong> dans la propriété.</p>
+<h2 is-upgraded>Tester la validation</h2>
+<p>La validation fonctionne partout, automatiquement :</p>
+<pre><code>Snail turbo = new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow, 2, 2);
+
+turbo.ReduceEnergy(95);  // 100 - 95 = 5 → clamped à 10
+Console.WriteLine(turbo.Energy);  // Affiche 10
+
+turbo.ReduceEnergy(50);  // 10 - 50 = -40 → clamped à 10
+Console.WriteLine(turbo.Energy);  // Affiche toujours 10
+</code></pre>
+<aside class="special"><p>La validation est maintenant <strong>à un seul endroit</strong> (la propriété <code>Energy</code>). Toute modification passe par là, que ce soit le constructeur, <code>ReduceEnergy()</code>, ou n&#39;importe quel futur code dans la classe.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 5 : Encapsuler le Menu" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Appliquer le même traitement d&#39;encapsulation à la classe <code>Menu</code> du codelab <strong>oo-01-menu</strong>.</p>
+<h2 is-upgraded>Rappel : la classe Menu actuelle</h2>
+<pre><code>class Menu
+{
+    public string[] Options;
+    public int SelectedIndex;
+
+    public Menu(string[] options)
+    {
+        this.Options = options;
+        this.SelectedIndex = 0;
+    }
+
+    public void Display() { /* ... */ }
+    public void MoveUp() { /* ... */ }
+    public void MoveDown() { /* ... */ }
+}
+</code></pre>
+<h2 is-upgraded>Problèmes</h2>
+<pre><code>Menu menu = new Menu(new string[] { &#34;Jouer&#34;, &#34;Options&#34;, &#34;Quitter&#34; });
+
+menu.SelectedIndex = 999;        // Index hors limites !
+menu.Options = new string[] {};  // Tableau vide !
+menu.SelectedIndex = -5;         // Index négatif !
+</code></pre>
+<h2 is-upgraded>Encapsuler</h2>
+<p>Appliquez les mêmes principes :</p>
+<pre><code>class Menu
+{
+    private string[] options;
+
+    public int SelectedIndex { get; private set; }
+
+    public Menu(string[] options)
+    {
+        this.options = options;
+        this.SelectedIndex = 0;
+    }
+
+    public void MoveUp()
+    {
+        if (this.SelectedIndex &gt; 0)
+        {
+            this.SelectedIndex = this.SelectedIndex - 1;
+        }
+    }
+
+    public void MoveDown()
+    {
+        if (this.SelectedIndex &lt; this.options.Length - 1)
+        {
+            this.SelectedIndex = this.SelectedIndex + 1;
+        }
+    }
+
+    public void Display()
+    {
+        for (int i = 0; i &lt; this.options.Length; i++)
+        {
+            if (i == this.SelectedIndex)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($&#34;&gt; {this.options[i]}&#34;);
+            }
+            else
+            {
+                Console.ResetColor();
+                Console.WriteLine($&#34;  {this.options[i]}&#34;);
+            }
+        }
+        Console.ResetColor();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Ce qui a changé</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>public string[] Options</code></p>
+</td><td colspan="1" rowspan="1"><p><code>private string[] options</code></p>
+</td><td colspan="1" rowspan="1"><p>Le tableau ne doit pas être remplacé</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>public int SelectedIndex</code></p>
+</td><td colspan="1" rowspan="1"><p><code>public int SelectedIndex { get; private set; }</code></p>
+</td><td colspan="1" rowspan="1"><p>Modifiable uniquement via <code>MoveUp/MoveDown</code></p>
+</td></tr>
+</table>
+<pre><code>menu.SelectedIndex = 999;  // ERREUR de compilation !
+menu.options = null;        // ERREUR de compilation !
+</code></pre>
+<aside class="special"><p>Le menu est maintenant protégé. L&#39;index de sélection ne peut changer que via <code>MoveUp()</code> et <code>MoveDown()</code>, qui vérifient les bornes.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations" duration="10">
+        <h2 is-upgraded>1. Propriété calculée</h2>
+<p>Une propriété peut être <strong>calculée</strong> à partir d&#39;autres données, sans champ dédié :</p>
+<pre><code>// Dans la classe Snail
+public bool IsExhausted =&gt; this.Energy &lt;= 10;
+</code></pre>
+<p>Utilisation :</p>
+<pre><code>if (snail.IsExhausted)
+{
+    Console.WriteLine($&#34;{snail.Name} est épuisé !&#34;);
+}
+</code></pre>
+<p><code>=&gt;</code> est une syntaxe raccourcie (expression-bodied member). C&#39;est équivalent à :</p>
+<pre><code>public bool IsExhausted
+{
+    get { return this.Energy &lt;= 10; }
+}
+</code></pre>
+<h2 is-upgraded>2. Méthode <code>ToString()</code> avec propriétés</h2>
+<pre><code>// Dans la classe Snail
+public override string ToString()
+{
+    return $&#34;{this.Name} (x={this.X}, y={this.Y}, energy={this.Energy})&#34;;
+}
+</code></pre>
+<pre><code>Console.WriteLine(turbo);  // Affiche : Turbo (x=5, y=2, energy=87)
+</code></pre>
+<h2 is-upgraded>3. Accesseur <code>init</code> (C# 9+)</h2>
+<p>L&#39;accesseur <code>init</code> permet d&#39;assigner une valeur <strong>uniquement à la création</strong> de l&#39;objet, y compris avec la syntaxe d&#39;initialisation :</p>
+<pre><code>class Snail
+{
+    public string Name { get; init; }
+    public ConsoleColor Color { get; init; }
+    // ...
+}
+</code></pre>
+<pre><code>Snail turbo = new Snail(&#34;Turbo&#34;, ConsoleColor.Yellow, 0, 2)
+{
+    Name = &#34;Super Turbo&#34;  // OK : init permet ça à la création
+};
+
+turbo.Name = &#34;Hack&#34;;  // ERREUR : interdit après la création
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Récapitulatif de la transformation</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Champs</p>
+</td><td colspan="1" rowspan="1"><p><code>public int Energy</code></p>
+</td><td colspan="1" rowspan="1"><p><code>private int _energy</code> + propriété</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Lecture</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Energy</code></p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Energy</code> (identique !)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Écriture</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Energy = 9999</code> (triche)</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Energy = 9999</code> → ERREUR</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Modification</p>
+</td><td colspan="1" rowspan="1"><p>Directe, sans contrôle</p>
+</td><td colspan="1" rowspan="1"><p>Via <code>ReduceEnergy()</code> (contrôlée)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Validation</p>
+</td><td colspan="1" rowspan="1"><p>Dans la méthode (contournable)</p>
+</td><td colspan="1" rowspan="1"><p>Dans la propriété (impossible à contourner)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Nom</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Name = &#34;&#34;</code> (modifiable)</p>
+</td><td colspan="1" rowspan="1"><p><code>snail.Name</code> → lecture seule</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Convention</p>
+</td><td colspan="1" rowspan="1"><p>—</p>
+</td><td colspan="1" rowspan="1"><p><code>_prefixe</code> pour champs privés (Microsoft)</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Concepts clés</h2>
+<ol type="1">
+<li><code>private</code> cache les données à l&#39;extérieur de la classe</li>
+<li>Les <strong>propriétés</strong> (<code>{ get; set; }</code>) remplacent les méthodes Get/Set de Java</li>
+<li><code>{ get; private set; }</code> = lecture partout, écriture interne seulement</li>
+<li><code>{ get; }</code> = immutable après le constructeur</li>
+<li><strong>Full property</strong> = propriété avec logique de validation</li>
+<li>Le mot-clé <code>value</code> représente la valeur assignée dans le <code>set</code></li>
+</ol>
+<h2 is-upgraded>Spoiler : héritage</h2>
+<p>Les données sont protégées, mais toute la logique est dans une seule classe <code>Snail</code>. Que se passe-t-il si on veut des <strong>types</strong> d&#39;escargots (rapide, lent, à bonus) ? L&#39;<strong>héritage</strong> permettra de créer des classes spécialisées.</p>
+<aside class="special"><p>Félicitations ! Vos classes sont maintenant encapsulées. Les données sont protégées, la validation est centralisée, et la triche est impossible. Le code extérieur utilise les propriétés exactement comme des champs, sans savoir que la validation se fait en coulisses.</p>
+</aside>
+<google-codelab-survey survey-id="oo-03-encapsulation-2">
+<h4>Quel aspect de l’encapsulation vous semble le plus utile ?</h4>
+<paper-radio-group>
+<paper-radio-button>La protection contre les valeurs absurdes</paper-radio-button>
+<paper-radio-button>La centralisation de la validation</paper-radio-button>
+<paper-radio-button>Les propriétés en lecture seule</paper-radio-button>
+<paper-radio-button>La syntaxe simple des propriétés C#</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
