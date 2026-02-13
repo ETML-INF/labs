@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-02-12T16:48:14+01:00",
+  "id": "oo-04-inheritance",
+  "duration": 71,
+  "title": "Héritage OO : créer des types d'escargots spécialisés",
+  "summary": "Créer des classes spécialisées avec l’héritage",
+  "source": "oo-04-inheritance.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-04-inheritance"
+}

@@ -1,0 +1,550 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Héritage OO : créer des types d&#39;escargots spécialisés</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-04-inheritance"
+                  title="Héritage OO : créer des types d&#39;escargots spécialisés"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial reprend le code du codelab <strong>oo-03-encapsulation</strong> (escargot encapsulé) et introduit l&#39;<strong>héritage</strong> : créer des classes spécialisées (<code>FastSnail</code>, <code>SlowSnail</code>, <code>BonusSnail</code>) à partir de la classe de base <code>Snail</code>, sans dupliquer le code.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>À la fin du codelab précédent, la classe <code>Snail</code> est encapsulée :</p>
+<pre><code>class Snail
+{
+    private int _energy;
+
+    public string Name { get; }
+    public ConsoleColor Color { get; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+
+    public int Energy
+    {
+        get { return _energy; }
+        private set { /* validation [10, 100] */ }
+    }
+
+    public Snail(string name, ConsoleColor color, int x, int y) { ... }
+    public void Move(int dx, int dy) { ... }
+    public void ReduceEnergy(int amount) { ... }
+    public void Draw() { ... }
+    public void Erase() { ... }
+}
+</code></pre>
+<p>Le problème : tous les escargots se comportent <strong>exactement de la même manière</strong>. On aimerait des types spécialisés sans copier-coller la classe.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 5 étapes progressives, vous apprendrez à :</p>
+<ol type="1">
+<li>Préparer la classe de base pour l&#39;héritage (<code>protected set</code>, <code>virtual</code>)</li>
+<li>Créer une classe dérivée avec <code>: Snail</code> et <code>base(...)</code></li>
+<li>Redéfinir le comportement avec <code>override</code></li>
+<li>Utiliser le <strong>polymorphisme</strong> pour la course</li>
+<li>Ajouter des membres spécifiques à une classe dérivée</li>
+</ol>
+<aside class="special"><p>Ce codelab vous apprend à <strong>spécialiser</strong> des classes sans duplication. À la fin, votre course aura 4 types d&#39;escargots différents, et la boucle de course ne changera pas d&#39;une ligne.</p>
+</aside>
+<google-codelab-survey survey-id="oo-04-inheritance-1">
+<h4>Comment créeriez-vous un escargot rapide aujourd’hui ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je copierais la classe Snail et je modifierais Move()</paper-radio-button>
+<paper-radio-button>J&#39;ajouterais un if/else dans Move() selon un type</paper-radio-button>
+<paper-radio-button>J&#39;utiliserais l&#39;héritage (je connais déjà)</paper-radio-button>
+<paper-radio-button>Je ne sais pas</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Préparer Snail pour l&#39;héritage" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Modifier la classe <code>Snail</code> pour qu&#39;elle puisse servir de <strong>classe de base</strong> : les classes dérivées doivent pouvoir modifier certaines propriétés et redéfinir <code>Move()</code>.</p>
+<h2 is-upgraded>Changer <code>private set</code> en <code>protected set</code></h2>
+<p>Ouvrez <code>Snail.cs</code> et modifiez les propriétés <code>X</code>, <code>Y</code> et <code>Energy</code> :</p>
+<pre><code>class Snail
+{
+    private int _energy;
+
+    public string Name { get; }
+    public ConsoleColor Color { get; }
+    public int X { get; protected set; }       // Changé : private → protected
+    public int Y { get; protected set; }       // Changé : private → protected
+
+    public int Energy
+    {
+        get { return _energy; }
+        protected set                           // Changé : private → protected
+        {
+            if (value &lt; 10)
+                _energy = 10;
+            else if (value &gt; 100)
+                _energy = 100;
+            else
+                _energy = value;
+        }
+    }
+
+    // ... constructeur et méthodes inchangés pour l&#39;instant
+}
+</code></pre>
+<h2 is-upgraded>Rappel : <code>protected</code></h2>
+<p>Au chapitre encapsulation, on avait vu ce modificateur dans le tableau sans l&#39;expliquer :</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>public</code></p>
+</td><td colspan="1" rowspan="1"><p>Partout</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>private</code></p>
+</td><td colspan="1" rowspan="1"><p>Uniquement dans la classe</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>protected</code></p>
+</td><td colspan="1" rowspan="1"><p>Dans la classe <strong>et ses classes dérivées</strong></p>
+</td></tr>
+</table>
+<p><code>protected set</code> signifie : les classes dérivées (comme <code>FastSnail</code>) pourront modifier <code>X</code>, <code>Y</code> et <code>Energy</code>, mais le code extérieur (<code>Program.cs</code>) ne pourra toujours pas.</p>
+<h2 is-upgraded>Rendre <code>Move()</code> virtuel</h2>
+<p>Ajoutez le mot-clé <code>virtual</code> à la méthode <code>Move()</code> :</p>
+<pre><code>public virtual void Move(int dx, int dy)
+{
+    X = X + dx;
+    Y = Y + dy;
+}
+</code></pre>
+<p><code>virtual</code> signifie : &#34;les classes dérivées <strong>peuvent</strong> remplacer cette méthode par leur propre version.&#34;</p>
+<h2 is-upgraded>Compiler et tester</h2>
+<p>Compiler et exécuter. La course fonctionne <strong>exactement comme avant</strong>. On n&#39;a rien cassé — on a juste préparé <code>Snail</code> pour accueillir des classes dérivées.</p>
+<aside class="special"><p><code>protected set</code> et <code>virtual</code> ne changent rien au comportement actuel. Ils ouvrent des portes pour les classes dérivées qu&#39;on va créer aux étapes suivantes.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Créer FastSnail" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer la première classe dérivée : un escargot <strong>rapide</strong> qui avance 2 fois plus vite.</p>
+<h2 is-upgraded>Créer le fichier FastSnail.cs</h2>
+<p>Créez un nouveau fichier <code>FastSnail.cs</code> dans le même projet :</p>
+<pre><code>class FastSnail : Snail
+{
+    public FastSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        base.Move(dx * 2, dy);  // Double la distance horizontale
+    }
+}
+</code></pre>
+<h2 is-upgraded>Décortiquons le code</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>: Snail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>FastSnail</code> hérite de <code>Snail</code> (toutes ses propriétés et méthodes)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>: base(name, color, x, y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Appelle le constructeur de <code>Snail</code> pour initialiser Name, Color, X, Y, Energy</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>override void Move(...)</code></p>
+</td><td colspan="1" rowspan="1"><p>Remplace le <code>Move()</code> de <code>Snail</code> par une version spécialisée</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>base.Move(dx * 2, dy)</code></p>
+</td><td colspan="1" rowspan="1"><p>Appelle le <code>Move()</code> original de <code>Snail</code> avec le double de distance</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Tester FastSnail</h2>
+<p>Dans <code>Program.cs</code> ou dans <code>Race.Init()</code>, remplacer un escargot par un <code>FastSnail</code> :</p>
+<pre><code>Snail[] snails = new Snail[]
+{
+    new Snail(&#34;Normal&#34;, ConsoleColor.White, 0, 2),
+    new FastSnail(&#34;Turbo&#34;, ConsoleColor.Yellow, 0, 4),   // FastSnail !
+    new Snail(&#34;Flash&#34;, ConsoleColor.Magenta, 0, 6)
+};
+</code></pre>
+<p>Compiler et exécuter. <strong>Turbo avance 2 fois plus vite</strong> que les autres. Notez que le tableau est de type <code>Snail[]</code> mais contient un <code>FastSnail</code> — c&#39;est le début du <code>polymorphisme</code>.</p>
+<aside class="warning"><p>Si vous obtenez une erreur <code>does not contain a parameterless constructor</code>, vérifiez que le constructeur de <code>FastSnail</code> appelle bien <code>: base(name, color, x, y)</code>. Sans <code>base(...)</code>, le compilateur cherche un constructeur sans paramètre dans <code>Snail</code>, qui n&#39;existe pas.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Créer SlowSnail et BonusSnail" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer deux classes dérivées supplémentaires avec des comportements différents.</p>
+<h2 is-upgraded>SlowSnail.cs : avance si énergie &gt; 30</h2>
+<p>Créez <code>SlowSnail.cs</code> :</p>
+<pre><code>class SlowSnail : Snail
+{
+    public SlowSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        if (Energy &gt; 30)
+        {
+            base.Move(dx, dy);  // Avance normalement
+        }
+        // Sinon : ne bouge pas du tout (trop fatigué)
+    }
+}
+</code></pre>
+<p><code>SlowSnail</code> utilise <code>Energy</code> (lecture publique) pour décider s&#39;il bouge. Quand l&#39;énergie descend sous 30, il s&#39;arrête complètement.</p>
+<h2 is-upgraded>BonusSnail.cs : bonus aléatoire</h2>
+<p>Créez <code>BonusSnail.cs</code> :</p>
+<pre><code>class BonusSnail : Snail
+{
+    private Random _rng = new Random();
+
+    public BonusSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        int bonus = _rng.Next(0, 3);  // Bonus entre 0 et 2
+        base.Move(dx + bonus, dy);    // Avance de dx + bonus
+    }
+}
+</code></pre>
+<p><code>BonusSnail</code> a un champ <code>_rng</code> en plus de ce qu&#39;il hérite de <code>Snail</code>. À chaque déplacement, il ajoute un bonus aléatoire.</p>
+<h2 is-upgraded>Tester les 4 types ensemble</h2>
+<p>Mettez à jour le tableau d&#39;escargots :</p>
+<pre><code>Snail[] snails = new Snail[]
+{
+    new Snail(&#34;Normal&#34;, ConsoleColor.White, 0, 2),
+    new FastSnail(&#34;Turbo&#34;, ConsoleColor.Yellow, 0, 4),
+    new SlowSnail(&#34;Papy&#34;, ConsoleColor.Gray, 0, 6),
+    new BonusSnail(&#34;Lucky&#34;, ConsoleColor.Green, 0, 8)
+};
+</code></pre>
+<p>Compilez et exécutez. Observez les comportements différents :</p>
+<ul>
+<li><strong>Normal</strong> avance régulièrement</li>
+<li><strong>Turbo</strong> fonce en tête (2x plus vite)</li>
+<li><strong>Papy</strong> s&#39;arrête quand il est fatigué</li>
+<li><strong>Lucky</strong> a des accélérations aléatoires</li>
+</ul>
+<aside class="special"><p>Les 4 types coexistent dans un <code>Snail[]</code>. La boucle de course appelle <code>snail.Move(dx, 0)</code> pour tous, et C# choisit automatiquement le bon <code>Move()</code> selon le type réel. C&#39;est le <strong>polymorphisme</strong>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Le polymorphisme dans la course" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Comprendre et exploiter le polymorphisme : la boucle de course traite tous les escargots de manière <strong>uniforme</strong>, sans se soucier de leur type.</p>
+<h2 is-upgraded>La boucle de course (inchangée)</h2>
+<pre><code>Random rng = new Random();
+bool raceOver = false;
+
+while (!raceOver)
+{
+    foreach (Snail snail in snails)
+    {
+        snail.Erase();
+
+        int dx = rng.Next(1, 4);
+        snail.Move(dx, 0);         // Polymorphisme ici !
+        snail.ReduceEnergy(dx);
+
+        snail.Draw();
+
+        if (snail.X &gt;= Race.FinishX)
+        {
+            raceOver = true;
+            Console.WriteLine($&#34;{snail.Name} a gagné !&#34;);
+            break;
+        }
+    }
+
+    Thread.Sleep(100);
+}
+</code></pre>
+<h2 is-upgraded>Quel <code>Move()</code> est appelé ?</h2>
+<p>Quand la boucle exécute <code>snail.Move(dx, 0)</code>, C# regarde le <strong>type réel</strong> de l&#39;objet (pas le type de la variable) :</p>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snails[0]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>Snail.Move</code> → avance de 3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snails[1]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>FastSnail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>FastSnail.Move</code> → avance de 6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snails[2]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>SlowSnail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>SlowSnail.Move</code> → avance de 3 ou 0</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>snails[3]</code></p>
+</td><td colspan="1" rowspan="1"><p><code>BonusSnail</code></p>
+</td><td colspan="1" rowspan="1"><p><code>BonusSnail.Move</code> → avance de 3 + bonus</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Pourquoi c&#39;est puissant ?</h2>
+<p>Sans polymorphisme, il faudrait écrire :</p>
+<pre><code>// MAUVAIS : sans polymorphisme
+if (snail is FastSnail fast)
+    fast.Move(dx, 0);
+else if (snail is SlowSnail slow)
+    slow.Move(dx, 0);
+else if (snail is BonusSnail bonus)
+    bonus.Move(dx, 0);
+else
+    snail.Move(dx, 0);
+</code></pre>
+<p>Avec le polymorphisme : <strong>une seule ligne</strong><code>snail.Move(dx, 0)</code>. Et si on ajoute un 5ᵉ type d&#39;escargot demain, la boucle ne change pas.</p>
+<h2 is-upgraded>Exercice : ajouter un compteur de tours</h2>
+<p>Ajouter un compteur qui affiche le nombre de tours de la course. Vérifier que tous les types fonctionnent correctement :</p>
+<pre><code>int turn = 0;
+while (!raceOver)
+{
+    turn++;
+    Console.SetCursorPosition(0, 0);
+    Console.Write($&#34;Tour {turn}&#34;);
+
+    foreach (Snail snail in snails)
+    {
+        // ... même code qu&#39;avant
+    }
+
+    Thread.Sleep(100);
+}
+</code></pre>
+<aside class="special"><p>Le polymorphisme est le concept le plus puissant de la POO. Il permet d&#39;écrire du code <strong>générique</strong> qui fonctionne avec n&#39;importe quel type dérivé, sans connaître les types à l&#39;avance.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 5 : Comportement propre à BonusSnail" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Ajouter des membres <strong>spécifiques</strong> à <code>BonusSnail</code> : un compteur de bonus et une méthode <code>CollectBonus()</code> qui récupère de l&#39;énergie.</p>
+<h2 is-upgraded>Ajouter BonusCount et CollectBonus()</h2>
+<p>Modifier <code>BonusSnail.cs</code> :</p>
+<pre><code>class BonusSnail : Snail
+{
+    private Random _rng = new Random();
+
+    public int BonusCount { get; private set; }
+
+    public BonusSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+        BonusCount = 0;
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        int bonus = _rng.Next(0, 3);
+        base.Move(dx + bonus, dy);
+    }
+
+    public void CollectBonus()
+    {
+        Energy = Energy + 10;       // protected set → autorisé !
+        BonusCount = BonusCount + 1;
+    }
+}
+</code></pre>
+<p><code>CollectBonus()</code> utilise <code>protected set</code> sur <code>Energy</code> pour ajouter de l&#39;énergie. La validation dans la propriété garantit que ça ne dépasse pas 100.</p>
+<h2 is-upgraded>Utiliser <code>is</code> pour accéder aux membres spécifiques</h2>
+<p>Dans la boucle de course, <code>snail</code> est de type <code>Snail</code>. Pour appeler <code>CollectBonus()</code>, il faut vérifier le type réel avec <code>is</code> :</p>
+<pre><code>foreach (Snail snail in snails)
+{
+    snail.Erase();
+
+    int dx = rng.Next(1, 4);
+    snail.Move(dx, 0);
+    snail.ReduceEnergy(dx);
+
+    // Comportement spécifique à BonusSnail
+    if (snail is BonusSnail bonusSnail)
+    {
+        if (rng.Next(0, 5) == 0)  // 1 chance sur 5
+        {
+            bonusSnail.CollectBonus();
+        }
+    }
+
+    snail.Draw();
+}
+</code></pre>
+<h2 is-upgraded>Le mot-clé <code>is</code></h2>
+<p><code>is</code> fait deux choses en une :</p>
+<ol type="1">
+<li><strong>Vérifie</strong> si <code>snail</code> est réellement un <code>BonusSnail</code></li>
+<li><strong>Convertit</strong> dans la variable typée <code>bonusSnail</code> si c&#39;est le cas</li>
+</ol>
+<pre><code>if (snail is BonusSnail bonusSnail)
+{
+    // Ici, bonusSnail est de type BonusSnail
+    // On peut accéder à BonusCount et CollectBonus()
+    Console.WriteLine($&#34;Bonus #{bonusSnail.BonusCount}&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Compiler et tester</h2>
+<p>Lucky devrait parfois récupérer de l&#39;énergie pendant la course, lui donnant un avantage sur la durée.</p>
+<aside class="warning"><p><code>is</code> est utile pour les cas particuliers, mais <strong>n&#39;en abusez pas</strong>. Si vous avez beaucoup de <code>if (snail is ...)</code>, c&#39;est souvent le signe qu&#39;il faudrait plutôt ajouter une méthode <code>virtual</code> dans la classe de base. Le polymorphisme est préférable aux tests de type.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations" duration="10">
+        <h2 is-upgraded>1. ToString() pour chaque type</h2>
+<p>Ajoutez une méthode <code>ToString()</code> dans <code>Snail</code> et redéfinissez-la dans les dérivées :</p>
+<pre><code>// Dans Snail :
+public override string ToString()
+{
+    return $&#34;{Name} (x={X}, energy={Energy})&#34;;
+}
+
+// Dans FastSnail :
+public override string ToString()
+{
+    return $&#34;{Name} [RAPIDE] (x={X}, energy={Energy})&#34;;
+}
+
+// Dans BonusSnail :
+public override string ToString()
+{
+    return $&#34;{Name} [BONUS x{BonusCount}] (x={X}, energy={Energy})&#34;;
+}
+</code></pre>
+<p><code>ToString()</code> est une méthode <code>virtual</code> de la classe <code>object</code> (dont toutes les classes héritent). En la redéfinissant avec <code>override</code>, on personnalise l&#39;affichage.</p>
+<h2 is-upgraded>2. PoisonSnail : nouveau type</h2>
+<p>Créez un <code>PoisonSnail</code> qui empoisonne l&#39;escargot devant lui :</p>
+<pre><code>class PoisonSnail : Snail
+{
+    public PoisonSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        base.Move(dx, dy);  // Avance normalement
+    }
+
+    public void Poison(Snail target)
+    {
+        target.ReduceEnergy(15);  // Fait perdre 15 d&#39;énergie à la cible
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Utiliser base.Move() de manière créative</h2>
+<p>Chaque <code>override</code> de <code>Move()</code> appelle <code>base.Move(...)</code> avec des paramètres différents. C&#39;est un pattern courant : la dérivée <strong>enrichit</strong> le comportement de base au lieu de le remplacer complètement.</p>
+<p>Essayez de créer un <code>ZigZagSnail</code> qui avance en zigzag :</p>
+<pre><code>class ZigZagSnail : Snail
+{
+    private int _direction = 1;
+
+    public ZigZagSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    public override void Move(int dx, int dy)
+    {
+        base.Move(dx, _direction);  // Alterne haut/bas
+        _direction = _direction * -1;
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Récapitulatif de la transformation</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Types d&#39;escargots</p>
+</td><td colspan="1" rowspan="1"><p>1 seul (<code>Snail</code>)</p>
+</td><td colspan="1" rowspan="1"><p>4+ types spécialisés</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Comportement Move</p>
+</td><td colspan="1" rowspan="1"><p>Identique pour tous</p>
+</td><td colspan="1" rowspan="1"><p>Spécialisé par type (<code>override</code>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ajout d&#39;un type</p>
+</td><td colspan="1" rowspan="1"><p>Copier-coller toute la classe</p>
+</td><td colspan="1" rowspan="1"><p>Créer une classe <code>: Snail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Boucle de course</p>
+</td><td colspan="1" rowspan="1"><p><code>foreach (Snail ...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>foreach (Snail ...)</code> — <strong>identique</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Duplication</p>
+</td><td colspan="1" rowspan="1"><p>Massive si plusieurs types</p>
+</td><td colspan="1" rowspan="1"><p>Zéro</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Accès dérivées</p>
+</td><td colspan="1" rowspan="1"><p><code>private set</code> (bloqué)</p>
+</td><td colspan="1" rowspan="1"><p><code>protected set</code> (autorisé)</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Concepts clés</h2>
+<ol type="1">
+<li><code>: Snail</code> crée une classe dérivée qui hérite de tout</li>
+<li><code>base(...)</code> appelle le constructeur de la classe parente</li>
+<li><code>protected</code> ouvre l&#39;accès aux dérivées, pas à l&#39;extérieur</li>
+<li><code>virtual</code> autorise la redéfinition d&#39;une méthode</li>
+<li><code>override</code> remplace le comportement dans la dérivée</li>
+<li><code>base.Move(...)</code> appelle la version originale</li>
+<li><strong>Polymorphisme</strong> : <code>Snail[]</code> contient tous les types, la boucle est identique</li>
+<li><code>is</code> permet de vérifier et convertir le type réel</li>
+</ol>
+<h2 is-upgraded>Spoiler : classes abstraites</h2>
+<p><code>Snail</code> peut encore être instancié directement. Mais un escargot &#34;générique&#34; a-t-il du sens ? Les <strong>classes abstraites</strong> forceront chaque type à implémenter son propre comportement.</p>
+<aside class="special"><p>Félicitations ! Votre course a maintenant 4 types d&#39;escargots avec des comportements uniques, sans une seule ligne de code dupliquée. La boucle de course est identique — c&#39;est la puissance du polymorphisme.</p>
+</aside>
+<google-codelab-survey survey-id="oo-04-inheritance-2">
+<h4>Quel concept de l’héritage vous semble le plus utile ?</h4>
+<paper-radio-group>
+<paper-radio-button>La réutilisation du code (pas de duplication)</paper-radio-button>
+<paper-radio-button>Le polymorphisme (un tableau, plusieurs types)</paper-radio-button>
+<paper-radio-button>virtual/override (redéfinir le comportement)</paper-radio-button>
+<paper-radio-button>protected (accès contrôlé pour les dérivées)</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
