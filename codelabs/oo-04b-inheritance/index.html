@@ -22,13 +22,15 @@
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid="UA-170792591-1"
-                  id="oo-04-inheritance"
+                  id="oo-04b-inheritance"
                   title="Héritage OO : créer des types d&#39;escargots spécialisés"
                   environment="web"
                   feedback-link="https://git.section-inf.ch/jmy/labs/issues">
     
       <google-codelab-step label="Vue d&#39;ensemble" duration="3">
-        <p>Ce tutorial reprend le code du codelab <strong>oo-03-encapsulation</strong> (escargot encapsulé) et introduit l&#39;<strong>héritage</strong> : créer des classes spécialisées (<code>FastSnail</code>, <code>SlowSnail</code>, <code>BonusSnail</code>) à partir de la classe de base <code>Snail</code>, sans dupliquer le code.</p>
+        <p>Ce tutorial fait suite au codelab <strong>oo-04a-heritage-intro</strong> (Partie A) et aux slides <strong>Partie B</strong> de l&#39;héritage. Il se concentre sur la <strong>spécialisation du comportement</strong> : <code>virtual</code>, <code>override</code>, et le polymorphisme.</p>
+<p>Si vous n&#39;avez pas encore fait <code>oo-04a-heritage-intro</code>, revenez en arrière : ce codelab part du principe que vous savez déjà créer une classe dérivée et appeler <code>base(...)</code>.</p>
+<p>Ce tutorial reprend le code du codelab <strong>oo-03-encapsulation</strong> (escargot encapsulé) et introduit les classes spécialisées (<code>FastSnail</code>, <code>SlowSnail</code>, <code>BonusSnail</code>) avec redéfinition de comportement.</p>
 <h2 is-upgraded>Contexte</h2>
 <p>À la fin du codelab précédent, la classe <code>Snail</code> est encapsulée :</p>
 <pre><code>class Snail
@@ -65,7 +67,7 @@
 </ol>
 <aside class="special"><p>Ce codelab vous apprend à <strong>spécialiser</strong> des classes sans duplication. À la fin, votre course aura 4 types d&#39;escargots différents, et la boucle de course ne changera pas d&#39;une ligne.</p>
 </aside>
-<google-codelab-survey survey-id="oo-04-inheritance-1">
+<google-codelab-survey survey-id="oo-04b-inheritance-1">
 <h4>Comment créeriez-vous un escargot rapide aujourd’hui ?</h4>
 <paper-radio-group>
 <paper-radio-button>Je copierais la classe Snail et je modifierais Move()</paper-radio-button>
@@ -81,6 +83,8 @@
       <google-codelab-step label="Étape 1 : Préparer Snail pour l&#39;héritage" duration="10">
         <h2 is-upgraded>Objectif</h2>
 <p>Modifier la classe <code>Snail</code> pour qu&#39;elle puisse servir de <strong>classe de base</strong> : les classes dérivées doivent pouvoir modifier certaines propriétés et redéfinir <code>Move()</code>.</p>
+<aside class="special"><p>Dans <code>oo-04a-heritage-intro</code>, vous avez déjà créé une première classe dérivée (<code>GlitterSnail</code>). Ici, on prépare <code>Snail</code> pour les overrides en ajoutant <code>protected set</code> et <code>virtual</code> — ce qui permet aux dérivées de <strong>spécialiser</strong> le comportement.</p>
+</aside>
 <h2 is-upgraded>Changer <code>private set</code> en <code>protected set</code></h2>
 <p>Ouvrez <code>Snail.cs</code> et modifiez les propriétés <code>X</code>, <code>Y</code> et <code>Energy</code> :</p>
 <pre><code>class Snail
@@ -526,7 +530,7 @@ public override string ToString()
 <p><code>Snail</code> peut encore être instancié directement. Mais un escargot &#34;générique&#34; a-t-il du sens ? Les <strong>classes abstraites</strong> forceront chaque type à implémenter son propre comportement.</p>
 <aside class="special"><p>Félicitations ! Votre course a maintenant 4 types d&#39;escargots avec des comportements uniques, sans une seule ligne de code dupliquée. La boucle de course est identique — c&#39;est la puissance du polymorphisme.</p>
 </aside>
-<google-codelab-survey survey-id="oo-04-inheritance-2">
+<google-codelab-survey survey-id="oo-04b-inheritance-2">
 <h4>Quel concept de l’héritage vous semble le plus utile ?</h4>
 <paper-radio-group>
 <paper-radio-button>La réutilisation du code (pas de duplication)</paper-radio-button>

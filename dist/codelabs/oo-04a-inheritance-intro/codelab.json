@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-02-27T15:16:04+01:00",
+  "id": "oo-04a-inheritance-intro",
+  "duration": 40,
+  "title": "Héritage OO (intro) : créer sa première classe dérivée",
+  "summary": "Créer sa première classe dérivée — syntaxe de base de l’héritage",
+  "source": "oo-04a-inheritance-intro.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-04a-inheritance-intro"
+}

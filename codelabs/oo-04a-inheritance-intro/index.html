@@ -1,0 +1,307 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Héritage OO (intro) : créer sa première classe dérivée</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-04a-inheritance-intro"
+                  title="Héritage OO (intro) : créer sa première classe dérivée"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial fait suite au codelab <strong>oo-03-encapsulation</strong> et aux slides <strong>Partie A</strong> de l&#39;héritage. Il introduit la mécanique de base : créer une classe dérivée, appeler le constructeur parent, et ajouter des membres propres.</p>
+<p><strong>Pas de </strong><code>virtual</code><strong> ni </strong><code>override</code><strong> ici</strong> — c&#39;est l&#39;objet du codelab <code>oo-04-inheritance</code> (Partie B).</p>
+<h2 is-upgraded>Contexte</h2>
+<p>À la fin du codelab <code>oo-03-encapsulation</code>, la classe <code>Snail</code> est encapsulée :</p>
+<pre><code>class Snail
+{
+    private int _energy;
+
+    public string Name { get; }
+    public ConsoleColor Color { get; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+
+    public int Energy
+    {
+        get { return _energy; }
+        private set { /* validation [10, 100] */ }
+    }
+
+    public Snail(string name, ConsoleColor color, int x, int y) { ... }
+    public void Move(int dx, int dy) { ... }
+    public void ReduceEnergy(int amount) { ... }
+    public void Draw() { ... }
+    public void Erase() { ... }
+}
+</code></pre>
+<p>Tous les escargots se comportent de la même manière. On veut créer un type spécialisé <strong>sans copier-coller</strong> la classe.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 4 étapes, vous apprendrez à :</p>
+<ol type="1">
+<li>Déclarer une classe dérivée avec <code>: Snail</code></li>
+<li>Appeler le constructeur parent avec <code>base(...)</code></li>
+<li>Ajouter des membres propres à la classe dérivée</li>
+<li>Comprendre la relation &#34;est-un&#34; (is-a)</li>
+</ol>
+<aside class="special"><p>À la fin, vous aurez une classe <code>GlitterSnail</code> qui hérite de tout <code>Snail</code> et ajoute ses propres membres — sans modifier <code>Snail</code> et sans dupliquer de code.</p>
+</aside>
+<google-codelab-survey survey-id="oo-04a-inheritance-intro-1">
+<h4>Comment ajouteriez-vous un type d’escargot spécialisé aujourd’hui ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je copierais Snail.cs et je modifierais ce dont j&#39;ai besoin</paper-radio-button>
+<paper-radio-button>J&#39;ajouterais des paramètres ou des if dans Snail</paper-radio-button>
+<paper-radio-button>Je créerais une classe dérivée (je connais déjà)</paper-radio-button>
+<paper-radio-button>Je ne sais pas encore</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Déclarer la première classe dérivée" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer <code>GlitterSnail.cs</code> avec la syntaxe <code>: Snail</code> et observer ce qui est hérité automatiquement.</p>
+<h2 is-upgraded>Créer GlitterSnail.cs (<em>glitter</em> = paillettes)</h2>
+<p>Créez un nouveau fichier <code>GlitterSnail.cs</code> dans le même projet que <code>Snail.cs</code> :</p>
+<pre><code>class GlitterSnail : Snail
+{
+}
+</code></pre>
+<p>C&#39;est intentionnellement minimal — on va voir ce que ça donne.</p>
+<h2 is-upgraded>Observer l&#39;erreur de compilation</h2>
+<p>Compilez. Vous obtenez une erreur du type :</p>
+<pre><code>&#39;GlitterSnail&#39; does not contain a constructor that takes 0 arguments
+</code></pre>
+<p>ou</p>
+<pre><code>There is no argument given that corresponds to the required parameter &#39;name&#39;
+</code></pre>
+<p>C# cherche un constructeur dans <code>GlitterSnail</code>, mais il n&#39;y en a pas encore. La classe de base <code>Snail</code> exige <code>name</code>, <code>color</code>, <code>x</code>, <code>y</code> — il faut transmettre ces valeurs.</p>
+<aside class="warning"><p>Cette erreur est <strong>attendue et normale</strong>. Elle nous dit exactement quoi faire à l&#39;étape suivante : ajouter un constructeur qui appelle <code>base(...)</code>.</p>
+</aside>
+<h2 is-upgraded>Ce qui est déjà hérité</h2>
+<p>Même sans constructeur, lisez le code : <code>GlitterSnail</code> hérite <strong>automatiquement</strong> de <code>Snail</code> :</p>
+<ul>
+<li>Propriétés : <code>Name</code>, <code>Color</code>, <code>X</code>, <code>Y</code>, <code>Energy</code></li>
+<li>Méthodes : <code>Move()</code>, <code>ReduceEnergy()</code>, <code>Draw()</code>, <code>Erase()</code></li>
+</ul>
+<p>Dès qu&#39;on aura un constructeur, un <code>GlitterSnail</code> pourra <code>Draw()</code>, <code>Move()</code>, etc. sans qu&#39;on ait rien écrit.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Le constructeur et 
+base(...)" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Ajouter le constructeur de <code>GlitterSnail</code> en transmettant les paramètres à <code>Snail</code> via <code>base(...)</code>.</p>
+<h2 is-upgraded>Ajouter le constructeur</h2>
+<p>Modifiez <code>GlitterSnail.cs</code> :</p>
+<pre><code>class GlitterSnail : Snail
+{
+    public GlitterSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+        // Le constructeur de Snail s&#39;exécute d&#39;abord (initialise Name, Color, X, Y, Energy)
+        // Le corps de GlitterSnail s&#39;exécute ensuite (ici, rien de spécial pour l&#39;instant)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Comprendre <code>: base(...)</code></h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>GlitterSnail(string name, ...)</code></p>
+</td><td colspan="1" rowspan="1"><p>Reçoit les paramètres</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>: base(name, color, x, y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Les transmet au constructeur de <code>Snail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Corps <code>{ }</code></p>
+</td><td colspan="1" rowspan="1"><p>Code supplémentaire propre à <code>GlitterSnail</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Ordre d&#39;exécution</h2>
+<pre><code>new GlitterSnail(&#34;Stardust&#34;, ConsoleColor.Magenta, 0, 4)
+  → 1. Snail(name, color, x, y) s&#39;exécute : Name=&#34;Stardust&#34;, Energy=100, ...
+  → 2. Corps de GlitterSnail() s&#39;exécute : (rien pour l&#39;instant)
+</code></pre>
+<h2 is-upgraded>Tester l&#39;instanciation</h2>
+<p>Dans <code>Program.cs</code>, instanciez un <code>GlitterSnail</code> et appelez ses méthodes héritées :</p>
+<pre><code>GlitterSnail glitter = new GlitterSnail(&#34;Stardust&#34;, ConsoleColor.Magenta, 0, 4);
+glitter.Draw();    // Hérité de Snail — fonctionne !
+glitter.Move(2, 0); // Hérité de Snail — fonctionne !
+Console.WriteLine(glitter.Name);    // &#34;Stardust&#34;
+Console.WriteLine(glitter.Energy);  // 100
+</code></pre>
+<p>Compilez et exécutez. Tout fonctionne — sans avoir dupliqué une seule ligne de <code>Snail</code>.</p>
+<aside class="special"><p><code>base(...)</code> est obligatoire quand la classe parente n&#39;a pas de constructeur sans paramètre. Sans <code>base(...)</code>, le compilateur cherche un constructeur vide dans <code>Snail</code> — qui n&#39;existe pas.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Ajouter des membres propres à GlitterSnail" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p><code>GlitterSnail</code> a quelque chose en plus : une intensité de scintillement et une méthode visuelle. Ces membres n&#39;existent pas dans <code>Snail</code>.</p>
+<h2 is-upgraded>Ajouter GlitterIntensity et Sparkle() (<em>sparkle</em> = scintiller)</h2>
+<p>Modifiez <code>GlitterSnail.cs</code> :</p>
+<pre><code>class GlitterSnail : Snail
+{
+    public int GlitterIntensity { get; }
+
+    public GlitterSnail(string name, ConsoleColor color, int x, int y, int intensity)
+        : base(name, color, x, y)
+    {
+        GlitterIntensity = intensity;
+    }
+
+    public void Sparkle()
+    {
+        Console.ForegroundColor = Color;
+        for (int i = 0; i &lt; GlitterIntensity; i++)
+        {
+            Console.Write(&#34;*&#34;);
+        }
+        Console.ResetColor();
+    }
+}
+</code></pre>
+<h2 is-upgraded>Décortiquons les ajouts</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>GlitterIntensity</code></p>
+</td><td colspan="1" rowspan="1"><p><code>GlitterSnail</code> seulement</p>
+</td><td colspan="1" rowspan="1"><p>Non</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Sparkle()</code></p>
+</td><td colspan="1" rowspan="1"><p><code>GlitterSnail</code> seulement</p>
+</td><td colspan="1" rowspan="1"><p>Non</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Name</code>, <code>Move()</code>, etc.</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail</code> (hérité)</p>
+</td><td colspan="1" rowspan="1"><p>Oui</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Tester les membres propres</h2>
+<pre><code>GlitterSnail glitter = new GlitterSnail(&#34;Stardust&#34;, ConsoleColor.Magenta, 0, 4, 3);
+
+glitter.Draw();       // Hérité de Snail
+glitter.Sparkle();    // Propre à GlitterSnail → affiche &#34;***&#34;
+glitter.Move(2, 0);   // Hérité de Snail
+
+Console.WriteLine(glitter.GlitterIntensity);  // 3
+
+// Un Snail ordinaire ne connaît pas Sparkle() :
+Snail normal = new Snail(&#34;Bob&#34;, ConsoleColor.White, 0, 2);
+// normal.Sparkle();  // ERREUR de compilation — Snail n&#39;a pas Sparkle()
+</code></pre>
+<p>Compilez et vérifiez que <code>Sparkle()</code> produit des étoiles colorées dans la console.</p>
+<aside class="warning"><p><code>Sparkle()</code> et <code>GlitterIntensity</code> n&#39;existent que dans <code>GlitterSnail</code>. Une variable de type <code>Snail</code> qui pointe vers un <code>GlitterSnail</code> ne peut pas appeler <code>Sparkle()</code> directement — on verra pourquoi avec <code>is</code> dans le codelab Partie B.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : La relation &#34;est-un&#34;" duration="5">
+        <h2 is-upgraded>Objectif</h2>
+<p>Découvrir que <code>GlitterSnail</code> peut coexister avec <code>Snail</code> dans un tableau — sans encore utiliser <code>override</code>.</p>
+<h2 is-upgraded>Un tableau mixte</h2>
+<pre><code>Snail[] snails = new Snail[]
+{
+    new Snail(&#34;Bob&#34;, ConsoleColor.White, 0, 2),
+    new GlitterSnail(&#34;Stardust&#34;, ConsoleColor.Magenta, 0, 4, 3)
+};
+
+foreach (Snail snail in snails)
+{
+    snail.Move(2, 0);  // Les deux appellent Snail.Move() — identique pour l&#39;instant
+    snail.Draw();
+}
+</code></pre>
+<p>Compilez et exécutez. Les deux escargots se déplacent et s&#39;affichent. La boucle traite un <code>Snail</code> et un <code>GlitterSnail</code> de la même manière.</p>
+<h2 is-upgraded>Pourquoi ça fonctionne ?</h2>
+<p><code>GlitterSnail</code><strong>est un</strong><code>Snail</code> (relation &#34;is-a&#34;). Partout où un <code>Snail</code> est attendu, un <code>GlitterSnail</code> peut être utilisé.</p>
+<h2 is-upgraded>Ce qu&#39;on ne voit pas encore</h2>
+<p>Les deux escargots appellent <strong>le même </strong><code>Move()</code> — celui de <code>Snail</code>. Le <code>GlitterSnail</code> ne se déplace pas différemment. Pour changer ça, il faut <code>virtual</code> + <code>override</code> — c&#39;est l&#39;objet de la Partie B (<code>oo-04-inheritance</code>).</p>
+<aside class="special"><p>La boucle <code>foreach (Snail snail in snails)</code> fonctionne déjà avec des types mixtes. C&#39;est le début du polymorphisme. La Partie B ira plus loin : chaque type aura son propre <code>Move()</code>.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <h2 is-upgraded>Récapitulatif</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Classe dérivée</p>
+</td><td colspan="1" rowspan="1"><p><code>class GlitterSnail : Snail</code></p>
+</td><td colspan="1" rowspan="1"><p>Hérite de tout sans duplication</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Constructeur parent</p>
+</td><td colspan="1" rowspan="1"><p><code>: base(name, color, x, y)</code></p>
+</td><td colspan="1" rowspan="1"><p>Initialise la partie <code>Snail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Membre propre (propriété)</p>
+</td><td colspan="1" rowspan="1"><p><code>public int GlitterIntensity { get; }</code></p>
+</td><td colspan="1" rowspan="1"><p>Propre à <code>GlitterSnail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Membre propre (méthode)</p>
+</td><td colspan="1" rowspan="1"><p><code>public void Sparkle()</code></p>
+</td><td colspan="1" rowspan="1"><p>Propre à <code>GlitterSnail</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Relation is-a</p>
+</td><td colspan="1" rowspan="1"><p><code>Snail[] snails = { ..., new GlitterSnail(...) }</code></p>
+</td><td colspan="1" rowspan="1"><p><code>GlitterSnail</code> utilisable comme <code>Snail</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Prochaine étape : Partie B</h2>
+<p>Dans <code>oo-04-inheritance</code>, vous apprendrez à :</p>
+<ul>
+<li>Marquer <code>Move()</code> comme <code>virtual</code> dans <code>Snail</code></li>
+<li>Le redéfinir avec <code>override</code> dans les classes dérivées</li>
+<li>Comprendre le polymorphisme : chaque type a son propre comportement, la boucle ne change pas</li>
+</ul>
+<aside class="special"><p>Félicitations ! Vous avez créé votre première classe dérivée, appelé le constructeur parent, et ajouté des membres spécifiques — sans copier-coller une seule ligne de <code>Snail</code>.</p>
+</aside>
+<google-codelab-survey survey-id="oo-04a-inheritance-intro-2">
+<h4>Qu’est-ce qui vous a semblé le plus clair dans ce codelab ?</h4>
+<paper-radio-group>
+<paper-radio-button>La syntaxe 
+: Snail pour hériter</paper-radio-button>
+<paper-radio-button>Le rôle de 
+base(...) dans le constructeur</paper-radio-button>
+<paper-radio-button>La différence entre membres hérités et membres propres</paper-radio-button>
+<paper-radio-button>La relation &#34;est-un&#34; et le tableau mixte</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

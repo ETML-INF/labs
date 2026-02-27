@@ -1,6 +1,6 @@
 author: Jonathan Melly
 summary: Créer des classes spécialisées avec l'héritage
-id: oo-04-inheritance
+id: oo-04b-inheritance
 categories: csharp,dev
 tags: ict
 environments: Web
@@ -13,7 +13,11 @@ analytics account: UA-170792591-1
 ## Vue d'ensemble
 Duration: 0:03:00
 
-Ce tutorial reprend le code du codelab **oo-03-encapsulation** (escargot encapsulé) et introduit l'**héritage** : créer des classes spécialisées (`FastSnail`, `SlowSnail`, `BonusSnail`) à partir de la classe de base `Snail`, sans dupliquer le code.
+Ce tutorial fait suite au codelab **oo-04a-heritage-intro** (Partie A) et aux slides **Partie B** de l'héritage. Il se concentre sur la **spécialisation du comportement** : `virtual`, `override`, et le polymorphisme.
+
+Si vous n'avez pas encore fait `oo-04a-heritage-intro`, revenez en arrière : ce codelab part du principe que vous savez déjà créer une classe dérivée et appeler `base(...)`.
+
+Ce tutorial reprend le code du codelab **oo-03-encapsulation** (escargot encapsulé) et introduit les classes spécialisées (`FastSnail`, `SlowSnail`, `BonusSnail`) avec redéfinition de comportement.
 
 ### Contexte
 
@@ -72,6 +76,9 @@ Duration: 0:10:00
 ### Objectif
 
 Modifier la classe `Snail` pour qu'elle puisse servir de **classe de base** : les classes dérivées doivent pouvoir modifier certaines propriétés et redéfinir `Move()`.
+
+Positive
+: Dans `oo-04a-heritage-intro`, vous avez déjà créé une première classe dérivée (`GlitterSnail`). Ici, on prépare `Snail` pour les overrides en ajoutant `protected set` et `virtual` — ce qui permet aux dérivées de **spécialiser** le comportement.
 
 ### Changer `private set` en `protected set`
 
