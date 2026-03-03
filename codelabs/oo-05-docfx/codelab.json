@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-03-03T11:01:44+01:00",
+  "id": "oo-05-docfx",
+  "duration": 25,
+  "title": "Documentation C# : générer un site avec DocFX",
+  "summary": "Générer la documentation d’un projet C# avec DocFX",
+  "source": "oo-05-docfx.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "csharp",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "oo-05-docfx"
+}

@@ -1,0 +1,405 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Documentation C# : générer un site avec DocFX</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="oo-05-docfx"
+                  title="Documentation C# : générer un site avec DocFX"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>À ce stade du cours, nos classes <code>Snail</code>, <code>FastSnail</code>, <code>SlowSnail</code> et <code>BonusSnail</code> ont des propriétés, des méthodes, de l&#39;héritage et du polymorphisme. Le code devient conséquent — il est temps de le <strong>documenter</strong> proprement.</p>
+<p><strong>DocFX</strong> est l&#39;outil officiel de Microsoft pour générer automatiquement un <strong>site de documentation</strong> à partir du code source C#. Il lit les commentaires XML (<code>///</code>) dans le code et produit un site HTML navigable, comme la documentation officielle de .NET elle-même.</p>
+<h2 is-upgraded>Objectifs</h2>
+<p>Apprendre à :</p>
+<ol type="1">
+<li>Installer DocFX en tant qu&#39;outil .NET global</li>
+<li>Initialiser un projet de documentation</li>
+<li>Ajouter des commentaires XML au code C#</li>
+</ol>
+<h2 is-upgraded>Prérequis</h2>
+<ul>
+<li>.NET SDK 8.0 ou supérieur installé (<code>dotnet --version</code> pour vérifier)</li>
+<li>Un projet C# existant (par exemple le projet de course d&#39;escargots)</li>
+</ul>
+<aside class="special"><p>Documenter son code est une compétence professionnelle essentielle. DocFX est utilisé par Microsoft pour la documentation officielle de .NET — vous utilisez le même outil que les pros.</p>
+</aside>
+<google-codelab-survey survey-id="oo-05-docfx-1">
+<h4>Comment documentez-vous votre code aujourd’hui ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je ne documente pas (le code parle de lui-même)</paper-radio-button>
+<paper-radio-button>J&#39;ajoute quelques commentaires // dans le code</paper-radio-button>
+<paper-radio-button>J&#39;utilise des commentaires XML (///)</paper-radio-button>
+<paper-radio-button>J&#39;utilise déjà un outil de génération de doc</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Installer DocFX" duration="5">
+        <h2 is-upgraded>Objectif</h2>
+<p>Installer DocFX en tant qu&#39;outil global .NET, disponible depuis n&#39;importe quel terminal.</p>
+<h2 is-upgraded>Commande d&#39;installation</h2>
+<p>Ouvrez un terminal (PowerShell, cmd, ou le terminal intégré de votre IDE) et exécutez :</p>
+<pre><code>dotnet tool update -g docfx
+</code></pre>
+<p>Cette commande installe DocFX globalement (ou le met à jour si déjà installé). Le flag <code>-g</code> signifie <strong>global</strong> : l&#39;outil sera accessible depuis n&#39;importe quel répertoire.</p>
+<h2 is-upgraded>Vérifier l&#39;installation</h2>
+<pre><code>docfx --version
+</code></pre>
+<p>Vous devriez voir un numéro de version (par exemple <code>2.78.2</code>).</p>
+<aside class="warning"><p>Si la commande <code>docfx</code> n&#39;est pas reconnue après l&#39;installation, fermez et rouvrez votre terminal. Sur certains systèmes, il faut relancer le terminal pour que le PATH soit mis à jour.</p>
+</aside>
+<h2 is-upgraded>En cas de problème</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>dotnet</code> non reconnu</p>
+</td><td colspan="1" rowspan="1"><p>Installer le .NET SDK 8.0+ depuis <a href="https://dotnet.microsoft.com/download" target="_blank">dotnet.microsoft.com</a></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>docfx</code> non reconnu après install</p>
+</td><td colspan="1" rowspan="1"><p>Fermer et rouvrir le terminal</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Erreur de permissions</p>
+</td><td colspan="1" rowspan="1"><p>Exécuter le terminal en tant qu&#39;administrateur</p>
+</td></tr>
+</table>
+<aside class="special"><p>DocFX est installé une seule fois. Il sera disponible pour tous vos projets C#.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Initialiser le projet de documentation" duration="5">
+        <h2 is-upgraded>Objectif</h2>
+<p>Créer la structure de base du projet DocFX dans votre solution.</p>
+<h2 is-upgraded>Se placer dans le répertoire du projet</h2>
+<ul>
+<li>Naviguer dans le répertoire de votre solution C# (là où se trouve le fichier <code>.sln</code> ou le dossier du projet)</li>
+<li>Créer un nouveau dossier à partir duquel la documentation sera créée</li>
+<li>Naviguer dans le nouveau dossier</li>
+</ul>
+<pre><code>cd chemin/vers/votre/projet
+mkdir doc
+cd doc
+</code></pre>
+<h2 is-upgraded>Initialiser DocFX</h2>
+<pre><code>docfx init
+</code></pre>
+<p class="image-container"><img alt="docfxinit" src="img\4e66667a03e1baca.png"></p>
+<h2 is-upgraded>Points importants</h2>
+<ul>
+<li>Par défaut, les sources sont cherchées dans le dossier src, la plupart du temps, c&#39;est le dossier courant directement...</li>
+<li>Les éléments suivants ont été générés:</li>
+</ul>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>docfx.json</code></p>
+</td><td colspan="1" rowspan="1"><p>Configuration principale (on va le modifier)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>api/</code></p>
+</td><td colspan="1" rowspan="1"><p>Documentation générée automatiquement depuis le code C#</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>articles/</code></p>
+</td><td colspan="1" rowspan="1"><p>Articles écrits manuellement (tutoriels, guides)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>index.md</code></p>
+</td><td colspan="1" rowspan="1"><p>Page d&#39;accueil du site de documentation</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>toc.yml</code></p>
+</td><td colspan="1" rowspan="1"><p>Table des matières (navigation du site)</p>
+</td></tr>
+</table>
+<aside class="special"><p>Ne modifiez pas la structure des dossiers. DocFX s&#39;attend à trouver <code>api/</code> et <code>articles/</code> à ces emplacements.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Générer la documentation" duration="0">
+        <p>À partir de là, pour générer la documentation, on peut:</p>
+<h2 is-upgraded>Lancer la génération</h2>
+<pre><code>docfx docfx.json
+</code></pre>
+<h2 is-upgraded>Démarrer un serveur pour consulter la documentation (fait la génération avant)</h2>
+<pre><code>docfx docfx.json --serve
+</code></pre>
+<p class="image-container"><img alt="docfx-serve" src="img\be6033f128f5f61a.png"></p>
+<h3 is-upgraded>API</h3>
+<p>Dans cet onglet, on retrouve la documentation technique du code...</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Àméliorer la documentation" duration="0">
+        <p>Ajouter des commentaires de documentation XML (<code>///</code>) au code C# pour que DocFX génère une documentation riche.</p>
+<h2 is-upgraded>Les commentaires XML en C</h2>
+<p>En C#, les commentaires de documentation commencent par <code>///</code> (triple slash). L&#39;IDE complète automatiquement le squelette quand vous tapez <code>///</code> au-dessus d&#39;une classe ou d&#39;une méthode.</p>
+<h2 is-upgraded>Documenter la classe Snail</h2>
+<pre><code>/// &lt;summary&gt;
+/// Représente un escargot dans la course.
+/// Classe de base pour tous les types d&#39;escargots.
+/// &lt;/summary&gt;
+class Snail
+{
+    /// &lt;summary&gt;
+    /// Nom de l&#39;escargot (immutable).
+    /// &lt;/summary&gt;
+    public string Name { get; }
+
+    /// &lt;summary&gt;
+    /// Position horizontale de l&#39;escargot sur la piste.
+    /// &lt;/summary&gt;
+    public int X { get; protected set; }
+
+    /// &lt;summary&gt;
+    /// Énergie de l&#39;escargot, toujours entre 10 et 100.
+    /// &lt;/summary&gt;
+    public int Energy
+    {
+        get { return _energy; }
+        protected set { /* validation */ }
+    }
+
+    /// &lt;summary&gt;
+    /// Crée un nouvel escargot avec un nom, une couleur et une position.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&#34;name&#34;&gt;Le nom de l&#39;escargot.&lt;/param&gt;
+    /// &lt;param name=&#34;color&#34;&gt;La couleur d&#39;affichage.&lt;/param&gt;
+    /// &lt;param name=&#34;x&#34;&gt;La position horizontale initiale.&lt;/param&gt;
+    /// &lt;param name=&#34;y&#34;&gt;La position verticale initiale.&lt;/param&gt;
+    public Snail(string name, ConsoleColor color, int x, int y)
+    {
+        // ...
+    }
+
+    /// &lt;summary&gt;
+    /// Déplace l&#39;escargot. Les classes dérivées peuvent redéfinir ce comportement.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&#34;dx&#34;&gt;Déplacement horizontal.&lt;/param&gt;
+    /// &lt;param name=&#34;dy&#34;&gt;Déplacement vertical.&lt;/param&gt;
+    public virtual void Move(int dx, int dy)
+    {
+        X = X + dx;
+        Y = Y + dy;
+    }
+
+    /// &lt;summary&gt;
+    /// Réduit l&#39;énergie de l&#39;escargot.
+    /// L&#39;énergie ne descend jamais en dessous de 10.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&#34;amount&#34;&gt;La quantité d&#39;énergie à retirer.&lt;/param&gt;
+    public void ReduceEnergy(int amount)
+    {
+        Energy = Energy - amount;
+    }
+}
+</code></pre>
+<h2 is-upgraded>Documenter les classes dérivées</h2>
+<pre><code>/// &lt;summary&gt;
+/// Escargot rapide : avance deux fois plus vite que la normale.
+/// &lt;/summary&gt;
+class FastSnail : Snail
+{
+    /// &lt;summary&gt;
+    /// Crée un escargot rapide.
+    /// &lt;/summary&gt;
+    public FastSnail(string name, ConsoleColor color, int x, int y)
+        : base(name, color, x, y)
+    {
+    }
+
+    /// &lt;summary&gt;
+    /// Avance en doublant la distance horizontale.
+    /// &lt;/summary&gt;
+    public override void Move(int dx, int dy)
+    {
+        base.Move(dx * 2, dy);
+    }
+}
+</code></pre>
+<h2 is-upgraded>Les balises XML principales</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;summary&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Description courte de l&#39;élément</p>
+</td><td colspan="1" rowspan="1"><p><code>/// &lt;summary&gt;Représente un escargot.&lt;/summary&gt;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;param name=&#34;x&#34;&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Décrit un paramètre</p>
+</td><td colspan="1" rowspan="1"><p><code>/// &lt;param name=&#34;dx&#34;&gt;Déplacement horizontal.&lt;/param&gt;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;returns&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Décrit la valeur de retour</p>
+</td><td colspan="1" rowspan="1"><p><code>/// &lt;returns&gt;True si l&#39;escargot est épuisé.&lt;/returns&gt;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;remarks&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Remarques supplémentaires</p>
+</td><td colspan="1" rowspan="1"><p><code>/// &lt;remarks&gt;L&#39;énergie ne descend pas sous 10.&lt;/remarks&gt;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;example&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Exemple d&#39;utilisation</p>
+</td><td colspan="1" rowspan="1"><p><code>/// &lt;example&gt;snail.Move(3, 0);&lt;/example&gt;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&lt;see cref=&#34;...&#34;/&gt;</code></p>
+</td><td colspan="1" rowspan="1"><p>Lien vers un autre élément</p>
+</td><td colspan="1" rowspan="1"><p><code>/// Voir &lt;see cref=&#34;FastSnail&#34;/&gt;</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Astuce IDE</h2>
+<p>Dans Visual Studio ou Rider, tapez <code>///</code> au-dessus d&#39;une méthode et appuyez sur Entrée. L&#39;IDE génère automatiquement le squelette avec les balises <code>&lt;summary&gt;</code> et <code>&lt;param&gt;</code> déjà remplies.</p>
+<aside class="special"><p>Vous n&#39;êtes pas obligé de tout documenter d&#39;un coup. Commencez par les classes et les méthodes publiques — ce sont les éléments que DocFX affichera dans la documentation API.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Personnaliser la documentation" duration="10">
+        <h2 is-upgraded>1. Modifier la page d&#39;accueil</h2>
+<p>Éditer <code>index.md</code> pour personnaliser la page d&#39;accueil de votre documentation :</p>
+<pre><code># Course d&#39;Escargots — Documentation
+
+Bienvenue dans la documentation du projet **Course d&#39;Escargots**.
+
+## Classes principales
+
+- **Snail** : Classe de base pour tous les escargots
+- **FastSnail** : Escargot rapide (avance 2x)
+- **SlowSnail** : Escargot lent (s&#39;arrête si fatigué)
+- **BonusSnail** : Escargot à bonus aléatoires
+
+
+## Pour commencer
+Consultez la section [API Documentation](api/index.md)
+pour voir le détail de chaque classe.
+</code></pre>
+<h2 is-upgraded>2. Ajouter un article</h2>
+<p>Créez un fichier dans <code>docs/</code>, par exemple <code>architecture.md</code> :</p>
+<pre><code># Architecture du projet
+
+Le projet utilise l&#39;**héritage** pour spécialiser les escargots.
+
+## Hiérarchie de classes
+
+- `Snail` (classe de base)
+  - `FastSnail` — avance 2x plus vite
+  - `SlowSnail` — s&#39;arrête si énergie ≤ 30
+  - `BonusSnail` — bonus aléatoire + CollectBonus()
+</code></pre>
+<p>Ajoutez-le à la table des matières dans <code>toc.yml</code> :</p>
+<pre><code>- name: Introduction
+  href: intro.md
+- name: Architecture
+  href: architecture.md
+</code></pre>
+<h2 is-upgraded>3. Générer un PDF</h2>
+<p>DocFX peut aussi générer un PDF. Cette fonctionnalité nécessite <strong>Node.js v20+</strong> installé.</p>
+<p>Ajoutez la section <code>pdf</code> dans <code>docfx.json</code> :</p>
+<pre><code>{
+  &#34;build&#34;: {
+    ...
+  },
+  &#34;pdf&#34;: {
+    &#34;content&#34;: [
+      {
+        &#34;files&#34;: [&#34;api/**.yml&#34;, &#34;api/index.md&#34;]
+      },
+      {
+        &#34;files&#34;: [&#34;articles/**.md&#34;, &#34;articles/**/toc.yml&#34;, &#34;toc.yml&#34;, &#34;*.md&#34;]
+      }
+    ],
+    &#34;dest&#34;: &#34;_pdf&#34;
+  }
+}
+</code></pre>
+<p>Puis générez :</p>
+<pre><code>docfx pdf docfx.json
+</code></pre>
+<p>Le PDF sera créé dans <code>_pdf/</code>.</p>
+<aside class="warning"><p>La génération PDF nécessite Node.js v20 ou supérieur. Vérifiez avec <code>node --version</code>. Si Node.js n&#39;est pas installé, la génération HTML fonctionne sans problème — le PDF est optionnel.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="2">
+        <h2 is-upgraded>Récapitulatif des commandes</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>Installer DocFX</p>
+</td><td colspan="1" rowspan="1"><p><code>dotnet tool update -g docfx</code></p>
+</td><td colspan="1" rowspan="1"><p>Outil disponible globalement</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Initialiser</p>
+</td><td colspan="1" rowspan="1"><p><code>docfx init</code></p>
+</td><td colspan="1" rowspan="1"><p>Crée les fichiers de base</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Configurer</p>
+</td><td colspan="1" rowspan="1"><p>Adapter si besoin <code>docfx.json</code> (section <code>src</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Pointe vers les <code>.csproj</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Documenter</p>
+</td><td colspan="1" rowspan="1"><p>Ajouter <code>///</code> dans le code C#</p>
+</td><td colspan="1" rowspan="1"><p>Commentaires XML</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Générer + voir</p>
+</td><td colspan="1" rowspan="1"><p><code>docfx docfx_project/docfx.json --serve</code></p>
+</td><td colspan="1" rowspan="1"><p>Site sur <code>localhost:8080</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>PDF (optionnel)</p>
+</td><td colspan="1" rowspan="1"><p><code>docfx pdf docfx_project/docfx.json</code></p>
+</td><td colspan="1" rowspan="1"><p>PDF dans <code>_pdf/</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Concepts clés</h2>
+<ol type="1">
+<li><strong>DocFX</strong> est l&#39;outil officiel de Microsoft pour la documentation .NET</li>
+<li>Les commentaires <code>///</code> (triple slash) avec des balises XML alimentent la doc</li>
+<li>La configuration dans <code>docfx.json</code> indique où trouver les <code>.csproj</code></li>
+<li>Le site généré dans <code>_site</code> est du HTML statique prêt à déployer</li>
+<li>Documenter les classes et méthodes <strong>publiques</strong> en priorité</li>
+</ol>
+<aside class="special"><p>Votre projet est maintenant documenté professionnellement. Chaque fois que vous ajoutez ou modifiez une classe, relancez <code>docfx</code> pour mettre à jour la documentation. Les commentaires <code>///</code> sont aussi lus par l&#39;IntelliSense de votre IDE — double bénéfice !</p>
+</aside>
+<google-codelab-survey survey-id="oo-05-docfx-2">
+<h4>Quelle fonctionnalité de DocFX vous semble la plus utile ?</h4>
+<paper-radio-group>
+<paper-radio-button>La génération automatique de doc API depuis le code</paper-radio-button>
+<paper-radio-button>Les commentaires XML visibles dans l&#39;IDE (IntelliSense)</paper-radio-button>
+<paper-radio-button>Le site HTML navigable</paper-radio-button>
+<paper-radio-button>La possibilité de générer un PDF</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
