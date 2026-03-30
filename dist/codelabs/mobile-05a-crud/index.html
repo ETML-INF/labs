@@ -889,8 +889,8 @@ namespace DeckManager
     UpdateInfo($&#34;Chargé: {_decks.Count} deck(s)&#34;);
 }
 </code></pre>
-<h3 is-upgraded>3. Supprimer RefreshView() partout où cela apparaît</h3>
-<p>Avec <code>ObservableCollection</code>, plus besoin de rafraîchir manuellement :</p>
+<h3 is-upgraded>3. Supprimer RefreshView() pour les ajouts et suppressions</h3>
+<p>Avec <code>ObservableCollection</code>, plus besoin de rafraîchir manuellement après un ajout ou une suppression :</p>
 <p><strong>Méthode OnAddDeckClicked :</strong></p>
 <pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
 {
@@ -946,8 +946,9 @@ namespace DeckManager
 {
     base.OnAppearing();
 
-    // RefreshView();  ← SUPPRIMÉ !
-    // L&#39;ObservableCollection met déjà à jour la vue automatiquement
+    // Nécessaire pour refléter les modifications de propriétés (ex: deck.Name changé dans EditDeckPage)
+    // ObservableCollection détecte les ajouts/suppressions, mais PAS les changements de propriétés
+    RefreshView();
 }
 </code></pre>
 <h3 is-upgraded>4. Adapter JsonDataService ou les appels</h3>
@@ -1099,7 +1100,7 @@ await _dataService.SaveDecksAsync(_decks.ToList());
 <ol type="1">
 <li><strong>CREATE</strong> : Ajouter plusieurs decks avec des noms différents</li>
 <li><strong>READ</strong>   : Vérifier que la liste s&#39;affiche correctement</li>
-<li><strong>UPDATE</strong> : Cliquez sur ✏️ et renommez un deck (essayez les 2 méthodes)</li>
+<li><strong>UPDATE</strong> : Cliquez sur ✏️ et renommez un deck via la page dédiée</li>
 <li><strong>DELETE</strong> : Cliquez sur 🗑️ et supprimez un deck</li>
 </ol>
 <h2 is-upgraded>Vérifier la persistance</h2>

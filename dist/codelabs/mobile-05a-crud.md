@@ -948,9 +948,9 @@ private async void LoadDecks()
 }
 ```
 
-#### 3. Supprimer RefreshView() partout où cela apparaît
+#### 3. Supprimer RefreshView() pour les ajouts et suppressions
 
-Avec `ObservableCollection`, plus besoin de rafraîchir manuellement :
+Avec `ObservableCollection`, plus besoin de rafraîchir manuellement après un ajout ou une suppression :
 
 **Méthode OnAddDeckClicked :**
 ```csharp
@@ -1012,8 +1012,9 @@ protected override void OnAppearing()
 {
     base.OnAppearing();
 
-    // RefreshView();  ← SUPPRIMÉ !
-    // L'ObservableCollection met déjà à jour la vue automatiquement
+    // Nécessaire pour refléter les modifications de propriétés (ex: deck.Name changé dans EditDeckPage)
+    // ObservableCollection détecte les ajouts/suppressions, mais PAS les changements de propriétés
+    RefreshView();
 }
 ```
 
@@ -1169,7 +1170,7 @@ Il est temps de faire un tour des fonctionnalités pour vérifier que tout est e
 
 1. **CREATE** : Ajouter plusieurs decks avec des noms différents
 2. **READ**   : Vérifier que la liste s'affiche correctement
-3. **UPDATE** : Cliquez sur ✏️ et renommez un deck (essayez les 2 méthodes)
+3. **UPDATE** : Cliquez sur ✏️ et renommez un deck via la page dédiée
 4. **DELETE** : Cliquez sur 🗑️ et supprimez un deck
 
 ### Vérifier la persistance
