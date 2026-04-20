@@ -1,0 +1,744 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Recherche et filtrage en code-behind</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-170792591-1"
+                  id="mobile-05b-filter"
+                  title="Recherche et filtrage en code-behind"
+                  environment="web"
+                  feedback-link="https://git.section-inf.ch/jmy/labs/issues">
+    
+      <google-codelab-step label="Vue d&#39;ensemble" duration="3">
+        <p>Ce tutorial fait suite à <strong>mobile-05a-crud</strong> et ajoute une fonctionnalité de recherche progressive à l&#39;application <strong>DeckManager</strong>.</p>
+<h2 is-upgraded>Contexte</h2>
+<p>À la fin du codelab CRUD, l&#39;application affiche la liste complète des decks sans aucun filtre. Dès que la liste grandit, retrouver un deck devient fastidieux. Ce tutorial introduit la recherche par étapes successives.</p>
+<h2 is-upgraded>Démonstration</h2>
+<p class="image-container"><img alt="filter" src="img\6d96605876d57b59.gif"></p>
+<h2 is-upgraded>Objectifs</h2>
+<p>À travers 4 étapes progressives, apprendre à :</p>
+<ol type="1">
+<li>Filtrer la liste avec une recherche <strong>simple</strong> (début du mot)</li>
+<li>Étendre à une recherche par <strong>contenu</strong> (wildcard/contains)</li>
+<li>Combiner plusieurs termes avec les opérateurs <strong>ET / OU</strong></li>
+<li>Ajouter une <strong>autocomplétion</strong> qui propose des suggestions en cours de frappe</li>
+</ol>
+<h2 is-upgraded>Approche technique</h2>
+<ul>
+<li><strong>Données en mémoire</strong> : pas de requête JSON supplémentaire, on filtre <code>_decks</code> déjà chargé</li>
+<li><strong>Code-behind uniquement</strong> : pas de ViewModel, logique dans <code>.xaml.cs</code></li>
+<li><strong>LINQ</strong> : filtrage déclaratif et concis de la liste</li>
+</ul>
+<aside class="special"><p>Toutes les étapes s&#39;enchaînent. Chaque étape améliore le résultat de la précédente — il n&#39;y a jamais besoin de repartir de zéro.</p>
+</aside>
+<google-codelab-survey survey-id="mobile-05b-filter-1">
+<h4>Quelle approche de recherche utilisez-vous le plus souvent dans une appli ?</h4>
+<paper-radio-group>
+<paper-radio-button>Je tape le début du mot</paper-radio-button>
+<paper-radio-button>Je tape un morceau du mot (n&#39;importe où)</paper-radio-button>
+<paper-radio-button>Je combine plusieurs mots-clés</paper-radio-button>
+<paper-radio-button>J&#39;attends les suggestions de l&#39;autocomplétion</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 1 : Barre de recherche et filtre simple" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Ajouter un champ de recherche qui filtre les decks dont le <strong>nom commence</strong> par le texte saisi.</p>
+<h2 is-upgraded>Modifier DecksPage.xaml</h2>
+<p>Ajouter une <code>Entry</code> de recherche entre le header (ajout de deck) et le <code>CollectionView</code>. Le <code>Grid</code> existant passe de 3 lignes à 4 :</p>
+<pre><code>&lt;Grid RowDefinitions=&#34;Auto,Auto,*,Auto&#34; Padding=&#34;10&#34;&gt;
+
+    &lt;!-- Header with add button (row 0 - unchanged) --&gt;
+    &lt;HorizontalStackLayout Grid.Row=&#34;0&#34;
+                          Spacing=&#34;10&#34;
+                          Margin=&#34;0,0,0,10&#34;&gt;
+        &lt;Entry x:Name=&#34;NewDeckEntry&#34;
+               Placeholder=&#34;Nom du nouveau deck&#34;
+               HorizontalOptions=&#34;FillAndExpand&#34; /&gt;
+        &lt;Button Text=&#34;Ajouter&#34;
+                Clicked=&#34;OnAddDeckClicked&#34;
+                BackgroundColor=&#34;#2196F3&#34;
+                TextColor=&#34;White&#34; /&gt;
+    &lt;/HorizontalStackLayout&gt;
+
+    &lt;!-- Search bar (row 1 - new) --&gt;
+    &lt;Entry Grid.Row=&#34;1&#34;
+           x:Name=&#34;SearchEntry&#34;
+           Placeholder=&#34;🔍 Rechercher un deck...&#34;
+           TextChanged=&#34;OnSearchTextChanged&#34;
+           Margin=&#34;0,0,0,10&#34; /&gt;
+
+    &lt;!-- Decks list (row 2 - was row 1) --&gt;
+    &lt;CollectionView Grid.Row=&#34;2&#34;
+                   x:Name=&#34;DecksCollectionView&#34;
+                   SelectionMode=&#34;None&#34;&gt;
+        &lt;!-- ... DataTemplate inchangé ... --&gt;
+    &lt;/CollectionView&gt;
+
+    &lt;!-- Info bar (row 3 - was row 2) --&gt;
+    &lt;Label Grid.Row=&#34;3&#34;
+           x:Name=&#34;InfoLabel&#34;
+           Text=&#34;Prêt&#34;
+           FontSize=&#34;12&#34;
+           TextColor=&#34;Gray&#34;
+           HorizontalOptions=&#34;Center&#34;
+           Margin=&#34;0,10,0,0&#34; /&gt;
+&lt;/Grid&gt;
+</code></pre>
+<h2 is-upgraded>Modifier DecksPage.xaml.cs</h2>
+<p>Ajouter une liste filtrée et le gestionnaire d&#39;événement <code>TextChanged</code> :</p>
+<pre><code>public partial class DecksPage : ContentPage
+{
+    private JsonDataService _dataService;
+    private List&lt;Deck&gt; _decks;
+    private List&lt;Deck&gt; _filteredDecks;  // new: displayed subset
+    private int _nextId = 1;
+
+    public DecksPage()
+    {
+        InitializeComponent();
+        _dataService = new JsonDataService();
+        _decks = new List&lt;Deck&gt;();
+        _filteredDecks = new List&lt;Deck&gt;();
+        LoadDecks();
+    }
+
+    private async void LoadDecks()
+    {
+        _decks = await _dataService.LoadDecksAsync();
+
+        if (_decks.Any())
+        {
+            _nextId = _decks.Max(d =&gt; d.Id) + 1;
+        }
+
+        ApplyFilter();
+        UpdateInfo($&#34;Chargé: {_decks.Count} deck(s)&#34;);
+    }
+
+    // Replace RefreshView() with ApplyFilter()
+    private void ApplyFilter()
+    {
+        string search = SearchEntry?.Text?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrEmpty(search))
+        {
+            _filteredDecks = _decks;
+        }
+        else
+        {
+            _filteredDecks = _decks
+                .Where(d =&gt; d.Name.StartsWith(search, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        DecksCollectionView.ItemsSource = null;
+        DecksCollectionView.ItemsSource = _filteredDecks;
+    }
+
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        ApplyFilter();
+        UpdateInfo($&#34;Filtre: &#39;{e.NewTextValue}&#39; → {_filteredDecks.Count} résultat(s)&#34;);
+    }
+}
+</code></pre>
+<p>Mettre à jour les appels existants à <code>RefreshView()</code> pour qu&#39;ils appellent <code>ApplyFilter()</code> à la place :</p>
+<pre><code>private async void OnAddDeckClicked(object sender, EventArgs e)
+{
+    // ... code inchangé ...
+    _decks.Add(newDeck);
+    await _dataService.SaveDecksAsync(_decks);
+
+    ApplyFilter();  // was RefreshView()
+    NewDeckEntry.Text = string.Empty;
+    UpdateInfo($&#34;Ajouté: {name}&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Observer</h2>
+<p>Lancer l&#39;application et taper <code>&#34;ang&#34;</code> dans le champ de recherche. Seuls les decks dont le nom <strong>commence par</strong> &#34;ang&#34; (ex: &#34;Anglais niveau 1&#34;) apparaissent. Vider le champ affiche tous les decks.</p>
+<aside class="warning"><p><code>StartsWith</code> est sensible à la casse par défaut. Sans <code>StringComparison.OrdinalIgnoreCase</code>, &#34;anglais&#34; ne correspond pas à &#34;Anglais&#34;. Toujours préciser la comparaison.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 2 : Recherche par contenu (wildcard)" duration="10">
+        <h2 is-upgraded>Objectif</h2>
+<p>Permettre de trouver un deck en tapant <strong>n&#39;importe quel fragment</strong> du nom, pas seulement le début.</p>
+<h2 is-upgraded>Comprendre la différence</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;ang&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>✅ &#34;Anglais&#34;</p>
+</td><td colspan="1" rowspan="1"><p>✅ &#34;Anglais&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;glai&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>❌</p>
+</td><td colspan="1" rowspan="1"><p>✅ &#34;Anglais&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;1&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>❌</p>
+</td><td colspan="1" rowspan="1"><p>✅ &#34;Anglais niveau 1&#34;</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Modifier ApplyFilter()</h2>
+<p>Remplacer <code>StartsWith</code> par <code>Contains</code> :</p>
+<pre><code>private void ApplyFilter()
+{
+    string search = SearchEntry?.Text?.Trim() ?? string.Empty;
+
+    if (string.IsNullOrEmpty(search))
+    {
+        _filteredDecks = _decks;
+    }
+    else
+    {
+        _filteredDecks = _decks
+            .Where(d =&gt; d.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    DecksCollectionView.ItemsSource = null;
+    DecksCollectionView.ItemsSource = _filteredDecks;
+}
+</code></pre>
+<h2 is-upgraded>Aller plus loin : supporter le joker <code>*</code></h2>
+<p>En SQL, <code>LIKE &#39;%texte%&#39;</code> est la recherche par contenu. On peut aussi imiter la syntaxe du joker <code>*</code> pour donner plus de contrôle :</p>
+<pre><code>private bool MatchesWildcard(string name, string pattern)
+{
+    // Without wildcard, behaves like Contains
+    if (!pattern.Contains(&#39;*&#39;))
+    {
+        return name.Contains(pattern, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Split on * and check each part in order
+    string[] parts = pattern.Split(&#39;*&#39;, StringSplitOptions.RemoveEmptyEntries);
+    int index = 0;
+
+    foreach (string part in parts)
+    {
+        int found = name.IndexOf(part, index, StringComparison.OrdinalIgnoreCase);
+        if (found &lt; 0) return false;
+        index = found + part.Length;
+    }
+
+    return true;
+}
+
+private void ApplyFilter()
+{
+    string search = SearchEntry?.Text?.Trim() ?? string.Empty;
+
+    if (string.IsNullOrEmpty(search))
+    {
+        _filteredDecks = _decks;
+    }
+    else
+    {
+        _filteredDecks = _decks
+            .Where(d =&gt; MatchesWildcard(d.Name, search))
+            .ToList();
+    }
+
+    DecksCollectionView.ItemsSource = null;
+    DecksCollectionView.ItemsSource = _filteredDecks;
+}
+</code></pre>
+<h2 is-upgraded>Observer</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;niveau&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>Tous les decks contenant &#34;niveau&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;ang*1&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>&#34;Anglais niveau 1&#34; (commence par &#34;ang&#34;, contient &#34;1&#34;)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;*math*&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>Tous les decks contenant &#34;math&#34;</p>
+</td></tr>
+</table>
+<aside class="special"><p>Le joker <code>*</code> est une extension simple et intuitive pour les utilisateurs habitués à la recherche de fichiers (<code>*.txt</code>).</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 3 : Recherche multi-termes (ET / OU)" duration="12">
+        <h2 is-upgraded>Objectif</h2>
+<p>Permettre de chercher avec <strong>plusieurs mots</strong> séparés par des espaces (mode ET) ou par un <code>|</code> (mode OU).</p>
+<h2 is-upgraded>Règles à implémenter</h2>
+<ul>
+<li><code>&#34;anglais math&#34;</code> → deck contenant <strong>&#34;anglais&#34; ET &#34;math&#34;</strong> dans le nom</li>
+<li><code>&#34;anglais|math&#34;</code> → deck contenant <strong>&#34;anglais&#34; OU &#34;math&#34;</strong> dans le nom</li>
+<li><code>&#34;anglais&#34;</code> → comportement inchangé (un seul terme)</li>
+</ul>
+<h2 is-upgraded>Modifier ApplyFilter()</h2>
+<pre><code>private void ApplyFilter()
+{
+    string search = SearchEntry?.Text?.Trim() ?? string.Empty;
+
+    if (string.IsNullOrEmpty(search))
+    {
+        _filteredDecks = _decks;
+    }
+    else if (search.Contains(&#39;|&#39;))
+    {
+        // OR mode: split on | and keep decks matching at least one term
+        string[] orTerms = search.Split(&#39;|&#39;, StringSplitOptions.RemoveEmptyEntries);
+
+        _filteredDecks = _decks
+            .Where(d =&gt; orTerms.Any(term =&gt;
+                d.Name.Contains(term.Trim(), StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+    else
+    {
+        // AND mode: split on spaces and keep decks matching all terms
+        string[] andTerms = search.Split(&#39; &#39;, StringSplitOptions.RemoveEmptyEntries);
+
+        _filteredDecks = _decks
+            .Where(d =&gt; andTerms.All(term =&gt;
+                d.Name.Contains(term, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+
+    DecksCollectionView.ItemsSource = null;
+    DecksCollectionView.ItemsSource = _filteredDecks;
+}
+</code></pre>
+<h2 is-upgraded>Mettre à jour l&#39;info-bar</h2>
+<p>Indiquer le mode de recherche actif :</p>
+<pre><code>private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+{
+    ApplyFilter();
+
+    string mode = string.Empty;
+    string text = e.NewTextValue ?? string.Empty;
+
+    if (text.Contains(&#39;|&#39;))
+        mode = &#34; [OU]&#34;;
+    else if (text.Contains(&#39; &#39;))
+        mode = &#34; [ET]&#34;;
+
+    UpdateInfo($&#34;Filtre{mode}: &#39;{text}&#39; → {_filteredDecks.Count} résultat(s)&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Tester les trois modes</h2>
+<p>Préparer au moins 4 decks de test en mémoire :</p>
+<pre><code>// Test data to add temporarily in LoadDecks() for quick testing
+private void LoadTestData()
+{
+    _decks = new List&lt;Deck&gt;
+    {
+        new Deck { Id = 1, Name = &#34;Anglais niveau 1&#34;, CardCount = 20 },
+        new Deck { Id = 2, Name = &#34;Anglais niveau 2&#34;, CardCount = 15 },
+        new Deck { Id = 3, Name = &#34;Mathématiques&#34;, CardCount = 30 },
+        new Deck { Id = 4, Name = &#34;Anglais vocabulaire&#34;, CardCount = 25 },
+        new Deck { Id = 5, Name = &#34;Histoire-Géo&#34;, CardCount = 40 },
+    };
+    _nextId = 6;
+    ApplyFilter();
+}
+</code></pre>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;anglais&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>—</p>
+</td><td colspan="1" rowspan="1"><p>decks 1, 2, 4</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;anglais niveau&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>ET</p>
+</td><td colspan="1" rowspan="1"><p>decks 1, 2 (contiennent &#34;anglais&#34; ET &#34;niveau&#34;)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;anglais niveau 2&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>ET</p>
+</td><td colspan="1" rowspan="1"><p>deck 2 uniquement</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>&#34;math</code> | <code>histoire&#34;</code></p>
+</td><td colspan="1" rowspan="1"><p>OU</p>
+</td><td colspan="1" rowspan="1"><p>decks 3, 5 (contiennent &#34;math&#34; OU &#34;histoire&#34;)</p>
+</td></tr>
+</table>
+<aside class="warning"><p>Attention à l&#39;ordre des conditions dans <code>ApplyFilter()</code>. Le test sur <code>|</code> doit être vérifié <strong>avant</strong> le split sur les espaces, sinon <code>&#34;math|histoire&#34;</code> serait traité comme un seul terme contenant un pipe.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 4 : Autocomplétion" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Afficher une liste déroulante de suggestions sous le champ de recherche au fur et à mesure de la saisie, et remplir automatiquement le champ au clic.</p>
+<h2 is-upgraded>Principe</h2>
+<p>L&#39;interface se compose de deux couches superposées :</p>
+<ul>
+<li><strong>Champ de recherche</strong> (<code>SearchEntry</code>) — toujours visible en haut</li>
+<li><strong>Panneau de suggestions</strong> (<code>SuggestionsFrame</code>) — apparaît juste en dessous du champ pendant la saisie, par-dessus la liste principale</li>
+<li><strong>Liste principale</strong> (<code>DecksCollectionView</code>) — filtrée en temps réel, partiellement couverte quand les suggestions sont visibles</li>
+</ul>
+<h2 is-upgraded>Modifier DecksPage.xaml</h2>
+<p>Encapsuler la barre de recherche et les suggestions dans un <code>Grid</code> superposé. Le panel de suggestions doit <strong>flotter au-dessus</strong> de la liste principale grâce à <code>ZIndex</code> :</p>
+<pre><code>&lt;Grid RowDefinitions=&#34;Auto,Auto,*,Auto&#34; Padding=&#34;10&#34;&gt;
+
+    &lt;!-- Header (row 0 - unchanged) --&gt;
+    &lt;HorizontalStackLayout Grid.Row=&#34;0&#34; Spacing=&#34;10&#34; Margin=&#34;0,0,0,10&#34;&gt;
+        &lt;Entry x:Name=&#34;NewDeckEntry&#34;
+               Placeholder=&#34;Nom du nouveau deck&#34;
+               HorizontalOptions=&#34;FillAndExpand&#34; /&gt;
+        &lt;Button Text=&#34;Ajouter&#34;
+                Clicked=&#34;OnAddDeckClicked&#34;
+                BackgroundColor=&#34;#2196F3&#34;
+                TextColor=&#34;White&#34; /&gt;
+    &lt;/HorizontalStackLayout&gt;
+
+    &lt;!-- Search + suggestions overlay (row 1) --&gt;
+    &lt;Grid Grid.Row=&#34;1&#34; RowDefinitions=&#34;Auto,Auto&#34; Margin=&#34;0,0,0,10&#34;&gt;
+
+        &lt;!-- Search Entry --&gt;
+        &lt;Entry Grid.Row=&#34;0&#34;
+               x:Name=&#34;SearchEntry&#34;
+               Placeholder=&#34;🔍 Rechercher un deck...&#34;
+               TextChanged=&#34;OnSearchTextChanged&#34;
+               Focused=&#34;OnSearchFocused&#34;
+               Unfocused=&#34;OnSearchUnfocused&#34; /&gt;
+
+        &lt;!-- Autocomplete suggestions (hidden by default) --&gt;
+        &lt;Frame Grid.Row=&#34;1&#34;
+               x:Name=&#34;SuggestionsFrame&#34;
+               IsVisible=&#34;False&#34;
+               Padding=&#34;0&#34;
+               BorderColor=&#34;LightGray&#34;
+               CornerRadius=&#34;4&#34;
+               HasShadow=&#34;True&#34;
+               ZIndex=&#34;10&#34;&gt;
+            &lt;CollectionView x:Name=&#34;SuggestionsView&#34;
+                           MaximumHeightRequest=&#34;200&#34;
+                           SelectionMode=&#34;Single&#34;
+                           SelectionChanged=&#34;OnSuggestionSelected&#34;&gt;
+                &lt;CollectionView.ItemTemplate&gt;
+                    &lt;DataTemplate&gt;
+                        &lt;Grid Padding=&#34;12,8&#34; BackgroundColor=&#34;White&#34;&gt;
+                            &lt;Label Text=&#34;{Binding Name}&#34;
+                                   FontSize=&#34;16&#34; /&gt;
+                        &lt;/Grid&gt;
+                    &lt;/DataTemplate&gt;
+                &lt;/CollectionView.ItemTemplate&gt;
+            &lt;/CollectionView&gt;
+        &lt;/Frame&gt;
+    &lt;/Grid&gt;
+
+    &lt;!-- Decks list (row 2) --&gt;
+    &lt;CollectionView Grid.Row=&#34;2&#34;
+                   x:Name=&#34;DecksCollectionView&#34;
+                   SelectionMode=&#34;None&#34;&gt;
+        &lt;!-- DataTemplate inchangé --&gt;
+    &lt;/CollectionView&gt;
+
+    &lt;!-- Info bar (row 3) --&gt;
+    &lt;Label Grid.Row=&#34;3&#34;
+           x:Name=&#34;InfoLabel&#34;
+           Text=&#34;Prêt&#34;
+           FontSize=&#34;12&#34;
+           TextColor=&#34;Gray&#34;
+           HorizontalOptions=&#34;Center&#34;
+           Margin=&#34;0,10,0,0&#34; /&gt;
+&lt;/Grid&gt;
+</code></pre>
+<h2 is-upgraded>Modifier DecksPage.xaml.cs</h2>
+<p>Ajouter la logique des suggestions :</p>
+<pre><code>// --- Autocomplete logic ---
+
+private void OnSearchFocused(object sender, FocusEventArgs e)
+{
+    UpdateSuggestions(SearchEntry.Text);
+}
+
+private void OnSearchUnfocused(object sender, FocusEventArgs e)
+{
+    // Small delay so tap on suggestion registers before hiding
+    Task.Delay(200).ContinueWith(_ =&gt;
+        MainThread.BeginInvokeOnMainThread(() =&gt;
+            SuggestionsFrame.IsVisible = false));
+}
+
+private void UpdateSuggestions(string? input)
+{
+    string search = input?.Trim() ?? string.Empty;
+
+    if (string.IsNullOrEmpty(search) || search.Length &lt; 2)
+    {
+        SuggestionsFrame.IsVisible = false;
+        return;
+    }
+
+    // Suggest deck names that contain the search text
+    List&lt;Deck&gt; suggestions = _decks
+        .Where(d =&gt; d.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
+        .Take(5)
+        .ToList();
+
+    if (suggestions.Count == 0)
+    {
+        SuggestionsFrame.IsVisible = false;
+        return;
+    }
+
+    SuggestionsView.ItemsSource = suggestions;
+    SuggestionsFrame.IsVisible = true;
+}
+
+private void OnSuggestionSelected(object sender, SelectionChangedEventArgs e)
+{
+    if (e.CurrentSelection.FirstOrDefault() is Deck selected)
+    {
+        // Fill the search box with the selected deck name
+        SearchEntry.Text = selected.Name;
+        SuggestionsFrame.IsVisible = false;
+        SuggestionsView.SelectedItem = null;
+        ApplyFilter();
+    }
+}
+</code></pre>
+<p>Mettre à jour <code>OnSearchTextChanged</code> pour appeler aussi <code>UpdateSuggestions</code> :</p>
+<pre><code>private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+{
+    ApplyFilter();
+    UpdateSuggestions(e.NewTextValue);
+
+    string mode = string.Empty;
+    string text = e.NewTextValue ?? string.Empty;
+
+    if (text.Contains(&#39;|&#39;))
+        mode = &#34; [OU]&#34;;
+    else if (text.Contains(&#39; &#39;))
+        mode = &#34; [ET]&#34;;
+
+    UpdateInfo($&#34;Filtre{mode}: &#39;{text}&#39; → {_filteredDecks.Count} résultat(s)&#34;);
+}
+</code></pre>
+<h2 is-upgraded>Observer</h2>
+<ol type="1">
+<li>Taper <code>&#34;ang&#34;</code> → les suggestions &#34;Anglais niveau 1&#34;, &#34;Anglais niveau 2&#34;, &#34;Anglais vocabulaire&#34; apparaissent</li>
+<li>Appuyer sur &#34;Anglais vocabulaire&#34; → le champ se remplit et la liste se filtre</li>
+<li>Vider le champ → les suggestions disparaissent, la liste complète revient</li>
+</ol>
+<aside class="special"><p><code>Task.Delay(200)</code> dans <code>OnSearchUnfocused</code> est une astuce courante : si on cache immédiatement les suggestions à la perte du focus, le clic sur une suggestion n&#39;a pas le temps de se déclencher. Le délai laisse MAUI traiter le tap avant de masquer.</p>
+</aside>
+<aside class="warning"><p><code>MaximumHeightRequest=&#34;200&#34;</code> limite la hauteur du panneau de suggestions pour qu&#39;il ne recouvre pas toute la liste. Sans cette limite, avec de nombreux decks, le panneau prendrait tout l&#39;écran.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Étape 5 : Découvrir et corriger un bug d&#39;autocomplétion" duration="15">
+        <h2 is-upgraded>Objectif</h2>
+<p>Identifier un comportement inattendu de l&#39;autocomplétion en situation réelle, comprendre pourquoi il se produit, puis le corriger.</p>
+<h2 is-upgraded>Observer le problème</h2>
+<p>Reproduire exactement ces étapes dans l&#39;application :</p>
+<ol type="1">
+<li>Taper <code>anglais</code> dans le champ de recherche → la liste se filtre sur les decks &#34;Anglais&#34;</li>
+<li>Ajouter <code>|</code> puis commencer à taper <code>esp</code> → le champ contient <code>anglais|esp</code>, mode OU actif</li>
+<li>Choisir la suggestion <strong>&#34;Espagnol débutant&#34;</strong> dans le panneau</li>
+</ol>
+<p><strong>Que se passe-t-il ?</strong> Observer attentivement le contenu du champ de recherche et la liste affichée après la sélection.</p>
+<aside class="warning"><p>Le résultat n&#39;est probablement pas celui attendu. Prendre le temps de noter exactement ce qui a changé avant de continuer.</p>
+</aside>
+<h2 is-upgraded>Analyser la cause</h2>
+<p>Ouvrir <code>MainPage.xaml.cs</code> et retrouver la méthode <code>OnSuggestionSelected</code>. Répondre aux questions suivantes en lisant le code :</p>
+<ol type="1">
+<li>Que contient <code>SearchEntry.Text</code> juste avant la ligne <code>SearchEntry.Text = selected</code> ?</li>
+<li>Que contient <code>selected</code> à ce moment-là ?</li>
+<li>Après l&#39;assignation, qu&#39;est-il arrivé aux termes tapés avant <code>|</code> ?</li>
+</ol>
+<p><strong>Piste</strong> : La méthode reçoit le nom complet du deck sélectionné et l&#39;assigne directement au champ. Elle ne tient aucun compte de ce qui était déjà écrit.</p>
+<p>Comparer maintenant avec <code>UpdateSuggestions</code> : cette méthode cherche des suggestions sur <code>lastTerm</code> (le dernier terme saisi), mais <code>OnSuggestionSelected</code> ignore complètement cette distinction.</p>
+<h2 is-upgraded>Améliorer</h2>
+<p>L&#39;objectif est qu&#39;après la sélection d&#39;une suggestion, le champ de recherche conserve les termes déjà saisis avant le dernier séparateur (<code>|</code> ou espace), et remplace <strong>uniquement</strong> le dernier terme par le nom sélectionné.</p>
+<p>Quelques questions pour guider la réflexion :</p>
+<ul>
+<li>Comment récupérer la partie du texte <strong>avant</strong> le dernier séparateur ?</li>
+<li>Quelles méthodes de <code>string</code> permettent de trouver la position du dernier caractère <code>|</code> ou  ?</li>
+<li>Comment reconstruire la nouvelle valeur du champ à partir de ce préfixe et du nom sélectionné ?</li>
+</ul>
+<aside class="special"><p>Tester la correction avec le scénario initial : taper <code>anglais|esp</code>, sélectionner &#34;Espagnol débutant&#34;. Le champ devrait contenir <code>anglais|Espagnol débutan</code>t et la liste afficher les decks Anglais ET Espagnol débutant.</p>
+</aside>
+<google-codelab-survey survey-id="mobile-05b-filter-2">
+<h4>Avant de lire la piste, avez-vous trouvé la cause du bug ?</h4>
+<paper-radio-group>
+<paper-radio-button>Oui, j&#39;ai trouvé immédiatement en lisant OnSuggestionSelected</paper-radio-button>
+<paper-radio-button>Oui, mais j&#39;ai dû comparer avec UpdateSuggestions pour comprendre</paper-radio-button>
+<paper-radio-button>Non, j&#39;ai eu besoin de la piste</paper-radio-button>
+<paper-radio-button>Je n&#39;avais pas remarqué qu&#39;il y avait un bug</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus : Améliorations" duration="10">
+        <h2 is-upgraded>1. Icône pour effacer la recherche</h2>
+<p>Ajouter un bouton pour réinitialiser le filtre en un clic :</p>
+<pre><code>&lt;!-- In the search Grid, replace the Entry with a HorizontalStackLayout --&gt;
+&lt;HorizontalStackLayout Grid.Row=&#34;0&#34; Spacing=&#34;5&#34;&gt;
+    &lt;Entry x:Name=&#34;SearchEntry&#34;
+           Placeholder=&#34;🔍 Rechercher...&#34;
+           TextChanged=&#34;OnSearchTextChanged&#34;
+           Focused=&#34;OnSearchFocused&#34;
+           Unfocused=&#34;OnSearchUnfocused&#34;
+           HorizontalOptions=&#34;FillAndExpand&#34; /&gt;
+    &lt;Button Text=&#34;✕&#34;
+            Clicked=&#34;OnClearSearchClicked&#34;
+            BackgroundColor=&#34;Transparent&#34;
+            TextColor=&#34;Gray&#34;
+            FontSize=&#34;18&#34;
+            WidthRequest=&#34;40&#34; /&gt;
+&lt;/HorizontalStackLayout&gt;
+</code></pre>
+<pre><code>private void OnClearSearchClicked(object sender, EventArgs e)
+{
+    SearchEntry.Text = string.Empty;
+    SuggestionsFrame.IsVisible = false;
+    ApplyFilter();
+    UpdateInfo(&#34;Filtre effacé&#34;);
+}
+</code></pre>
+<h2 is-upgraded>2. Compteur de résultats dans l&#39;interface</h2>
+<p>Afficher le nombre de résultats directement sous la barre de recherche :</p>
+<pre><code>&lt;Label x:Name=&#34;ResultCountLabel&#34;
+       Grid.Row=&#34;1&#34;
+       Text=&#34;&#34;
+       FontSize=&#34;12&#34;
+       TextColor=&#34;Gray&#34;
+       Margin=&#34;2,0,0,4&#34; /&gt;
+</code></pre>
+<pre><code>private void ApplyFilter()
+{
+    // ... filtering logic ...
+
+    ResultCountLabel.Text = _filteredDecks.Count == _decks.Count
+        ? string.Empty
+        : $&#34;{_filteredDecks.Count} résultat(s) sur {_decks.Count}&#34;;
+}
+</code></pre>
+<h2 is-upgraded>3. Recherche sur plusieurs champs</h2>
+<p>Étendre la recherche pour inclure le nombre de cartes (pour retrouver les gros decks) :</p>
+<pre><code>_filteredDecks = _decks
+    .Where(d =&gt;
+        d.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+        d.CardCount.ToString().Contains(search))
+    .ToList();
+</code></pre>
+<h2 is-upgraded>4. Tri des résultats</h2>
+<p>Offrir un tri alphabétique ou par nombre de cartes :</p>
+<pre><code>// After filtering, sort results
+_filteredDecks = _filteredDecks
+    .OrderBy(d =&gt; d.Name)
+    .ToList();
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Synthèse" duration="3">
+        <h2 is-upgraded>Récapitulatif des techniques de filtrage</h2>
+<table>
+<tr></tr>
+<tr><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p>Début du mot</p>
+</td><td colspan="1" rowspan="1"><p><code>StartsWith</code></p>
+</td><td colspan="1" rowspan="1"><p><code>&#34;ang&#34;</code> → &#34;Anglais...&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p>N&#39;importe où</p>
+</td><td colspan="1" rowspan="1"><p><code>Contains</code></p>
+</td><td colspan="1" rowspan="1"><p><code>&#34;glai&#34;</code> → &#34;Anglais...&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2+</p>
+</td><td colspan="1" rowspan="1"><p>Joker <code>*</code></p>
+</td><td colspan="1" rowspan="1"><p><code>IndexOf</code> en boucle</p>
+</td><td colspan="1" rowspan="1"><p><code>&#34;ang*1&#34;</code> → &#34;Anglais niveau 1&#34;</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3 ET</p>
+</td><td colspan="1" rowspan="1"><p>Tous les mots</p>
+</td><td colspan="1" rowspan="1"><p><code>.All(term =&gt; ...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>&#34;anglais 1&#34;</code> → exact</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3 OU</p>
+</td><td colspan="1" rowspan="1"><p>Au moins un mot</p>
+</td><td colspan="1" rowspan="1"><p><code>.Any(term =&gt; ...)</code></p>
+</td><td colspan="1" rowspan="1"><p><code>&#34;math\|histoire&#34;</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>4</p>
+</td><td colspan="1" rowspan="1"><p>Autocomplétion</p>
+</td><td colspan="1" rowspan="1"><p><code>Take(5)</code> + sélection</p>
+</td><td colspan="1" rowspan="1"><p>suggestions en live</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Concepts MAUI utilisés</h2>
+<ul>
+<li><code>TextChanged</code> : réagir à chaque frappe dans un <code>Entry</code></li>
+<li><code>Focused</code><strong> / </strong><code>Unfocused</code> : détecter l&#39;activation/désactivation d&#39;un champ</li>
+<li><code>ZIndex</code> : superposer un contrôle par-dessus un autre</li>
+<li><code>MaximumHeightRequest</code> : limiter la hauteur d&#39;un contrôle dynamique</li>
+<li><code>Task.Delay</code><strong> + </strong><code>MainThread</code> : différer une action sur le thread UI</li>
+<li><strong>LINQ</strong> : <code>Where</code>, <code>Any</code>, <code>All</code>, <code>Take</code>, <code>OrderBy</code></li>
+</ul>
+<h2 is-upgraded>Le flux complet</h2>
+<pre><code>Utilisateur tape
+    ↓
+OnSearchTextChanged
+    ├── ApplyFilter()     → met à jour DecksCollectionView
+    └── UpdateSuggestions() → affiche/masque SuggestionsFrame
+
+Utilisateur choisit une suggestion
+    ↓
+OnSuggestionSelected
+    ├── SearchEntry.Text = selected.Name
+    └── ApplyFilter()     → filtre sur le nom choisi
+</code></pre>
+<aside class="special"><p>L&#39;approche en mémoire est idéale pour des listes de taille raisonnable (quelques centaines d&#39;éléments). Pour des milliers d&#39;éléments, il faudrait envisager une base de données locale (SQLite) avec des requêtes filtrées côté base de données.</p>
+</aside>
+<google-codelab-survey survey-id="mobile-05b-filter-3">
+<h4>Laquelle de ces fonctionnalités avez-vous trouvée la plus utile à implémenter ?</h4>
+<paper-radio-group>
+<paper-radio-button>Étape 1 : Recherche simple (StartsWith)</paper-radio-button>
+<paper-radio-button>Étape 2 : Recherche par contenu (Contains / wildcard)</paper-radio-button>
+<paper-radio-button>Étape 3 : Opérateurs ET / OU</paper-radio-button>
+<paper-radio-button>Étape 4 : Autocomplétion</paper-radio-button>
+</paper-radio-group>
+</google-codelab-survey>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/native-shim.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/prettify.js"></script>
+  <script src="https://labs.section-inf.ch/elements/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

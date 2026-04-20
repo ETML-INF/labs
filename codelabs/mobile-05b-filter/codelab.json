@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://labs.section-inf.ch/elements",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-04-20T09:23:09+02:00",
+  "id": "mobile-05b-filter",
+  "duration": 78,
+  "title": "Recherche et filtrage en code-behind",
+  "summary": "Recherche et filtrage dans une app MAUI (code-behind)",
+  "source": "mobile-05b-filter.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "android",
+    "dev"
+  ],
+  "tags": [
+    "ict",
+    "web"
+  ],
+  "feedback": "https://git.section-inf.ch/jmy/labs/issues",
+  "ga": "UA-170792591-1",
+  "url": "mobile-05b-filter"
+}
